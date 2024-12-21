@@ -1,8 +1,9 @@
-package com.bookie.scrap.config;
+package com.bookie.scrap.config.watcha;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.bookie.scrap.config.BaseRequestConfig;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
+import lombok.Setter;
 
 @Getter
 public class WatchaCommentConfig extends BaseRequestConfig<String> {
@@ -24,10 +25,5 @@ public class WatchaCommentConfig extends BaseRequestConfig<String> {
         this.HTTP_ENDPOINT = String.format(HTTP_ENDPOINT, bookCode, page, size);
         initWatchaHttpMethod();
     }
-
-    private void initializeBookResponseHandler() {
-
-    }
-
 
 }

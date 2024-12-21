@@ -15,8 +15,6 @@ import com.bookie.scrap.http.HttpResponseWrapper;
 import java.io.IOException;
 import java.util.function.Function;
 
-import static com.bookie.scrap.util.CookieManager.*;
-
 
 public abstract class BaseRequestConfig<T> {
 
@@ -88,6 +86,22 @@ public abstract class BaseRequestConfig<T> {
 
     /**
      * 1. 선언한 HTTP_ENDPOINT+endpoint로 ClassicHttpRequest 생성
+     * @param endpoint
+     */
+    private void createHttpMethod(String endpoint) {
+        try {
+            Class<?> methodClass = Class.forName(getHTTP_METHOD().getClassName());
+            httpMethod = (ClassicHttpRequest)
+                    methodClass.getConstructor(String.class)
+                            .newInstance(getHTTP_ENDPOINT() + endpoint);
+        } catch (Exception e) {
+            String exceptionMsg = String.format("[%s] Failed to create HTTP method: ", getImplClassName());
+            throw new IllegalStateException(exceptionMsg + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 1. 선언한 HTTP_ENDPOINT+endpoint로 ClassicHttpRequest 생성
      * 2. 생성된 HttpRequest에 function으로 추가 설정
      *
      * @param function
@@ -150,6 +164,14 @@ public abstract class BaseRequestConfig<T> {
         createHttpMethod(headerFunction, endPoint);
     }
 
+    protected void initHttpMethod(String endPoint) {
+        createHttpMethod(endPoint);
+    }
+
+    protected void initHttpMethod() {
+        createHttpMethod();
+    }
+
     /* ===================================== Response Handler 관련 메서드 =====================================*/
 
     /**
@@ -169,7 +191,7 @@ public abstract class BaseRequestConfig<T> {
             httpResponseWrapper.printLog();
 
             int statusCode = httpResponseWrapper.getCode();
-            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302) {
+            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301) {
                 return handlerFunction.apply(httpResponseWrapper);
             } else {
                 String exceptionMsg = String.format("[%s] Unexpected status code : ", getImplClassName());
@@ -210,17 +232,5 @@ public abstract class BaseRequestConfig<T> {
 
     }
 
-    /**
-     * 1. Response Cookie를 반환하는 Function 생성
-     * 2. 해당 function 사용하는 Response Handler 생성
-     */
-    protected void initCookieHandler() {
-
-        Function<HttpResponseWrapper, T> cookieResponse
-                = responseWrapper -> (T) createCookieStoreFromHttpHeaders(responseWrapper.getHeaders());
-
-        createResponseHandler(cookieResponse);
-
-    }
 
 }

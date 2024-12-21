@@ -1,5 +1,6 @@
-package com.bookie.scrap.config;
+package com.bookie.scrap.config.watcha;
 
+import com.bookie.scrap.config.BaseRequestConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
@@ -8,7 +9,7 @@ import com.bookie.scrap.http.HttpResponseWrapper;
 import java.util.function.Function;
 
 @Getter
-public class WatchaDeckConfig extends BaseRequestConfig<JsonNode> {
+public class WatchaDeckConfig extends BaseRequestConfig<String> {
 
     private final String HTTP_PROTOCOL = "https";
     private final String HTTP_HOST = "pedia.watcha.com";
@@ -18,7 +19,7 @@ public class WatchaDeckConfig extends BaseRequestConfig<JsonNode> {
 
     {
         createHttpHost();
-        initJsonHandler();
+        initStringHandler();
         setImplClassName(this.getClass().getSimpleName());
     }
 
@@ -26,15 +27,5 @@ public class WatchaDeckConfig extends BaseRequestConfig<JsonNode> {
         this.HTTP_ENDPOINT = String.format(HTTP_ENDPOINT, bookCode, page, size);
         initWatchaHttpMethod();
     }
-
-    private void initializeBookResponseHandler() {
-
-        Function<HttpResponseWrapper, String> jsonFunction = responseWrapper -> {
-            return "";
-        };
-
-
-    }
-
 
 }

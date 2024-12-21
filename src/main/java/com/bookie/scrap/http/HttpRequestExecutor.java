@@ -90,7 +90,7 @@ public class HttpRequestExecutor {
         try {
             return client.execute(httpHost, httpMethod, clientContext, responseHandler);
         } catch (IOException e) {
-            String errorMsg = String.format("[%s] Fail to execute Http Request", requestConfig.getImplClassName());
+            String errorMsg = String.format("[%s] Fail to execute Http Request: ", requestConfig.getImplClassName());
             throw new RuntimeException(errorMsg + e.getMessage(), e);
         }
 
@@ -108,7 +108,7 @@ public class HttpRequestExecutor {
             log.debug("   HTTP Method: " + httpMethod.getMethod());
             log.debug("   Request URL: " + httpHost.getHostName() + httpMethod.getUri());
         } catch (URISyntaxException e) {
-            throw new RuntimeException("error while making request debug log");
+            throw new RuntimeException("error while making request debug log: ", e);
         }
 
         // 요청 헤더 출력

@@ -1,5 +1,6 @@
-package com.bookie.scrap.config;
+package com.bookie.scrap.config.watcha;
 
+import com.bookie.scrap.config.BaseRequestConfig;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpResponseWrapper;

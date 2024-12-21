@@ -42,7 +42,7 @@ public class HttpResponseWrapper {
         try {
             this.jsonNode = objectMapper.readTree(responseBody);
         } catch (JsonProcessingException e) {
-            log.debug("=> no json involved or have trailing tokens");
+//            log.trace("no json involved or have trailing tokens");
         }
 
     }

@@ -1,18 +1,22 @@
 package com.bookie.scrap.config;
 
+import com.bookie.scrap.config.watcha.WatchaBookConfig;
+import com.bookie.scrap.config.watcha.WatchaCommentConfig;
+import com.bookie.scrap.config.watcha.WatchaDeckConfig;
+import com.bookie.scrap.config.watcha.WatchaExternalUrlConfig;
 import com.bookie.scrap.http.HttpRequestExecutor;
-import com.bookie.scrap.response.BookDetail;
+import com.bookie.scrap.response.watcha.WatchaBookDetail;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
 class BaseRequestConfigTest {
 
     @Test
-    public void bookTest() {
-        log.error("일단 에러 테스트!!!!!");
-
-        BookDetail book = HttpRequestExecutor.execute(new WatchaBookConfig("byLKj8M"));
+    public void externalServiceLinkBookTest() {
+        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBookConfig("byLKj8M"));
+        Assertions.assertEquals(3, book.getExternalUrls().size());
     }
 
     @Test

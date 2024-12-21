@@ -1,23 +1,24 @@
-package com.bookie.scrap.config;
+package com.bookie.scrap.config.watcha;
 
+import com.bookie.scrap.config.BaseRequestConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.response.BookDetail;
+import com.bookie.scrap.response.watcha.WatchaBookDetail;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
 @Getter
-public class WatchaBookConfig extends BaseRequestConfig<BookDetail> {
+public class WatchaBookConfig extends BaseRequestConfig<WatchaBookDetail> {
 
     private String HTTP_PROTOCOL = "https";
     private String HTTP_HOST = "pedia.watcha.com";
@@ -37,7 +38,7 @@ public class WatchaBookConfig extends BaseRequestConfig<BookDetail> {
 
     private void initCustomHandler() {
 
-        Function<HttpResponseWrapper, BookDetail> bookDetailFunction = responseWrapper -> {
+        Function<HttpResponseWrapper, WatchaBookDetail> bookDetailFunction = responseWrapper -> {
 
             JsonNode resultNode = responseWrapper.getJsonNode().path("result");
 
@@ -65,6 +66,7 @@ public class WatchaBookConfig extends BaseRequestConfig<BookDetail> {
                     .orElse(Collections.emptyList());
 
 
+            log.debug("=> Start searching for External Service URL [{}/{}]", code, title );
             /*
                 1. external_services가 array로 되어 있다면
                 2. array를 stream으로 만든다
@@ -74,15 +76,54 @@ public class WatchaBookConfig extends BaseRequestConfig<BookDetail> {
             List<String> externalUrls =
                     Optional.ofNullable(resultNode.path("external_services")).filter(JsonNode::isArray)
                     .map(arrayNode ->
-                            StreamSupport.stream(arrayNode.spliterator(), false).map(node -> {
-                                log.debug("=> Start searching for {} URL [{}/{}]", node.path("name").asText(), code, title );
+                            StreamSupport.stream(arrayNode.spliterator(), false)
+                                    .map(node -> {
+                                        String href = node.path("href").asText();
+                                        String[] splitUrl = href.split("/");
+                                        return HttpRequestExecutor.execute(new WatchaExternalUrlConfig(splitUrl[4]));
+                                    }).collect(Collectors.toList())
+                    ).orElse(Collections.emptyList());
 
-                                String href = node.path("href").asText();
-                                String[] splitUrl = href.split("/");
-                                return HttpRequestExecutor.execute(new WatchaExternalUrlConfig(splitUrl[4]));
-                            }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            Map<WatchaBookDetail.TYPE, String> urlMap = new HashMap<>();
+            externalUrls.forEach(url -> {
+                Pattern pattern;
+                Matcher matcher;
 
-            return new BookDetail(
+                // www.naver.com -> naver 골라내기
+                pattern = Pattern.compile("(?<=www\\.)(.*?)(?=\\.)");
+                matcher = pattern.matcher(url);
+
+                if (matcher.find()) {
+                    switch (matcher.group(1)) {
+                        case "aladin":
+                            pattern = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)");
+                            matcher = pattern.matcher(url);
+                            if (matcher.find()) {
+                                urlMap.put(WatchaBookDetail.TYPE.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
+                            }
+                            break;
+                        case "yes24":
+                            urlMap.put(WatchaBookDetail.TYPE.YES24, url);
+                            break;
+                        case "kyobobook":
+                            //http://www.kyobobook.co.kr/cooper/redirect_over.jsp?LINK=WPD&next_url=https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156&utm_source=watchapedia&utm_medium=posts&utm_campaign=9791189327156";
+                            pattern = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)");
+                            matcher = pattern.matcher(url);
+
+                            if (matcher.find()) {
+                                //www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156
+                                String[] splitUrl = matcher.group(1).split("/", 2);
+                                String kyoUrl = HttpRequestExecutor.execute(new KyoboUrlConfig(splitUrl[0], "/" + splitUrl[1]));
+                                urlMap.put(WatchaBookDetail.TYPE.KYOBO, kyoUrl);
+                            }
+                            break;
+                    }
+                }
+            });
+
+            log.debug("<= End searching for External Service URL");
+
+            return new WatchaBookDetail(
                     code,
                     title,
                     resultNode.path("subtitle").asText(),
@@ -96,7 +137,7 @@ public class WatchaBookConfig extends BaseRequestConfig<BookDetail> {
                     authors,
                     nations,
                     genres,
-                    externalUrls,
+                    urlMap,
                     resultNode.path("description").asText(),
                     resultNode.path("publisher_description").asText(),
                     resultNode.path("author_description").asText(),
