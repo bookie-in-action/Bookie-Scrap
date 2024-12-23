@@ -14,10 +14,21 @@ tasks.processResources {
     exclude('**/*.properties')
 }
 
+// 매니페스트 비워두기
 tasks.jar {
     manifest {
-        attributes.clear() // 매니페스트 비워두기
+        attributes.clear()
     }
+}
+
+tasks.register("copyJarToCustomDir", Copy) {
+    dependsOn(tasks.jar) // jar 만드는 테스크 이후 실행
+    from(layout.buildDirectory.dir("libs")) // JAR 파일이 생성되는 기본 위치
+    into(layout.projectDirectory.dir("server/lib")) // 프로젝트 루트 기준 server 폴더
+}
+
+tasks.named("build") {
+    finalizedBy("copyJarToCustomDir") // 빌드 완료 후 복사 실행
 }
 
 tasks.withType(JavaCompile) {

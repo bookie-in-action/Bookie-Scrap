@@ -12,13 +12,11 @@ LIB_DIR="$HOME_DIR/lib"
 PID_FILE="$HOME_DIR/bin/pid/bookie.pid"
 RESOURCES_DIR="$HOME_DIR/resources"
 
-
 # Java 실행 파일 경로
 if [ -z "$JAVA_HOME" ]; then
     echo "JAVA_HOME is not set. Please set JAVA_HOME environment variable."
     exit 1
 fi
-
 
 # 실행 정보 출력
 echo "==================================================="
@@ -33,19 +31,19 @@ echo "Using Resources:"
 
 CLASSPATH=""
 for jar in "$LIB_DIR"/*.jar; do
-    CLASSPATH="$CLASSPATH$jar:"
+    CLASSPATH="$CLASSPATH$jar;"
     echo "Added jar: $jar"
 done
 
-echo "                                                   "
+echo "==================================================="
 
 for resource in "$RESOURCES_DIR"/*; do
     echo "Added resource: $resource"
 done
-CLASSPATH="$CLASSPATH$RESOURCES_DIR:"
+CLASSPATH="$CLASSPATH$RESOURCES_DIR;"
 
-echo "                                                   "
 echo "Final CLASSPATH: $CLASSPATH"
+
 echo "                                                   "
 
 # 로그 디렉토리 생성
@@ -63,7 +61,6 @@ PID=$!
 
 disown $PID
 
-touch $PID_FILE
 echo "==================================================="
 echo "                                                   "
 # PID 파일 생성

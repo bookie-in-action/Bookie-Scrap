@@ -10,7 +10,6 @@ HOME_DIR="/Users/hs_/Documents/github/bookie_pjt/Bookie-Scrap/server"
 LIB_DIR="$HOME_DIR/lib"
 RESOURCES_DIR="$HOME_DIR/resources"
 
-
 # Java 실행 파일 경로
 if [ -z "$JAVA_HOME" ]; then
     echo "JAVA_HOME is not set. Please set JAVA_HOME environment variable."
@@ -31,14 +30,14 @@ echo "==================================================="
 
 CLASSPATH=""
 for jar in "$LIB_DIR"/*.jar; do
-    CLASSPATH="$CLASSPATH$jar:"
+    CLASSPATH="$CLASSPATH$jar;"
     echo "Added jar: $jar"
 done
 echo "========================================================"
 for resource in "$RESOURCES_DIR"/*; do
     echo "Added resource: $resource"
 done
-CLASSPATH="$CLASSPATH$RESOURCES_DIR:"
+CLASSPATH="$CLASSPATH$RESOURCES_DIR;"
 echo "========================================================"
 echo "Final CLASSPATH: $CLASSPATH                             "
 echo "========================================================"

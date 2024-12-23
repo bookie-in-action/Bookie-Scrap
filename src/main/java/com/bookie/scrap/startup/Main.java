@@ -15,10 +15,7 @@ import java.util.Properties;
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("Is logback.xml loaded? " +
-                LoggerFactory.getILoggerFactory().getClass().getName());
-
-
+        //TODO: 메인쪽은 전체 로직 따로 잡아야 함
         log.info("");
         log.info("*********************************************");
         log.info("   Initializing......                        ");
@@ -44,6 +41,33 @@ public class Main {
 
 
         log.info("*********************************************");
+
+
+        //TODO: 스레드 예제, quartz 사용?, 데몬 스레드/비데몬 스레드 개념 조사,
+        //TODO: 만약 quartz 사용한다면 quartz는 어떤 스레드로 돌려야 하는지,
+        //TODO: sigterm(kill -15) sigkill(kill -9) 했을 때 jvm과 메인 스레드 종료 여부
+//        SchedulerManager.getInstance().initSchedulers();
+//        SchedulerManager.getInstance().startSchedulers();
+//
+//        // Shutdown Hook 등록
+//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//            try {
+//                SchedulerManager.getInstance().stopSchedulers();
+//                System.out.println("Scheduler stopped gracefully.");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }));
+
+        // 메인 스레드 유지
+        while (true) {
+            try {
+                Thread.sleep(3000);
+                log.info("Thread Example running...");
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
 
     }
 }

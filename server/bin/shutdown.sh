@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# 환경 변수 및 설정
 APP_NAME="BookieScrap"
-PID_FILE="bookie.pid"
+HOME_DIR="/Users/hs_/Documents/github/bookie_pjt/Bookie-Scrap/server"
+PID_FILE="$HOME_DIR/bin/pid/bookie.pid"
 
 # PID 파일 확인
 if [ ! -f "$PID_FILE" ]; then
