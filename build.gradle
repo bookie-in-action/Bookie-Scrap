@@ -1,18 +1,37 @@
 plugins {
     id 'java'
 }
-
 group = 'com.bookie.scrap'
 version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11}
+
+tasks.processResources {
+    exclude('**/logback.xml')
+    exclude('**/*.properties')
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+tasks.jar {
+    manifest {
+        attributes.clear() // 매니페스트 비워두기
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.bookie.scrap.startup.Main'
+        )
+    }
+
+    exclude('**/logback.xml')
+    exclude('**/*.properties')
 }
 
 repositories {
