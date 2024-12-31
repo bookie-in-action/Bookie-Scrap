@@ -52,6 +52,19 @@ public class HttpRequestExecutor {
         }
     }
 
+    public static <T> T execute(ClassicHttpRequest httpRequest, HttpClientResponseHandler<T> responseHandler) {
+
+        CloseableHttpClient client = HttpClientProvider.getHttpClient();
+
+        printLog(httpRequest);
+
+        try {
+            return client.execute(httpRequest, responseHandler);
+        } catch (IOException e) {
+            throw new IllegalStateException("Fail to execute Http Request" + e.getMessage(), e);
+        }
+    }
+
     public static <T> T execute(BaseRequestConfig<T> requestConfig) {
 
         ClassicHttpRequest httpMethod = requestConfig.getHttpMethod();
@@ -144,6 +157,28 @@ public class HttpRequestExecutor {
             } catch (Exception e) {
                 log.error("   Failed to log request body: " + e.getMessage());
             }
+        }
+
+        log.debug("================================ END ================================\n\n");
+
+    }
+
+
+    private static <T> void printLog(ClassicHttpRequest httpMethod) {
+
+        log.debug("==================== {} HTTP REQUEST ====================", Thread.currentThread().getStackTrace()[3]);
+        try {
+            log.debug("[Request Info]");
+            log.debug("   HTTP Method: " + httpMethod.getMethod());
+            log.debug("   Request URL: " + httpMethod.getUri());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("error while making request debug log: ", e);
+        }
+
+        log.debug("[Request Headers]");
+        if(httpMethod.getHeaders().length != 0) {
+            Arrays.stream(httpMethod.getHeaders())
+                    .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
         }
 
         log.debug("================================ END ================================\n\n");

@@ -5,14 +5,6 @@ import com.bookie.scrap.response.watcha.WatchaBookDetail;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class WatchaBookConfigTest {
 
     @Test
@@ -24,5 +16,20 @@ class WatchaBookConfigTest {
         Assertions.assertEquals("https://product.kyobobook.co.kr/detail/S000001925800", book.getExternalUrls().get(WatchaBookDetail.TYPE.KYOBO));
     }
 
+    @Test
+    public void getRedirectUrlTest() {
+        WatchaBookConfig watchaBookConfig = new WatchaBookConfig("");
+        String aladinUrl = watchaBookConfig.fetchWatchaRedirectUrl("https://redirect.watcha.com/galaxy/aHR0cDovL3d3dy5hbGFkaW4uY28ua3Ivc2hvcC93cHJvZHVjdC5hc3B4P0l0ZW1JZD0yODQ2NTczMzAmcGFydG5lcj13YXRjaGE");
+        Assertions.assertEquals("http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=284657330&partner=watcha", aladinUrl);
+    }
+
+    @Test
+    public void getAladinUrl() {
+        WatchaBookConfig watchaBookConfig = new WatchaBookConfig("");
+
+        //www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156
+
+        String aladinUrl = watchaBookConfig.fetchWatchaRedirectUrl("https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156");
+    }
 
 }
