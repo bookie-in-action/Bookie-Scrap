@@ -3,6 +3,7 @@ package com.bookie.scrap.startup;
 import com.bookie.scrap.config.watcha.WatchaBookConfig;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.response.watcha.WatchaBookDetail;
+import com.bookie.scrap.util.DatabaseConnectionPool;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +16,13 @@ import java.util.Properties;
 public class Main {
     public static void main(String[] args) {
 
-        //TODO: 메인쪽은 전체 로직 따로 잡아야 함
+        // -Dmode=dev or -Dmode=prod
+        String serverMode = System.getProperty("mode", "dev");
+
         log.info("");
         log.info("*********************************************");
         log.info("   Initializing......                        ");
+        log.info(" Running in {} MODE", serverMode.toUpperCase());
         log.info("       Bookie Scrap Version: 0.0.1-SNAPSHOT  ");
         log.info("                                             ");
         log.info("*********************************************");
@@ -29,18 +33,12 @@ public class Main {
         log.info("Classpath: " + classPath);
         log.info("");
 
-        // TODO: 후에 운영/개발 분리
-        try (InputStream inpuStream = Main.class.getClassLoader().getResourceAsStream("db.properties")){
-            Properties dbProperties = new Properties();
-            dbProperties.load(inpuStream);
-            log.info("DB URL: {}",dbProperties.getProperty("db.dev.url"));
-            log.info("DB USER: {}",dbProperties.getProperty("db.dev.user"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        /*
 
-
-        log.info("*********************************************");
+            1. db.properties로 커넥션 풀 초기화
+            2. DB 관련 로그 출력
+        */
+        DatabaseConnectionPool.init(serverMode);
 
 
         //TODO: 스레드 예제, quartz 사용?, 데몬 스레드/비데몬 스레드 개념 조사,
@@ -48,16 +46,23 @@ public class Main {
         //TODO: sigterm(kill -15) sigkill(kill -9) 했을 때 jvm과 메인 스레드 종료 여부
 //        SchedulerManager.getInstance().initSchedulers();
 //        SchedulerManager.getInstance().startSchedulers();
-//
+
 //        // Shutdown Hook 등록
 //        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 //            try {
+//                1. db 커넥션 풀 닫기
+//                System.out.println("Shutting down connection pool...");
+//                DatabaseConnectionPool.close();
+//                2. 스케줄러 종료
+
 //                SchedulerManager.getInstance().stopSchedulers();
 //                System.out.println("Scheduler stopped gracefully.");
+
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
 //        }));
+
 
         // 메인 스레드 유지
         while (true) {
