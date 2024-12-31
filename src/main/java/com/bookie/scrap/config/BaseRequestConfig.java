@@ -198,6 +198,28 @@ public abstract class BaseRequestConfig<T> {
                 throw new IllegalStateException(exceptionMsg + statusCode);
             }
         };
+
+    }
+
+    protected HttpClientResponseHandler getResponseHandler(Function<HttpResponseWrapper, ?> handlerFunction) {
+        return httpResponse -> {
+
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper(
+                    httpResponse.getCode(),
+                    httpResponse.getHeaders(),
+                    httpResponse.getEntity()
+            );
+
+            httpResponseWrapper.printLog();
+
+            int statusCode = httpResponseWrapper.getCode();
+            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301) {
+                return handlerFunction.apply(httpResponseWrapper);
+            } else {
+                String exceptionMsg = String.format("[%s] Unexpected status code : ", getImplClassName());
+                throw new IllegalStateException(exceptionMsg + statusCode);
+            }
+        };
     }
 
 

@@ -11,6 +11,7 @@ import java.util.Map;
 @ToString
 @AllArgsConstructor
 public class WatchaBookDetail {
+
     private final String bookCode;
     private final String bookTitle;
     private final String booSubtitle;
@@ -37,4 +38,5 @@ public class WatchaBookDetail {
     private final String wishesCount;
 
     public enum TYPE {ALADIN, YES24, KYOBO}
+
 }
