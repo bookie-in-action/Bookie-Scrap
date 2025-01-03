@@ -1,5 +1,6 @@
 package com.bookie.scrap.http;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -14,12 +15,14 @@ import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 
+@Slf4j
 public class HttpClientProvider {
 
     private static final Timeout CONNECT_TIMEOUT = Timeout.ofSeconds(30);
     private static final Timeout SOCKET_TIMEOUT = Timeout.ofMinutes(1);
     private static final TimeValue CONNECTION_TTL = TimeValue.ofMinutes(10);
-    private static final TimeValue CONNECTION_INACTIVITY_VALIDATE = TimeValue.ofSeconds(30);
+    private static final TimeValue CONNECTION_INACTIVITY_VALIDATE = TimeValue.ofMinutes(2);
+    private static final TimeValue EVICT_IDLE_TIME = TimeValue.ofSeconds(30);
 
     private static final PoolConcurrencyPolicy CONCURRENCY_POLICY = PoolConcurrencyPolicy.STRICT;
     private static final PoolReusePolicy REUSE_POLICY = PoolReusePolicy.LIFO;
@@ -27,6 +30,8 @@ public class HttpClientProvider {
     private static final int MAX_CONN_TOTAL = 50; // 전체 연결 수
 
     private static final CloseableHttpClient HTTP_CLIENT;
+
+    private HttpClientProvider() {}
 
     static {
         // 커넥션에 대한 설정
@@ -43,9 +48,15 @@ public class HttpClientProvider {
                 .setMaxConnTotal(MAX_CONN_TOTAL)
                 .build();
 
+
+        log.info("Http Connection Pool Total stats: {}", poolingConnectionManager.getTotalStats());
+
         HTTP_CLIENT = HttpClients.custom()
                 .setConnectionManager(poolingConnectionManager)
-                .disableRedirectHandling()
+                .disableRedirectHandling()                      // 3xx 자동으로 처리하지 않도록 하는 옵션
+                .evictExpiredConnections()                      // 만료된 커넥션 자동으로 제거
+                .evictIdleConnections(EVICT_IDLE_TIME)          // 지정된 시간동안 유휴 상태였던 커넥션 제거
+//                .setConnectionManagerShared(true)               // 커넥션 매니저 여러 httpclient에서 사용할 수 있도록 하는 옵션
                 .build();
     }
 
