@@ -1,5 +1,6 @@
 package com.bookie.scrap.util;
 
+import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
@@ -15,49 +16,29 @@ public class DatabaseConnectionPool {
     @Getter
     private static HikariDataSource dataSource;
 
-    public static void init(String runningOption) {
+    public static void init() {
 
         if (dataSource != null) {
             return;
         }
-
+        DbProperties dbProperties = DbProperties.getInstance();
         log.info("=> HiKariDataSource init start");
 
-        try (InputStream inputStream = DatabaseConnectionPool.class.getClassLoader().getResourceAsStream("db.properties")) {
-            Properties dbProperties = new Properties();
-            dbProperties.load(inputStream);
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(dbProperties.getValue(DbProperties.Key.JDBC_URL));
+        config.setUsername(dbProperties.getValue(DbProperties.Key.USER));
+        config.setPassword(dbProperties.getValue(DbProperties.Key.PASSWORD));
+        config.setDriverClassName(dbProperties.getValue(DbProperties.Key.DRIVER_NAME));
 
-            String prefix = String.format("db.%s", runningOption);
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setIdleTimeout(30000);
+        config.setConnectionTimeout(30000);
+        config.setLeakDetectionThreshold(5000);
 
-            String jdbcUrl = dbProperties.getProperty(prefix + ".url");
-            String user = dbProperties.getProperty(prefix + ".user");
-            String password = dbProperties.getProperty(prefix + ".password");
-            String driverName = dbProperties.getProperty(prefix + ".driver");
+        dataSource = new HikariDataSource(config);
 
-            log.info("DB URL: {}", jdbcUrl);
-            log.info("DB USER: {}", user);
-            log.info("DB DRIVER: {}", driverName);
-
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(jdbcUrl);
-            config.setUsername(user);
-            config.setPassword(password);
-            config.setDriverClassName(driverName);
-
-            config.setMaximumPoolSize(10);
-            config.setMinimumIdle(2);
-            config.setIdleTimeout(30000);
-            config.setConnectionTimeout(30000);
-            config.setLeakDetectionThreshold(5000);
-
-            dataSource = new HikariDataSource(config);
-
-            log.info("=> HiKariDataSource init complete");
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load database properties", e);
-        }
-
+        log.info("<= HiKariDataSource init complete");
 
     }
 

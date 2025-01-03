@@ -71,7 +71,7 @@ public class SchedulerProperties implements InitializableProperties{
                 log.info("SCHEDULER NAME: {}", schedulerName);
                 log.info("SCHEDULER JOB CLASS: {}", jobClass);
                 log.info("SCHEDULER TYPE: {}", schedulerType);
-                log.info("SCHEDULER EXPRESSION: {}\n", schedulerExpression);
+                log.info("SCHEDULER EXPRESSION: {}", schedulerExpression);
 
             }
 

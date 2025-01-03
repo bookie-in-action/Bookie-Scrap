@@ -58,11 +58,12 @@ public class DbProperties implements InitializableProperties{
             // 초기화 상태 플래그 업데이트
             initialized = true;
 
-            log.info("<= DbProperties initialized successfully");
             log.info("DB URL: {}", propertyMap.get(Key.JDBC_URL));
             log.info("DB USER: {}", propertyMap.get(Key.USER));
             log.info("DB DRIVER: {}", propertyMap.get(Key.DRIVER_NAME));
             log.info("DB PASSWORD: {}", propertyMap.get(Key.PASSWORD));
+
+            log.info("<= DbProperties initialized successfully");
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load database properties", e);

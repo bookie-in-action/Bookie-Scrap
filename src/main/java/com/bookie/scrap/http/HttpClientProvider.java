@@ -48,7 +48,6 @@ public class HttpClientProvider {
                 .setMaxConnTotal(MAX_CONN_TOTAL)
                 .build();
 
-
         log.info("Http Connection Pool Total stats: {}", poolingConnectionManager.getTotalStats());
 
         HTTP_CLIENT = HttpClients.custom()
@@ -59,6 +58,8 @@ public class HttpClientProvider {
 //                .setConnectionManagerShared(true)               // 커넥션 매니저 여러 httpclient에서 사용할 수 있도록 하는 옵션
                 .build();
     }
+
+    public static void init() {}
 
     static CloseableHttpClient getHttpClient() {
         return HttpClientProvider.HTTP_CLIENT;

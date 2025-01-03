@@ -1,14 +1,22 @@
 package com.bookie.scrap.startup;
 
 import com.bookie.scrap.config.watcha.WatchaBookConfig;
+import com.bookie.scrap.http.HttpClientProvider;
 import com.bookie.scrap.http.HttpRequestExecutor;
+import com.bookie.scrap.properties.BookieProperties;
+import com.bookie.scrap.properties.DbProperties;
+import com.bookie.scrap.properties.InitializableProperties;
+import com.bookie.scrap.properties.SchedulerProperties;
 import com.bookie.scrap.response.watcha.WatchaBookDetail;
 import com.bookie.scrap.util.DatabaseConnectionPool;
+import com.github.benmanes.caffeine.cache.Scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -20,25 +28,35 @@ public class Main {
         String serverMode = System.getProperty("mode", "dev");
 
         log.info("");
-        log.info("*********************************************");
-        log.info("   Initializing......                        ");
-        log.info(" Running in {} MODE", serverMode.toUpperCase());
-        log.info("       Bookie Scrap Version: 0.0.1-SNAPSHOT  ");
-        log.info("                                             ");
-        log.info("*********************************************");
+        log.info("************************************************");
+        log.info("   Initializing......                           ");
+        log.info("   Running in {} MODE", serverMode.toUpperCase() );
+        log.info("   Bookie Scrap Version: 0.0.1-SNAPSHOT         ");
+        log.info("                                                ");
+        log.info("************************************************");
         log.info("");
 
-        // TODO: 잘라서 resources 로딩 로그, 라이브러리 로딩 로그 따로 출력 해야함
-        String classPath = System.getProperty("java.class.path");
-        log.info("Classpath: " + classPath);
-        log.info("");
+        log.info("[STEP 1] Properties initialize and verify");
+        List<InitializableProperties> propertiesList = Arrays.asList(
+                        BookieProperties.getInstance(),
+                        DbProperties.getInstance(),
+                        SchedulerProperties.getInstance()
+        );
 
-        //TODO: propeties 초기화와 검증 후 dbconnpool 초기화
-        DatabaseConnectionPool.init(serverMode);
+        propertiesList.stream().forEach(properties -> {
+            properties.init(serverMode);
+            properties.verify();
+        });
+
+
+        log.info("[STEP 2] DB Pool initialize");
+        DatabaseConnectionPool.init();
+
+        log.info("[STEP 3] Http Connection Pool initialize");
+        HttpClientProvider.init();
 
         // TODO: 유휴 http 커넥션 정리하는 스레드 생성
-
-        //TODO: 스케줄러 생성
+        // TODO: 스케줄러 생성
 //        SchedulerManager.getInstance().initSchedulers();
 //        SchedulerManager.getInstance().startSchedulers();
 

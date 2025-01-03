@@ -40,13 +40,13 @@ public class BookieProperties implements InitializableProperties {
             Properties bookieProperties = new Properties();
             bookieProperties.load(inputStream);
 
-
             propertyMap.put(Key.RETRY_COUNT, bookieProperties.getProperty("retry.max"));
 
             initialized = true;
 
-            log.info("<= BookieProperties initialized successfully");
             log.info("RETRY MAX: {}", propertyMap.get(Key.RETRY_COUNT));
+            log.info("<= BookieProperties initialized successfull");
+
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load bookie properties", e);
