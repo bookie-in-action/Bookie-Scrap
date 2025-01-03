@@ -1,5 +1,6 @@
 package com.bookie.scrap.http;
 
+import com.bookie.scrap.properties.BookieProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,8 +28,9 @@ import java.util.Arrays;
 @Slf4j
 public class HttpRequestExecutor {
 
-    //TODO: properties로 분리
-    private final static int MAX_RETRIES = 3;
+    private final static int MAX_RETRIES = Integer.parseInt(
+            BookieProperties.getInstance().getValue(BookieProperties.Key.RETRY_COUNT)
+    );
 
     public static <T> T execute(HttpHost httpHost,
                                 ClassicHttpRequest httpMethod,
@@ -263,7 +265,10 @@ public class HttpRequestExecutor {
 
     private static <T> void printLog(ClassicHttpRequest httpMethod) {
 
-        log.debug("==================== {} HTTP REQUEST ====================", Thread.currentThread().getStackTrace()[3]);
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+        String executeClass = stackTraceElement.toString().split("\\.")[5];
+
+        log.debug("==================== {} HTTP REQUEST ====================", executeClass);
         try {
             log.debug("[Request Info]");
             log.debug("   HTTP Method: " + httpMethod.getMethod());
