@@ -33,17 +33,12 @@ public class Main {
         log.info("Classpath: " + classPath);
         log.info("");
 
-        /*
-
-            1. db.properties로 커넥션 풀 초기화
-            2. DB 관련 로그 출력
-        */
+        //TODO: propeties 초기화와 검증 후 dbconnpool 초기화
         DatabaseConnectionPool.init(serverMode);
 
+        // TODO: 유휴 http 커넥션 정리하는 스레드 생성
 
-        //TODO: 스레드 예제, quartz 사용?, 데몬 스레드/비데몬 스레드 개념 조사,
-        //TODO: 만약 quartz 사용한다면 quartz는 어떤 스레드로 돌려야 하는지,
-        //TODO: sigterm(kill -15) sigkill(kill -9) 했을 때 jvm과 메인 스레드 종료 여부
+        //TODO: 스케줄러 생성
 //        SchedulerManager.getInstance().initSchedulers();
 //        SchedulerManager.getInstance().startSchedulers();
 
