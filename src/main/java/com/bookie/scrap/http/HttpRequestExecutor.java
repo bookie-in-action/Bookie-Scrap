@@ -1,5 +1,6 @@
 package com.bookie.scrap.http;
 
+import com.bookie.scrap.properties.BookieProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,7 +17,7 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.config.BaseRequestConfig;
+import com.bookie.scrap.config.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -27,8 +28,9 @@ import java.util.Arrays;
 @Slf4j
 public class HttpRequestExecutor {
 
-    //TODO: properties로 분리
-    private final static int MAX_RETRIES = 3;
+    private final static int MAX_RETRIES = Integer.parseInt(
+            BookieProperties.getInstance().getValue(BookieProperties.Key.RETRY_COUNT)
+    );
 
     public static <T> T execute(HttpHost httpHost,
                                 ClassicHttpRequest httpMethod,
@@ -100,7 +102,7 @@ public class HttpRequestExecutor {
 
     }
 
-    public static <T> T execute(BaseRequestConfig<T> requestConfig) {
+    public static <T> T execute(BaseRequest<T> requestConfig) {
 
         ClassicHttpRequest httpMethod = requestConfig.getHttpMethod();
         AbstractHttpEntity entity = requestConfig.getEntity();
@@ -206,7 +208,7 @@ public class HttpRequestExecutor {
         }
     }
 
-    private static <T> void printLog(String implClassName,
+    private static void printLog(String implClassName,
                                      HttpHost httpHost,
                                      ClassicHttpRequest httpMethod,
                                      AbstractHttpEntity entity,
@@ -261,9 +263,12 @@ public class HttpRequestExecutor {
     }
 
 
-    private static <T> void printLog(ClassicHttpRequest httpMethod) {
+    private static void printLog(ClassicHttpRequest httpMethod) {
 
-        log.debug("==================== {} HTTP REQUEST ====================", Thread.currentThread().getStackTrace()[3]);
+        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+        String executeClass = stackTraceElement.toString().split("\\.")[5];
+
+        log.debug("==================== {} HTTP REQUEST ====================", executeClass);
         try {
             log.debug("[Request Info]");
             log.debug("   HTTP Method: " + httpMethod.getMethod());

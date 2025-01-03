@@ -1,23 +1,15 @@
 package com.bookie.scrap.startup;
 
-import com.bookie.scrap.config.watcha.WatchaBookConfig;
 import com.bookie.scrap.http.HttpClientProvider;
-import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.response.watcha.WatchaBookDetail;
 import com.bookie.scrap.util.DatabaseConnectionPool;
-import com.github.benmanes.caffeine.cache.Scheduler;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 
 @Slf4j

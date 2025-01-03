@@ -53,10 +53,11 @@ public class HttpResponseWrapper {
                 .toArray(Header[]::new);
     }
 
-    public Optional<Header> findHeader(String name) {
+    public Header findHeader(String name) {
         return Arrays.stream(headers)
                 .filter(header -> name.equalsIgnoreCase(header.getName()))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("cannot find header [" + name + "]"));
     }
 
     public void printLog() {
