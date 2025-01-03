@@ -5,38 +5,55 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.cookie.CookieStore;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.NoHttpResponseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
 import com.bookie.scrap.config.BaseRequestConfig;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
 @Slf4j
 public class HttpRequestExecutor {
 
+    //TODO: properties로 분리
+    private final static int MAX_RETRIES = 3;
+
     public static <T> T execute(HttpHost httpHost,
                                 ClassicHttpRequest httpMethod,
                                 AbstractHttpEntity entity,
-                                HttpClientContext httpClientContext,
+                                HttpClientContext clientContext,
                                 HttpClientResponseHandler<T> responseHandler) {
 
         httpMethod.setEntity(entity);
 
-        CloseableHttpClient client = HttpClientProvider.getHttpClient();
         try {
-            return client.execute(httpHost, httpMethod, httpClientContext, responseHandler);
+            return executeWithRetry(httpHost, httpMethod, clientContext, responseHandler);
+        } catch (HttpResponseException e) {
+            handleHttpResponseException(e);
+            throw new IllegalStateException("This line is unreachable, but added for completeness.");
+        } catch (SSLHandshakeException e) {
+            log.error("SSL handshake failed: " + e.getMessage());
+            throw new IllegalStateException("SSL error: " + e.getMessage(), e);
         } catch (IOException e) {
-            throw new IllegalStateException("Fail to execute Http Request" + e.getMessage(), e);
+            log.error("I/O error: " + e.getMessage());
+            throw new IllegalStateException("Unexpected I/O error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error: " + e.getMessage());
+            throw new IllegalStateException("An unexpected error occurred: " + e.getMessage(), e);
         }
+
     }
 
     public static <T> T execute(HttpHost httpHost,
@@ -44,31 +61,50 @@ public class HttpRequestExecutor {
                                 HttpClientContext clientContext,
                                 HttpClientResponseHandler<T> responseHandler) {
 
-        CloseableHttpClient client = HttpClientProvider.getHttpClient();
         try {
-            return client.execute(httpHost, httpMethod, clientContext, responseHandler);
+            return executeWithRetry(httpHost, httpMethod, clientContext, responseHandler);
+        } catch (HttpResponseException e) {
+            handleHttpResponseException(e);
+            throw new IllegalStateException("This line is unreachable, but added for completeness.");
+        } catch (SSLHandshakeException e) {
+            log.error("SSL handshake failed: " + e.getMessage());
+            throw new IllegalStateException("SSL error: " + e.getMessage(), e);
         } catch (IOException e) {
-            throw new IllegalStateException("Fail to execute Http Request" + e.getMessage(), e);
+            log.error("I/O error: " + e.getMessage());
+            throw new IllegalStateException("Unexpected I/O error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error: " + e.getMessage());
+            throw new IllegalStateException("An unexpected error occurred: " + e.getMessage(), e);
         }
     }
 
     public static <T> T execute(ClassicHttpRequest httpRequest, HttpClientResponseHandler<T> responseHandler) {
 
-        CloseableHttpClient client = HttpClientProvider.getHttpClient();
-
         printLog(httpRequest);
 
         try {
-            return client.execute(httpRequest, responseHandler);
+            return executeWithRetry(httpRequest, responseHandler);
+        } catch (HttpResponseException e) {
+            handleHttpResponseException(e);
+            throw new IllegalStateException("This line is unreachable, but added for completeness.");
+        } catch (SSLHandshakeException e) {
+            log.error("SSL handshake failed: " + e.getMessage());
+            throw new IllegalStateException("SSL error: " + e.getMessage(), e);
         } catch (IOException e) {
-            throw new IllegalStateException("Fail to execute Http Request" + e.getMessage(), e);
+            log.error("I/O error: " + e.getMessage());
+            throw new IllegalStateException("Unexpected I/O error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error: " + e.getMessage());
+            throw new IllegalStateException("An unexpected error occurred: " + e.getMessage(), e);
         }
+
     }
 
     public static <T> T execute(BaseRequestConfig<T> requestConfig) {
 
         ClassicHttpRequest httpMethod = requestConfig.getHttpMethod();
         AbstractHttpEntity entity = requestConfig.getEntity();
+
         if (entity != null) {
             httpMethod.setEntity(entity);
         }
@@ -99,14 +135,75 @@ public class HttpRequestExecutor {
                 clientContext
         );
 
-        CloseableHttpClient client = HttpClientProvider.getHttpClient();
         try {
-            return client.execute(httpHost, httpMethod, clientContext, responseHandler);
+            return executeWithRetry(httpHost, httpMethod, clientContext, responseHandler);
+        } catch (HttpResponseException e) {
+            handleHttpResponseException(e);
+            throw new IllegalStateException("This line is unreachable, but added for completeness.");
+        } catch (SSLHandshakeException e) {
+            log.error("SSL handshake failed: " + e.getMessage());
+            throw new IllegalStateException("SSL error: " + e.getMessage(), e);
         } catch (IOException e) {
-            String errorMsg = String.format("[%s] Fail to execute Http Request: ", requestConfig.getImplClassName());
-            throw new RuntimeException(errorMsg + e.getMessage(), e);
+            log.error("I/O error: " + e.getMessage());
+            throw new IllegalStateException("Unexpected I/O error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error: " + e.getMessage());
+            throw new IllegalStateException("An unexpected error occurred: " + e.getMessage(), e);
         }
 
+    }
+
+    private static <T> T executeWithRetry(ClassicHttpRequest httpRequest, HttpClientResponseHandler<T> responseHandler) throws Exception {
+
+        for (int i = 0; i < MAX_RETRIES; i++) {
+            CloseableHttpClient client = HttpClientProvider.getHttpClient();
+            try {
+                return client.execute(httpRequest, responseHandler);
+            } catch (SocketTimeoutException | NoHttpResponseException e) {
+
+                log.error("Network issue: {}. Retrying ({}/{})", e.getClass().getSimpleName(), i + 1, MAX_RETRIES);
+                if (i == MAX_RETRIES - 1) {
+                    throw new IllegalStateException("Max retries reached for network error: " + e.getMessage(), e);
+                }
+
+                Thread.sleep(1000);
+            }
+        }
+        throw new IllegalStateException("Unexpected state reached in retry logic.");
+    }
+
+    private static <T> T executeWithRetry(HttpHost httpHost, ClassicHttpRequest httpMethod, HttpClientContext clientContext, HttpClientResponseHandler<T> responseHandler) throws Exception {
+
+        for (int i = 0; i < MAX_RETRIES; i++) {
+            CloseableHttpClient client = HttpClientProvider.getHttpClient();
+            try {
+                return client.execute(httpHost, httpMethod, clientContext, responseHandler);
+            } catch (SocketTimeoutException | NoHttpResponseException e) {
+                log.error("Network issue: " + e.getClass().getSimpleName() + ". Retrying (" + (i + 1) + "/" + MAX_RETRIES + ").");
+                if (i == MAX_RETRIES - 1) {
+                    throw new IllegalStateException("Max retries reached for network error: " + e.getMessage(), e);
+                }
+                Thread.sleep(1000);
+            }
+        }
+        throw new IllegalStateException("Unexpected state reached in retry logic.");
+    }
+
+    private static void handleHttpResponseException(HttpResponseException e) throws IllegalStateException {
+        int statusCode = e.getStatusCode();
+        if (statusCode == 401) {
+            log.error("Unauthorized (401): Authentication failed.");
+            throw new IllegalStateException("Unauthorized access: " + e.getMessage(), e);
+        } else if (statusCode == 404) {
+            log.error("Not Found (404): The requested resource was not found.");
+            throw new IllegalStateException("Resource not found: " + e.getMessage(), e);
+        } else if (statusCode >= 500) {
+            log.error("Server Error ({}): ", e.getMessage());
+            throw new IllegalStateException("Server error occurred: " + e.getMessage(), e);
+        } else {
+            log.error("Unexpected HTTP response ({}): ", e.getMessage());
+            throw new IllegalStateException("Unexpected HTTP response: " + e.getMessage(), e);
+        }
     }
 
     private static <T> void printLog(String implClassName,
