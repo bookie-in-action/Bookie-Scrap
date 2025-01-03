@@ -1,8 +1,6 @@
 package com.bookie.scrap.config.watcha;
 
-import com.bookie.scrap.config.BaseRequestConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
@@ -18,25 +16,25 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Getter
-public class WatchaBookConfig extends BaseRequestConfig<WatchaBookDetail> {
+public class WatchaBook extends WatchaBaseRequest<WatchaBookDetail> {
 
     private String HTTP_PROTOCOL = "https";
     private String HTTP_HOST = "pedia.watcha.com";
-    private String HTTP_ENDPOINT = "/api/contents/";
+    private String HTTP_ENDPOINT = "/api/contents/%s";
     private int HTTP_PORT = 443;
     private HttpMethod HTTP_METHOD = HttpMethod.GET;
 
     {
-        createHttpHost();
+        initHttpHost();
         setImplClassName(this.getClass().getSimpleName());
     }
 
-    public WatchaBookConfig(String bookCode) {
-        initWatchaHttpMethod(bookCode);
+    public WatchaBook(String bookCode) {
+        this.HTTP_ENDPOINT = String.format(HTTP_ENDPOINT, bookCode);
+        initHttpMethod();
         initCustomHandler();
     }
 
@@ -65,23 +63,19 @@ public class WatchaBookConfig extends BaseRequestConfig<WatchaBookDetail> {
             }
         };
 
-        createResponseHandler(bookDetailFunction);
+        setResponseHandler(bookDetailFunction);
     }
 
     // 외부 URL 매핑 로직
     private Map<WatchaBookDetail.TYPE, String> mapExternalUrlsToTypes(List<String> redirectUrls) {
 
-        Pattern pattern;
         Matcher matcher;
-
         Map<WatchaBookDetail.TYPE, String> urlMap = new HashMap<>();
 
         if (redirectUrls != null) {
             for (String href : redirectUrls) {
-
                 if (href.contains("aladin")) {
-                    pattern = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)");
-                    matcher = pattern.matcher(href);
+                    matcher = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)").matcher(href);
                     if (matcher.find()) {
                         urlMap.put(WatchaBookDetail.TYPE.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
                     }
@@ -93,11 +87,8 @@ public class WatchaBookConfig extends BaseRequestConfig<WatchaBookDetail> {
 
                 else if (href.contains("kyobobook")) {
                     //http://www.kyobobook.co.kr/cooper/redirect_over.jsp?LINK=WPD&next_url=https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156&utm_source=watchapedia&utm_medium=posts&utm_campaign=9791189327156";
-                    pattern = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)");
-                    matcher = pattern.matcher(href);
-
+                    matcher = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)").matcher(href);
                     if (matcher.find()) {
-                        //www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156
                         String kyoUrl = this.fetchAladinRedirectUrl("https://" + matcher.group(1));
                         urlMap.put(WatchaBookDetail.TYPE.KYOBO, kyoUrl);
                     }
@@ -109,34 +100,22 @@ public class WatchaBookConfig extends BaseRequestConfig<WatchaBookDetail> {
         return urlMap;
     }
 
-
     protected String fetchWatchaRedirectUrl(String requestUrl) {
-
-        ClassicHttpRequest httpRequest =
-                ClassicRequestBuilder.get(requestUrl)
-                .addHeader("Referer", "https://pedia.watcha.com")
-                .addHeader("X-Frograms-App-Code", "Galaxy")
-                .addHeader("X-Frograms-Client", "Galaxy-Web-App")
-                .addHeader("X-Frograms-Galaxy-Language", "ko")
-                .addHeader("X-Frograms-Galaxy-Region", "KR")
-                .addHeader("X-Frograms-Version", "2.1.0")
-                .build();
-
-        Function<HttpResponseWrapper, String> LocationHeaderResponse =
-                responseWrapper -> responseWrapper.findHeader("location").get().getValue();
-
-        return (String) HttpRequestExecutor.execute(httpRequest, getResponseHandler(LocationHeaderResponse));
-
+        return fetchRedirectUrl(requestUrl, super.watchaHeaders);
     }
 
     protected String fetchAladinRedirectUrl(String requestUrl) {
-
-        ClassicHttpRequest httpRequest = ClassicRequestBuilder.get(requestUrl).build();
-
-        Function<HttpResponseWrapper, String> LocationHeaderResponse =
-                responseWrapper -> responseWrapper.findHeader("location").get().getValue();
-
-        return (String) HttpRequestExecutor.execute(httpRequest, getResponseHandler(LocationHeaderResponse));
-
+        return fetchRedirectUrl(requestUrl, Map.of());
     }
+
+    protected String fetchRedirectUrl(String requestUrl, Map<String, String> headers) {
+        ClassicHttpRequest httpRequest = ClassicRequestBuilder.get(requestUrl).build();
+        headers.forEach(httpRequest::addHeader);
+
+        Function<HttpResponseWrapper, String> locationHeaderResponse = responseWrapper ->
+                responseWrapper.findHeader("location").getValue();
+
+        return HttpRequestExecutor.execute(httpRequest, createResponseHandler(locationHeaderResponse));
+    }
+
 }

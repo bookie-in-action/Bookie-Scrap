@@ -32,7 +32,7 @@ class WatchaBookConfigTest {
 
     @Test
     public void externalServiceLinkTest() {
-        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBookConfig("byLKj8M"));
+        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBook("byLKj8M"));
 
         Assertions.assertEquals("https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=284657330", book.getUrlMap().get(WatchaBookDetail.TYPE.ALADIN));
         Assertions.assertEquals("https://www.yes24.com/Product/Goods/105526047", book.getUrlMap().get(WatchaBookDetail.TYPE.YES24));

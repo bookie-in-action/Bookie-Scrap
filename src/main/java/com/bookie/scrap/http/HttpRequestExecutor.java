@@ -17,7 +17,7 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.config.BaseRequestConfig;
+import com.bookie.scrap.config.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public class HttpRequestExecutor {
 
     }
 
-    public static <T> T execute(BaseRequestConfig<T> requestConfig) {
+    public static <T> T execute(BaseRequest<T> requestConfig) {
 
         ClassicHttpRequest httpMethod = requestConfig.getHttpMethod();
         AbstractHttpEntity entity = requestConfig.getEntity();
@@ -208,7 +208,7 @@ public class HttpRequestExecutor {
         }
     }
 
-    private static <T> void printLog(String implClassName,
+    private static void printLog(String implClassName,
                                      HttpHost httpHost,
                                      ClassicHttpRequest httpMethod,
                                      AbstractHttpEntity entity,
@@ -263,7 +263,7 @@ public class HttpRequestExecutor {
     }
 
 
-    private static <T> void printLog(ClassicHttpRequest httpMethod) {
+    private static void printLog(ClassicHttpRequest httpMethod) {
 
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
         String executeClass = stackTraceElement.toString().split("\\.")[5];

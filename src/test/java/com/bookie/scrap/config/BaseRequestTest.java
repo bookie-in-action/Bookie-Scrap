@@ -1,8 +1,8 @@
 package com.bookie.scrap.config;
 
-import com.bookie.scrap.config.watcha.WatchaBookConfig;
-import com.bookie.scrap.config.watcha.WatchaCommentConfig;
-import com.bookie.scrap.config.watcha.WatchaDeckConfig;
+import com.bookie.scrap.config.watcha.WatchaBook;
+import com.bookie.scrap.config.watcha.WatchaComment;
+import com.bookie.scrap.config.watcha.WatchaDeck;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-class BaseRequestConfigTest {
+class BaseRequestTest {
 
     @BeforeAll
     public static void init() {
@@ -37,19 +37,19 @@ class BaseRequestConfigTest {
 
     @Test
     public void externalServiceLinkBookTest() {
-        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBookConfig("byLKj8M"));
+        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBook("byLKj8M"));
         Assertions.assertEquals(WatchaBookDetail.TYPE.values().length, book.getUrlMap().size());
     }
 
     @Test
     public void contentTest() {
-        HttpRequestExecutor.execute(new WatchaCommentConfig("byLKj8M", 1, 10));
+        HttpRequestExecutor.execute(new WatchaComment("byLKj8M", 1, 10));
     }
 
 
     @Test
     public void deckTest() {
-        HttpRequestExecutor.execute(new WatchaDeckConfig("byLKj8M", 1, 10));
+        HttpRequestExecutor.execute(new WatchaDeck("byLKj8M", 1, 10));
     }
 
 
