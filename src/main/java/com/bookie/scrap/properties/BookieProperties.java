@@ -30,7 +30,7 @@ public class BookieProperties implements InitializableProperties {
             throw new IllegalStateException("BookieProperties is already initialized");
         }
 
-        log.info("=> Initializing BookieProperties with running option: {}", runningOption);
+        log.info("=> Initializing BookieProperties");
 
         try (InputStream inputStream = BookieProperties.class.getClassLoader().getResourceAsStream("bookie.properties")) {
             if (inputStream == null) {
@@ -40,14 +40,13 @@ public class BookieProperties implements InitializableProperties {
             Properties bookieProperties = new Properties();
             bookieProperties.load(inputStream);
 
-//            String prefix = String.format("bookie.%s", runningOption);
 
-//            propertyMap.put(Key.RETRY_COUNT, bookieProperties.getProperty(prefix + ".retryCount"));
+            propertyMap.put(Key.RETRY_COUNT, bookieProperties.getProperty("retry.max"));
 
             initialized = true;
-//
-//            log.info("<= BookieProperties initialized successfully");
-//            log.info("RETRY COUNT: {}", propertyMap.get(Key.RETRY_COUNT));
+
+            log.info("<= BookieProperties initialized successfully");
+            log.info("RETRY MAX: {}", propertyMap.get(Key.RETRY_COUNT));
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load bookie properties", e);

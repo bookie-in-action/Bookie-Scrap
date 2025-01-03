@@ -1,5 +1,6 @@
 package com.bookie.scrap.properties;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.*;
 public class SchedulerProperties implements InitializableProperties{
 
     public enum Key {
-        JOB_CLASS, TYPE, EXPRESSION
+        NAME, JOB_CLASS, TYPE, EXPRESSION
     }
 
     private final List<Map<Key, String>> schedulerProps = new ArrayList<>();
@@ -60,16 +61,17 @@ public class SchedulerProperties implements InitializableProperties{
                 String schedulerType = schedulerProperties.getProperty(schedulerName.trim() + ".type");
                 String schedulerExpression = schedulerProperties.getProperty(schedulerName.trim() + ".expression");
 
+                propertyMap.put(Key.NAME, schedulerName.trim());
                 propertyMap.put(Key.JOB_CLASS, jobClass);
                 propertyMap.put(Key.TYPE, schedulerType);
                 propertyMap.put(Key.EXPRESSION, schedulerExpression);
 
                 schedulerProps.add(propertyMap);
 
-            log.info("SCHEDULER NAME: {}", schedulerName);
-            log.info("SCHEDULER JOB CLASS: {}", jobClass);
-            log.info("SCHEDULER TYPE: {}", schedulerType);
-            log.info("SCHEDULER EXPRESSION: {}\n", schedulerExpression);
+                log.info("SCHEDULER NAME: {}", schedulerName);
+                log.info("SCHEDULER JOB CLASS: {}", jobClass);
+                log.info("SCHEDULER TYPE: {}", schedulerType);
+                log.info("SCHEDULER EXPRESSION: {}\n", schedulerExpression);
 
             }
 
@@ -91,4 +93,7 @@ public class SchedulerProperties implements InitializableProperties{
         }
     }
 
+    public List<Map<Key, String>> getProps() {
+        return this.schedulerProps;
+    }
 }
