@@ -1,14 +1,15 @@
 package com.bookie.scrap.config;
 
-import com.bookie.scrap.config.watcha.WatchaBook;
-import com.bookie.scrap.config.watcha.WatchaComment;
-import com.bookie.scrap.config.watcha.WatchaDeck;
+import com.bookie.scrap.watcha.config.WatchaBook;
+import com.bookie.scrap.watcha.config.WatchaComment;
+import com.bookie.scrap.watcha.config.WatchaDeck;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.response.watcha.WatchaBookDetail;
+import com.bookie.scrap.watcha.response.WatchaBookDetail;
+import com.bookie.scrap.watcha.type.WatchaBookType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +39,7 @@ class BaseRequestTest {
     @Test
     public void externalServiceLinkBookTest() {
         WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBook("byLKj8M"));
-        Assertions.assertEquals(WatchaBookDetail.TYPE.values().length, book.getUrlMap().size());
+        Assertions.assertEquals(WatchaBookType.EXTERNAL_SERVICE.values().length, book.getUrlMap().size());
     }
 
     @Test

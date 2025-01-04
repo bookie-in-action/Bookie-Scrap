@@ -1,4 +1,4 @@
-package com.bookie.scrap.config.watcha;
+package com.bookie.scrap.watcha.config;
 
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;

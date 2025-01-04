@@ -5,7 +5,7 @@ import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.util.DatabaseConnectionPool;
+import com.bookie.scrap.common.DatabaseConnectionPool;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;

@@ -1,21 +1,18 @@
-package com.bookie.scrap.util;
+package com.bookie.scrap.common;
 
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import javax.sql.DataSource;
 
 @Slf4j
 public class DatabaseConnectionPool {
 
     private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();
-    @Getter private HikariDataSource dataSource;
+    private HikariDataSource dataSource;
 
     private DatabaseConnectionPool() {}
 
@@ -47,6 +44,13 @@ public class DatabaseConnectionPool {
 
         log.info("<= HiKariDataSource init complete");
 
+    }
+
+    public DataSource getDataSource() {
+        if(dataSource == null) {
+            throw new IllegalStateException("HiKariDataSource not initialized");
+        }
+        return dataSource;
     }
 
     public void logPoolState() {

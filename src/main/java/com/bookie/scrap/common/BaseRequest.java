@@ -1,6 +1,5 @@
-package com.bookie.scrap.config;
+package com.bookie.scrap.common;
 
-import com.bookie.scrap.http.HttpClientProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
