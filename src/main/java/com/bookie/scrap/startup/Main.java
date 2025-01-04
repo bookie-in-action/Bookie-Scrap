@@ -35,14 +35,14 @@ public class Main {
                         SchedulerProperties.getInstance()
         );
 
-        propertiesList.stream().forEach(properties -> {
+        propertiesList.forEach(properties -> {
             properties.init(serverMode);
             properties.verify();
         });
 
 
         log.info("[STEP 2] DB Pool initialize");
-        DatabaseConnectionPool.init();
+        DatabaseConnectionPool.getInstance().init();
 
         log.info("[STEP 3] Http Connection Pool initialize");
         HttpClientProvider.init();

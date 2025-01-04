@@ -13,7 +13,6 @@ import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpResponseWrapper;
 
-import java.io.IOException;
 import java.util.function.Function;
 
 

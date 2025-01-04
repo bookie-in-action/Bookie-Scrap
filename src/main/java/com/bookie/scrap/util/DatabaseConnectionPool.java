@@ -3,6 +3,7 @@ package com.bookie.scrap.util;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,10 +14,14 @@ import java.util.Properties;
 @Slf4j
 public class DatabaseConnectionPool {
 
-    @Getter
-    private static HikariDataSource dataSource;
+    private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();
+    @Getter private HikariDataSource dataSource;
 
-    public static void init() {
+    private DatabaseConnectionPool() {}
+
+    public static DatabaseConnectionPool getInstance() {return INSTANCE;}
+
+    public void init() {
 
         if (dataSource != null) {
             return;
@@ -38,11 +43,25 @@ public class DatabaseConnectionPool {
 
         dataSource = new HikariDataSource(config);
 
+        logPoolState();
+
         log.info("<= HiKariDataSource init complete");
 
     }
 
-    public static void close() {
+    public void logPoolState() {
+        if (dataSource != null) {
+            HikariPoolMXBean hikariPoolMXBean = dataSource.getHikariPoolMXBean();
+            log.info("HikariCP Pool State - Active Connections: {}, Idle Connections: {}, Total Connections: {}, Threads Awaiting: {}",
+                    hikariPoolMXBean.getActiveConnections(),
+                    hikariPoolMXBean.getIdleConnections(),
+                    hikariPoolMXBean.getTotalConnections(),
+                    hikariPoolMXBean.getThreadsAwaitingConnection()
+            );
+        }
+    }
+
+    public void close() {
         if (dataSource != null) {
             dataSource.close();
         }
