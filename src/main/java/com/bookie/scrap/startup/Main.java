@@ -5,7 +5,7 @@ import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.util.DatabaseConnectionPool;
+import com.bookie.scrap.common.DatabaseConnectionPool;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -35,14 +35,14 @@ public class Main {
                         SchedulerProperties.getInstance()
         );
 
-        propertiesList.stream().forEach(properties -> {
+        propertiesList.forEach(properties -> {
             properties.init(serverMode);
             properties.verify();
         });
 
 
         log.info("[STEP 2] DB Pool initialize");
-        DatabaseConnectionPool.init();
+        DatabaseConnectionPool.getInstance().init();
 
         log.info("[STEP 3] Http Connection Pool initialize");
         HttpClientProvider.init();

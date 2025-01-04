@@ -17,7 +17,7 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.config.BaseRequest;
+import com.bookie.scrap.common.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;

@@ -1,12 +1,14 @@
-package com.bookie.scrap.config.watcha;
+package com.bookie.scrap.watcha.config;
 
+import com.bookie.scrap.watcha.type.WatchaBookType;
+import com.bookie.scrap.watcha.type.WatchaBookType.EXTERNAL_SERVICE;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.response.watcha.WatchaBookDetail;
+import com.bookie.scrap.watcha.response.WatchaBookDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
@@ -49,7 +51,8 @@ public class WatchaBook extends WatchaBaseRequest<WatchaBookDetail> {
                 );
 
                 log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getCode(), bookDetail.getTitle());
-                List<String> redirectUrls = bookDetail.getExternalServices().stream().map(this::fetchWatchaRedirectUrl).collect(Collectors.toList());
+                List<String> redirectUrls = bookDetail.getExternalServices().stream()
+                        .map(this::fetchWatchaRedirectUrl).collect(Collectors.toList());
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
                 log.debug("<= End searching for External Service URL");
 
@@ -67,22 +70,22 @@ public class WatchaBook extends WatchaBaseRequest<WatchaBookDetail> {
     }
 
     // 외부 URL 매핑 로직
-    private Map<WatchaBookDetail.TYPE, String> mapExternalUrlsToTypes(List<String> redirectUrls) {
+    private Map<EXTERNAL_SERVICE, String> mapExternalUrlsToTypes(List<String> redirectUrls) {
 
         Matcher matcher;
-        Map<WatchaBookDetail.TYPE, String> urlMap = new HashMap<>();
+        Map<EXTERNAL_SERVICE, String> urlMap = new HashMap<>();
 
         if (redirectUrls != null) {
             for (String href : redirectUrls) {
                 if (href.contains("aladin")) {
                     matcher = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)").matcher(href);
                     if (matcher.find()) {
-                        urlMap.put(WatchaBookDetail.TYPE.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
+                        urlMap.put(EXTERNAL_SERVICE.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
                     }
                 }
 
                 else if (href.contains("yes24")){
-                    urlMap.put(WatchaBookDetail.TYPE.YES24, href);
+                    urlMap.put(EXTERNAL_SERVICE.YES24, href);
                 }
 
                 else if (href.contains("kyobobook")) {
@@ -90,7 +93,7 @@ public class WatchaBook extends WatchaBaseRequest<WatchaBookDetail> {
                     matcher = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)").matcher(href);
                     if (matcher.find()) {
                         String kyoUrl = this.fetchAladinRedirectUrl("https://" + matcher.group(1));
-                        urlMap.put(WatchaBookDetail.TYPE.KYOBO, kyoUrl);
+                        urlMap.put(EXTERNAL_SERVICE.KYOBO, kyoUrl);
                     }
                 }
 

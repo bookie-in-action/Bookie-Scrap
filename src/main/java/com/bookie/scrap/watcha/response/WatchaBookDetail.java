@@ -1,5 +1,7 @@
-package com.bookie.scrap.response.watcha;
+package com.bookie.scrap.watcha.response;
 
+import com.bookie.scrap.watcha.dto.WatchaBookDetailDTO;
+import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +28,7 @@ public class WatchaBookDetail {
     private String year;
 
     @JsonProperty("poster")
-    private Poster poster;
+    private WatchaBookType.Poster poster;
 
     @JsonProperty("author_names")
     private List<String> authors;
@@ -52,9 +54,7 @@ public class WatchaBookDetail {
     @JsonProperty("wishes_count")
     private String wishesCount;
 
-    @Setter private Map<TYPE, String> urlMap;
-
-    public enum TYPE {ALADIN, YES24, KYOBO}
+    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("nations")
     protected void setNations(List<JsonNode> nationsNode) {
@@ -78,14 +78,31 @@ public class WatchaBookDetail {
                 }).collect(Collectors.toList());
     }
 
-    @Getter
-    @ToString
-    protected static class Poster {
-        private String hd;
-        private String xlarge;
-        private String large;
-        private String medium;
-        private String small;
+    public WatchaBookDetailDTO toDto() {
+        //TODO: pk, createdAt, modifiedAt 처리
+        return WatchaBookDetailDTO.builder()
+                .code(this.code)
+                .title(this.title)
+                .subtitle(this.subtitle)
+                .index(this.index)
+                .year(this.year)
+                .poster(this.poster != null ? new WatchaBookType.Poster() {{
+                    setHd(poster.getHd());
+                    setXlarge(poster.getXlarge());
+                    setLarge(poster.getLarge());
+                    setMedium(poster.getMedium());
+                    setSmall(poster.getSmall());
+                }} : null)
+                .authors(this.authors)
+                .nations(this.nations)
+                .genres(this.genres)
+                .description(this.description)
+                .publisherDescription(this.publisherDescription)
+                .authorDescription(this.authorDescription)
+                .averageRating(this.averageRating)
+                .ratingsCount(this.ratingsCount)
+                .wishesCount(this.wishesCount)
+                .urlMap(this.urlMap)
+                .build();
     }
-
 }
