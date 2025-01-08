@@ -4,26 +4,29 @@ import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
-// TODO:
 @Slf4j
-public class DatabaseConnectionPool {
+public class HibernateDBConnPool {
 
-    private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();
-    private HikariDataSource dataSource;
+    private static final HibernateDBConnPool INSTANCE = new HibernateDBConnPool();
+    private static EntityManagerFactory emf;
 
-    private DatabaseConnectionPool() {}
+    private HibernateDBConnPool() {}
 
-    public static DatabaseConnectionPool getInstance() {return INSTANCE;}
+    public static HibernateDBConnPool getInstance() {return INSTANCE;}
 
     public void init() {
 
-        if (dataSource != null) {
+        if (emf != null) {
             return;
         }
+
         DbProperties dbProperties = DbProperties.getInstance();
         log.info("=> HiKariDataSource init start");
 
@@ -39,19 +42,26 @@ public class DatabaseConnectionPool {
         config.setConnectionTimeout(30000);
         config.setLeakDetectionThreshold(5000);
 
-        dataSource = new HikariDataSource(config);
+        HikariDataSource dataSource = new HikariDataSource(config);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hikari.dataSource", dataSource);
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
+        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.format_sql", "true");
+        properties.put("hibernate.hbm2ddl.auto", "update");
+
+        emf = Persistence.createEntityManagerFactory("watchaPU", properties);
 
         logPoolState();
-
         log.info("<= HiKariDataSource init complete");
 
     }
 
-    public DataSource getDataSource() {
-        if(dataSource == null) {
+    public EntityManagerFactory getEntityManagerFactory() {
+        if( HibernateDBConnPool.emf == null) {
             throw new IllegalStateException("HiKariDataSource not initialized");
         }
-        return dataSource;
+        return HibernateDBConnPool.emf;
     }
 
     public void logPoolState() {
