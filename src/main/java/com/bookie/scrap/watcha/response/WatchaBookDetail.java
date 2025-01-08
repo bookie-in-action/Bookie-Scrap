@@ -1,11 +1,14 @@
 package com.bookie.scrap.watcha.response;
 
-import com.bookie.scrap.watcha.dto.WatchaBookDetailDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookEntity;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,9 +81,9 @@ public class WatchaBookDetail {
                 }).collect(Collectors.toList());
     }
 
-    public WatchaBookDetailDTO toDto() {
+    public WatchaBookEntity toEntity() {
         //TODO: pk, createdAt, modifiedAt 처리
-        return WatchaBookDetailDTO.builder()
+        return WatchaBookEntity.builder()
                 .code(this.code)
                 .title(this.title)
                 .subtitle(this.subtitle)
