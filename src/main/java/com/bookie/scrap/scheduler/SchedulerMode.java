@@ -1,4 +1,4 @@
-package com.bookie.scrap.service;
+package com.bookie.scrap.scheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,26 +13,26 @@ import org.quartz.Trigger;
 
 @Getter
 @RequiredArgsConstructor
-public enum SchedulerType {
+public enum SchedulerMode {
 
     CRON("cron", new CronSchedulerBuilderFactory()),
     INTERVAL("interval", new IntervalSchedulerBuilderFactory());
 
-    private static final Map<String, SchedulerType> SCHEDULER_TYPES;
+    private static final Map<String, SchedulerMode> SCHEDULER_MODES;
 
-    private final String code;
+    private final String pk;
     private final Function<String, ScheduleBuilder<? extends Trigger>> triggerBuilderFactory;
 
     static {
-        SCHEDULER_TYPES = new HashMap<>();
-        for (SchedulerType type : values()) {
-            SCHEDULER_TYPES.put(type.getCode(), type);
+        SCHEDULER_MODES = new HashMap<>();
+        for (SchedulerMode mode : values()) {
+            SCHEDULER_MODES.put(mode.getPk(), mode);
         }
     }
 
-    public static SchedulerType getSchedulerType(String typeName) {
-        return Optional.ofNullable(SCHEDULER_TYPES.get(typeName))
-                .orElseThrow(() -> new IllegalArgumentException("[" + typeName + "] not found"));
+    public static SchedulerMode findByPk(String modeName) {
+        return Optional.ofNullable(SCHEDULER_MODES.get(modeName))
+                .orElseThrow(() -> new IllegalArgumentException("[" + modeName + "] not found"));
     }
 
     public ScheduleBuilder<? extends Trigger> getScheduleBuilder(String expression) {

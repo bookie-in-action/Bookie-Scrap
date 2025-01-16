@@ -13,12 +13,12 @@ public class SchedulerProperties implements InitializableProperties{
 
     @RequiredArgsConstructor
     public enum Key {
-        NAME(""), JOB_CLASS(".job.class"), TYPE(".type"), EXPRESSION(".expression");
+        PK(""), JOB_CLASS(".job.class"), MODE(".type"), EXPRESSION(".expression"), ENABLED(".enable");
         private final String suffix;
     }
 
     @Getter
-    private final Map<String, Map<Key, String>> SCHEDULER_PROPS = new HashMap<>();
+    private final Map<String, Map<Key, String>> SCHEDULER_SETTINGS_BY_PK = new HashMap<>();
 
     private static final SchedulerProperties INSTANCE = new SchedulerProperties();
     private boolean initialized = false;
@@ -29,12 +29,17 @@ public class SchedulerProperties implements InitializableProperties{
         return INSTANCE;
     }
 
-    //::TODO
+    /**
+     * schedulers에 선언되어 있는 name을 pk로 나머지 값들을 로딩
+     *
+     * @param runningOption (사용하지 않음)
+     */
     @Override
     public synchronized void init(String runningOption) {
 
         if (initialized) {
-            throw new IllegalStateException("SchedulerProperties is already initialized");
+            log.debug("SchedulerProperties is already initialized");
+            return;
         }
 
         log.info("=> Initializing SchedulerProperties");
@@ -51,20 +56,23 @@ public class SchedulerProperties implements InitializableProperties{
                     .map(String::trim)
                     .toArray(String[]::new);
 
-            //TODO::
             initialized = true;
 
             for (String schedulerName : schedulerNames) {
                 Map<Key, String> propertyMap = new EnumMap<>(Key.class);
 
-                propertyMap.put(Key.NAME, schedulerName);
+                propertyMap.put(Key.PK, schedulerName);
+                log.info("SCHEDULER PK: {}", schedulerName);
+
                 for(Key key : Key.values()) {
+                    if(key.equals(Key.PK)) {continue;}
+
                     String property = schedulerProperties.getProperty(schedulerName + key.suffix);
                     propertyMap.put(key, property);
                     log.info("SCHEDULER {}: {}", key.name(), property);
                 }
 
-                SCHEDULER_PROPS.put(schedulerName, propertyMap);
+                SCHEDULER_SETTINGS_BY_PK.put(schedulerName, propertyMap);
             }
 
             log.info("<= SchedulerProperties initialized successfully");
@@ -74,9 +82,12 @@ public class SchedulerProperties implements InitializableProperties{
         }
     }
 
+    /**
+     * KEY로 선언한 값이 모두 properties 파일에 설정되어 있는지 확인
+     */
     @Override
     public void verify() {
-        for (Map.Entry<String, Map<Key, String>> entry : SCHEDULER_PROPS.entrySet()) {
+        for (Map.Entry<String, Map<Key, String>> entry : SCHEDULER_SETTINGS_BY_PK.entrySet()) {
             String schedulerName = entry.getKey();
             Map<Key, String> schedulerPropMap = entry.getValue();
 
@@ -85,7 +96,13 @@ public class SchedulerProperties implements InitializableProperties{
                     throw new IllegalStateException("Missing required key: " + key + " in scheduler: " + schedulerName);
                 }
             }
+
+            // TODO: enable 값 true or false verify
+            // TODO: expression cron or interval verify
         }
     }
 
+    public Map<SchedulerProperties.Key, String> getSchedulerSettingsByPk(String schedulerName) {
+        return SCHEDULER_SETTINGS_BY_PK.get(schedulerName);
+    }
 }
