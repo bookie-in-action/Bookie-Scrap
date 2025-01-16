@@ -9,11 +9,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.processResources {
-    exclude('**/logback.xml')
-    exclude('**/*.properties')
-}
-
 // 매니페스트 비워두기
 tasks.jar {
     manifest {
@@ -31,7 +26,7 @@ tasks.named("build") {
     finalizedBy("copyJarToCustomDir") // 빌드 완료 후 복사 실행
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
