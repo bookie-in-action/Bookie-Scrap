@@ -1,21 +1,24 @@
 package com.bookie.scrap.properties;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SchedulerProperties implements InitializableProperties{
 
+    @RequiredArgsConstructor
     public enum Key {
-        NAME, JOB_CLASS, TYPE, EXPRESSION
+        NAME(""), JOB_CLASS(".job.class"), TYPE(".type"), EXPRESSION(".expression");
+        private final String suffix;
     }
 
-    private final Map<String, Map<Key, String>> schedulerProps = new ConcurrentHashMap<>();
+    @Getter
+    private final Map<String, Map<Key, String>> SCHEDULER_PROPS = new HashMap<>();
 
     private static final SchedulerProperties INSTANCE = new SchedulerProperties();
     private boolean initialized = false;
@@ -54,22 +57,14 @@ public class SchedulerProperties implements InitializableProperties{
             for (String schedulerName : schedulerNames) {
                 Map<Key, String> propertyMap = new EnumMap<>(Key.class);
 
-                String jobClass = schedulerProperties.getProperty(schedulerName.trim() + ".job.class");
-                String schedulerType = schedulerProperties.getProperty(schedulerName.trim() + ".type");
-                String schedulerExpression = schedulerProperties.getProperty(schedulerName.trim() + ".expression");
+                propertyMap.put(Key.NAME, schedulerName);
+                for(Key key : Key.values()) {
+                    String property = schedulerProperties.getProperty(schedulerName + key.suffix);
+                    propertyMap.put(key, property);
+                    log.info("SCHEDULER {}: {}", key.name(), property);
+                }
 
-                propertyMap.put(Key.NAME, schedulerName.trim());
-                propertyMap.put(Key.JOB_CLASS, jobClass);
-                propertyMap.put(Key.TYPE, schedulerType);
-                propertyMap.put(Key.EXPRESSION, schedulerExpression);
-
-                schedulerProps.add(propertyMap);
-
-                log.info("SCHEDULER NAME: {}", schedulerName);
-                log.info("SCHEDULER JOB CLASS: {}", jobClass);
-                log.info("SCHEDULER TYPE: {}", schedulerType);
-                log.info("SCHEDULER EXPRESSION: {}", schedulerExpression);
-
+                SCHEDULER_PROPS.put(schedulerName, propertyMap);
             }
 
             log.info("<= SchedulerProperties initialized successfully");
@@ -81,10 +76,13 @@ public class SchedulerProperties implements InitializableProperties{
 
     @Override
     public void verify() {
-        for(Map<Key, String> schedulerPropMap : schedulerProps) {
+        for (Map.Entry<String, Map<Key, String>> entry : SCHEDULER_PROPS.entrySet()) {
+            String schedulerName = entry.getKey();
+            Map<Key, String> schedulerPropMap = entry.getValue();
+
             for (Key key : Key.values()) {
                 if (!schedulerPropMap.containsKey(key)) {
-                    throw new IllegalStateException("Missing required key: " + key + " in bookie.properties");
+                    throw new IllegalStateException("Missing required key: " + key + " in scheduler: " + schedulerName);
                 }
             }
         }

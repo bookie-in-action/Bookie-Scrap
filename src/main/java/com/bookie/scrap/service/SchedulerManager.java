@@ -16,12 +16,11 @@ public class SchedulerManager {
     private static final Map<String, Scheduler> SCHEDULERS = new ConcurrentHashMap<>();
 
     public void init() {
-        List<Map<SchedulerProperties.Key, String>> props = SchedulerProperties.getInstance().getProps();
+        Map<String, Map<SchedulerProperties.Key, String>> props = SchedulerProperties.getInstance().getSCHEDULER_PROPS();
 
-        props.forEach(prop -> {
+        props.forEach((schedulerName, schedulerProp) -> {
             try {
-                String schedulerName = prop.get(SchedulerProperties.Key.NAME);
-                SCHEDULERS.put(schedulerName, this.createScheduler(prop));
+                SCHEDULERS.put(schedulerName, this.createScheduler(schedulerProp));
             } catch (SchedulerException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
