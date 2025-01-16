@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SchedulerProperties implements InitializableProperties{
@@ -14,7 +15,7 @@ public class SchedulerProperties implements InitializableProperties{
         NAME, JOB_CLASS, TYPE, EXPRESSION
     }
 
-    private final List<Map<Key, String>> schedulerProps = new ArrayList<>();
+    private final Map<String, Map<Key, String>> schedulerProps = new ConcurrentHashMap<>();
 
     private static final SchedulerProperties INSTANCE = new SchedulerProperties();
     private boolean initialized = false;
@@ -25,14 +26,7 @@ public class SchedulerProperties implements InitializableProperties{
         return INSTANCE;
     }
 
-    public synchronized void init( List<Map<Key, String>> testProperties) {
-        if (initialized) {
-            throw new IllegalStateException("SchedulerProperties is already initialized");
-        }
-        schedulerProps.addAll(testProperties);
-        initialized = true;
-    }
-
+    //::TODO
     @Override
     public synchronized void init(String runningOption) {
 
@@ -50,8 +44,11 @@ public class SchedulerProperties implements InitializableProperties{
             Properties schedulerProperties = new Properties();
             schedulerProperties.load(inputStream);
 
-            String[] schedulerNames = schedulerProperties.getProperty("schedulers").split(",");
+            String[] schedulerNames = Arrays.stream(schedulerProperties.getProperty("schedulers").split(","))
+                    .map(String::trim)
+                    .toArray(String[]::new);
 
+            //TODO::
             initialized = true;
 
             for (String schedulerName : schedulerNames) {
@@ -93,7 +90,4 @@ public class SchedulerProperties implements InitializableProperties{
         }
     }
 
-    public List<Map<Key, String>> getProps() {
-        return this.schedulerProps;
-    }
 }
