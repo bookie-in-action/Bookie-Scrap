@@ -1,6 +1,5 @@
 package com.bookie.scrap.properties;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -8,7 +7,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
-public class SchedulerProperties implements InitializableProperties{
+public class SchedulerProperties implements InitializableProperties {
 
     public enum Key {
         NAME, JOB_CLASS, TYPE, EXPRESSION
