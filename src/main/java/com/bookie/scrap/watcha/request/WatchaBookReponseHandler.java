@@ -1,13 +1,15 @@
-package com.bookie.scrap.watcha.config;
+package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.http.HttpResponseWrapper;
+import com.bookie.scrap.util.ResponseHandlerMaker;
 import com.bookie.scrap.watcha.response.WatchaBookDetail;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WatchaBookReponseHandler {
 
-    public static Function<HttpResponseWrapper, WatchaBookDetail> createHandler() {
+    public static Function<HttpResponseWrapper, WatchaBookDetail> getHandlerLogic() {
 
         return responseWrapper -> {
             try {
@@ -83,21 +85,30 @@ public class WatchaBookReponseHandler {
         return urlMap;
     }
 
-    protected static String fetchWatchaRedirectUrl(String requestUrl) {
-        return fetchRedirectUrl(requestUrl, super.watchaHeaders);
+    private static String fetchWatchaRedirectUrl(String requestUrl) {
+         Map<String, String> watchaHeaders = Map.of(
+                "Referer", "https://pedia.watcha.com",
+                "X-Frograms-App-Code", "Galaxy",
+                "X-Frograms-Client", "Galaxy-Web-App",
+                "X-Frograms-Galaxy-Language", "ko",
+                "X-Frograms-Galaxy-Region", "KR",
+                "X-Frograms-Version", "2.1.0"
+        );
+        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, watchaHeaders);
     }
 
-    protected static String fetchAladinRedirectUrl(String requestUrl) {
-        return fetchRedirectUrl(requestUrl, Map.of());
+    private static String fetchAladinRedirectUrl(String requestUrl) {
+        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, Map.of());
     }
 
-    protected static String fetchRedirectUrl(String requestUrl, Map<String, String> headers) {
+    private static String fetchRedirectUrl(String requestUrl, Map<String, String> headers) {
         ClassicHttpRequest httpRequest = ClassicRequestBuilder.get(requestUrl).build();
         headers.forEach(httpRequest::addHeader);
 
-        Function<HttpResponseWrapper, String> locationHeaderResponse = responseWrapper ->
-                responseWrapper.findHeader("location").getValue();
-
-        return HttpRequestExecutor.execute(httpRequest, createResponseHandler(locationHeaderResponse));
+        HttpClientResponseHandler<String> locationHandler =
+                ResponseHandlerMaker.getWatchaHandlerTemplate(
+                        responseWrapper -> responseWrapper.findHeader("location").getValue()
+                );
+        return HttpRequestExecutor.execute(httpRequest, locationHandler);
     }
 }

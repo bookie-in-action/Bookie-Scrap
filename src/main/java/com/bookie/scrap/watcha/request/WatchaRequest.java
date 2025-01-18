@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.config;
+package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.Request;
 import com.bookie.scrap.http.HttpMethod;

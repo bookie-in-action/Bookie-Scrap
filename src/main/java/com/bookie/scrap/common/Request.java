@@ -3,6 +3,7 @@ package com.bookie.scrap.common;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.http.HttpResponseWrapper;
+import com.bookie.scrap.util.ResponseHandlerMaker;
 import lombok.Getter;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.ClassicHttpRequest;
@@ -46,26 +47,11 @@ abstract public class Request<T> {
         consumer.accept(this.clientContext);
     }
 
-    public void setResponseHandler(Function<HttpResponseWrapper, T> handlerFunction) {
-        this.responseHandler = httpResponse ->
-
-        {
-            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper(
-                    httpResponse.getCode(),
-                    httpResponse.getHeaders(),
-                    httpResponse.getEntity()
-            );
-
-            httpResponseWrapper.printLog();
-
-            int statusCode = httpResponseWrapper.getCode();
-            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301) {
-                return handlerFunction.apply(httpResponseWrapper);
-            } else {
-                String exceptionMsg = String.format("[%s] Unexpected status code: ", this.getClass().getSimpleName());
-                throw new IllegalStateException(exceptionMsg + statusCode);
-            }
-        };
+    public void setResponseHandler(HttpClientResponseHandler<T> responseHandler) {
+        if(this.responseHandler != null) {
+            return;
+        }
+        this.responseHandler = responseHandler;
     }
 
     public T execute() {
