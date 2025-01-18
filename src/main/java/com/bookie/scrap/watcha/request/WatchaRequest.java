@@ -19,7 +19,7 @@ public class WatchaRequest<T> extends Request<T> {
     );
 
     public WatchaRequest() {
-        setImplClassName();
+        setImplClassName(this.getClass().getSimpleName());
     }
 
     private Consumer<ClassicHttpRequest> applyWatchaHeaders() {
@@ -28,20 +28,17 @@ public class WatchaRequest<T> extends Request<T> {
 
     @Override
     public void setMainRequest(HttpMethod httpMethod, String endPoint) {
-        super.setMainRequest(httpMethod, endPoint);
-        WATCHA_HEADERS.forEach(super.mainRequest::addHeader);
-    }
-
-    public void setMainRequest(HttpMethod httpMethod,
-                               String endPoint,
-                               Consumer<ClassicHttpRequest> consumer) {
-        super.setMainRequest(httpMethod, endPoint);
-        WATCHA_HEADERS.forEach(super.mainRequest::addHeader);
-        consumer.accept(super.mainRequest);
+        super.setMainRequest(httpMethod, endPoint, this.applyWatchaHeaders());
     }
 
     @Override
-    public void setImplClassName() {
-        super.implClassName = this.getClass().getSimpleName();
+    public void setMainRequest(HttpMethod httpMethod,
+                               String endPoint,
+                               Consumer<ClassicHttpRequest> consumer) {
+
+        Consumer<ClassicHttpRequest> combinedConsumer = applyWatchaHeaders().andThen(consumer);
+
+        super.setMainRequest(httpMethod, endPoint, combinedConsumer);
     }
+
 }

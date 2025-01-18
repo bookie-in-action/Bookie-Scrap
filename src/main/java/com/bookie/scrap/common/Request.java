@@ -2,28 +2,26 @@ package com.bookie.scrap.common;
 
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpRequestExecutor;
-import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.util.ResponseHandlerMaker;
+
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Getter
 abstract public class Request<T> {
 
-    protected String implClassName;
+    @Setter
+    private String implClassName;
 
-    protected ClassicHttpRequest mainRequest;
+    private ClassicHttpRequest mainRequest;
 
-    protected HttpClientContext clientContext;
+    private HttpClientContext clientContext;
 
-    protected HttpClientResponseHandler<T> responseHandler;
-
-    abstract public void setImplClassName();
+    private HttpClientResponseHandler<T> responseHandler;
 
     public void setMainRequest(HttpMethod httpMethod, String endPoint) {
         if (this.mainRequest != null) {
@@ -33,6 +31,21 @@ abstract public class Request<T> {
         try {
             Class<?> methodClass = Class.forName(httpMethod.getClassName());
             this.mainRequest = (ClassicHttpRequest) methodClass.getConstructor(String.class).newInstance(endPoint);
+        } catch (Exception e) {
+            String exceptionMsg = String.format("[%s] Failed to create HTTP method: ", this.getClass().getSimpleName());
+            throw new IllegalStateException(exceptionMsg + e.getMessage(), e);
+        }
+    }
+
+    public void setMainRequest(HttpMethod httpMethod, String endPoint, Consumer<ClassicHttpRequest> consumer) {
+        if (this.mainRequest != null) {
+            return;
+        }
+
+        try {
+            Class<?> methodClass = Class.forName(httpMethod.getClassName());
+            this.mainRequest = (ClassicHttpRequest) methodClass.getConstructor(String.class).newInstance(endPoint);
+            consumer.accept(this.mainRequest);
         } catch (Exception e) {
             String exceptionMsg = String.format("[%s] Failed to create HTTP method: ", this.getClass().getSimpleName());
             throw new IllegalStateException(exceptionMsg + e.getMessage(), e);
