@@ -9,6 +9,7 @@ import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
 import com.bookie.scrap.watcha.response.WatchaBookDetail;
+import com.bookie.scrap.watcha.response.WatchaCommentDetail;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -43,7 +44,8 @@ class BaseRequestTest {
     }
 
     @Test
-    public void contentTest() {
+    public void contentTest() { // 하나의 책에 대해 모든 코멘트를 가져오기
+        System.out.println("================ contentTest Execute ==================");
         HttpRequestExecutor.execute(new WatchaComment("byLKj8M", 1, 10));
     }
 
