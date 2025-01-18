@@ -2,54 +2,47 @@ package com.bookie.scrap.watcha.repository;
 
 
 import com.bookie.scrap.common.EntityManagerFactoryProvider;
+import com.bookie.scrap.watcha.dto.WatchaBookEntity;
 import com.bookie.scrap.watcha.dto.WatchaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class WatchaHibenateImpl<T extends WatchaEntity> implements WatchaRepository<T> {
+public class WatchaBookRepository implements WatchaRepository<WatchaBookEntity> {
 
-    private static final Map<Class<? extends WatchaEntity>, WatchaHibenateImpl<?>> INSTANCES = new ConcurrentHashMap<>();
+    private static final WatchaBookRepository INSTANCE = new WatchaBookRepository();
     private final EntityManagerFactory emf;
 
-    private final Class<T> entityClass;
-
-    private WatchaHibenateImpl(Class<T> entityClass) {
-        this.entityClass = entityClass;
+    private WatchaBookRepository() {
         this.emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends WatchaEntity> WatchaHibenateImpl<T> getInstance(Class<T> entityClass) {
-        return (WatchaHibenateImpl<T>) INSTANCES.computeIfAbsent(entityClass, WatchaHibenateImpl::new);
+    public static WatchaBookRepository getInstance() {
+        return INSTANCE;
     }
 
     @Override
-    public Optional<T> select(String pk) {
+    public Optional<WatchaBookEntity> select(String code) {
         try (EntityManager em = emf.createEntityManager()) {
-            T entity = em.find(this.entityClass, pk);
+            WatchaBookEntity entity = em.find(WatchaBookEntity.class, code);
             return Optional.ofNullable(entity);
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
-        } finally {
-            emf.close();
         }
     }
 
     @Override
-    public boolean insertOrUpdate(T targetEntity) {
+    public boolean insertOrUpdate(WatchaBookEntity targetEntity) {
         EntityManager em = emf.createEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            T existingEntity = em.find(this.entityClass, targetEntity.getCode());
+            WatchaBookEntity existingEntity = em.find(WatchaBookEntity.class, targetEntity.getCode());
 
             if (existingEntity != null) {
                 em.merge(targetEntity);

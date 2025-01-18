@@ -38,8 +38,6 @@ public class WatchaBookDetail {
     private List<String> nations;
     private List<String> genres;
 
-    private List<String> externalServices;
-
     private String description;
 
     @JsonProperty("publisher_description")
@@ -57,7 +55,6 @@ public class WatchaBookDetail {
     @JsonProperty("wishes_count")
     private String wishesCount;
 
-    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("nations")
     protected void setNations(List<JsonNode> nationsNode) {
@@ -67,6 +64,9 @@ public class WatchaBookDetail {
                 .map(node -> node.path("name").asText())
                 .collect(Collectors.toList());
     }
+
+    private List<String> externalServices;
+    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("external_services")
     protected void setExternalServices(List<JsonNode> externalServicesNode) {
@@ -84,28 +84,31 @@ public class WatchaBookDetail {
     public WatchaBookEntity toEntity() {
         //TODO: pk, createdAt, modifiedAt 처리
         return WatchaBookEntity.builder()
+                .pk("1")
+                .createdAt("11")
+                .updatedAt("11")
                 .code(this.code)
-                .title(this.title)
-                .subtitle(this.subtitle)
-                .index(this.index)
-                .year(this.year)
-                .poster(this.poster != null ? new WatchaBookType.Poster() {{
-                    setHd(poster.getHd());
-                    setXlarge(poster.getXlarge());
-                    setLarge(poster.getLarge());
-                    setMedium(poster.getMedium());
-                    setSmall(poster.getSmall());
-                }} : null)
+                .bookTitle(this.title)
+                .bookSubtitle(this.subtitle)
+                .bookIndex(this.index)
+                .publishYear(this.year)
+                .posterHd(this.poster.getHd())
+                .posterXlarge(this.poster.getXlarge())
+                .posterLarge(this.poster.getLarge())
+                .posterMedium(this.poster.getMedium())
+                .posterSmall(this.poster.getSmall())
                 .authors(this.authors)
                 .nations(this.nations)
                 .genres(this.genres)
-                .description(this.description)
+                .bookDescription(this.description)
                 .publisherDescription(this.publisherDescription)
                 .authorDescription(this.authorDescription)
                 .averageRating(this.averageRating)
                 .ratingsCount(this.ratingsCount)
                 .wishesCount(this.wishesCount)
-                .urlMap(this.urlMap)
+                .aladinUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.ALADIN))
+                .yes24Url(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.YES24))
+                .kyoboUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.KYOBO))
                 .build();
     }
 }
