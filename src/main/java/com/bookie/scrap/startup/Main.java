@@ -2,6 +2,7 @@ package com.bookie.scrap.startup;
 
 import com.bookie.scrap.domain.Initializer;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 
 
 
@@ -29,8 +30,12 @@ public class Main {
 
         // TODO: 유휴 http 커넥션 정리하는 스레드 생성
         // TODO: 스케줄러 생성
-//        SchedulerManager.getInstance().initSchedulers();
-//        SchedulerManager.getInstance().startSchedulers();
+        SchedulerManager.getInstance().init();
+        try {
+            SchedulerManager.getInstance().startSchedulers();
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
+        }
 
 //        // Shutdown Hook 등록
 //        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -48,16 +53,6 @@ public class Main {
 //            }
 //        }));
 
-
-        // 메인 스레드 유지
-        while (true) {
-            try {
-                Thread.sleep(3000);
-                log.info("Thread Example running...");
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
 
     }
 }
