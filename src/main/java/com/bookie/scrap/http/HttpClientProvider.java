@@ -1,5 +1,6 @@
 package com.bookie.scrap.http;
 
+import com.bookie.scrap.domain.Initializable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -16,7 +17,7 @@ import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 
 @Slf4j
-public class HttpClientProvider {
+public class HttpClientProvider implements Initializable {
 
     private static final Timeout CONNECT_TIMEOUT = Timeout.ofSeconds(30);
     private static final Timeout SOCKET_TIMEOUT = Timeout.ofMinutes(1);
@@ -31,7 +32,12 @@ public class HttpClientProvider {
 
     private static final CloseableHttpClient HTTP_CLIENT;
 
+    private static final HttpClientProvider INSTANCE = new HttpClientProvider();
     private HttpClientProvider() {}
+
+    public static HttpClientProvider getInstance() {
+        return INSTANCE;
+    }
 
     static {
         // 커넥션에 대한 설정
@@ -59,7 +65,8 @@ public class HttpClientProvider {
                 .build();
     }
 
-    public static void init() {}
+    @Override
+    public void init(String runningOption) {}
 
     static CloseableHttpClient getHttpClient() {
         return HttpClientProvider.HTTP_CLIENT;

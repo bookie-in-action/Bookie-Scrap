@@ -27,7 +27,8 @@ public class BookieProperties implements InitializableProperties {
     @Override
     public synchronized void init(String runningOption) {
         if (initialized) {
-            throw new IllegalStateException("BookieProperties is already initialized");
+            log.debug("BookieProperties is already initialized");
+            return;
         }
 
         log.info("=> Initializing BookieProperties");

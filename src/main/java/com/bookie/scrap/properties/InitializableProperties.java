@@ -1,8 +1,8 @@
 package com.bookie.scrap.properties;
 
-public interface InitializableProperties {
+import com.bookie.scrap.domain.Initializable;
 
-    void init(String runningOption);
+public interface InitializableProperties extends Initializable {
 
     void verify();
 
