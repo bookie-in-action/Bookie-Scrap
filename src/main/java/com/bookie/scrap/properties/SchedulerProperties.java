@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
-public class SchedulerProperties implements InitializableProperties{
+public class SchedulerProperties implements InitializableProperties {
 
     @RequiredArgsConstructor
     public enum Key {
