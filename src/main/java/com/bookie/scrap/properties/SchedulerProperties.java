@@ -1,6 +1,7 @@
 package com.bookie.scrap.properties;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -10,11 +11,14 @@ import java.util.*;
 @Slf4j
 public class SchedulerProperties implements InitializableProperties{
 
+    @RequiredArgsConstructor
     public enum Key {
-        NAME, JOB_CLASS, TYPE, EXPRESSION
+        PK(""), JOB_CLASS(".job.class"), MODE(".type"), EXPRESSION(".expression"), ENABLED(".enable");
+        private final String suffix;
     }
 
-    private final List<Map<Key, String>> schedulerProps = new ArrayList<>();
+    @Getter
+    private final Map<String, Map<Key, String>> SCHEDULER_SETTINGS_BY_PK = new HashMap<>();
 
     private static final SchedulerProperties INSTANCE = new SchedulerProperties();
     private boolean initialized = false;
@@ -25,19 +29,17 @@ public class SchedulerProperties implements InitializableProperties{
         return INSTANCE;
     }
 
-    public synchronized void init( List<Map<Key, String>> testProperties) {
-        if (initialized) {
-            throw new IllegalStateException("SchedulerProperties is already initialized");
-        }
-        schedulerProps.addAll(testProperties);
-        initialized = true;
-    }
-
+    /**
+     * schedulers에 선언되어 있는 name을 pk로 나머지 값들을 로딩
+     *
+     * @param runningOption (사용하지 않음)
+     */
     @Override
     public synchronized void init(String runningOption) {
 
         if (initialized) {
-            throw new IllegalStateException("SchedulerProperties is already initialized");
+            log.debug("SchedulerProperties is already initialized");
+            return;
         }
 
         log.info("=> Initializing SchedulerProperties");
@@ -50,29 +52,27 @@ public class SchedulerProperties implements InitializableProperties{
             Properties schedulerProperties = new Properties();
             schedulerProperties.load(inputStream);
 
-            String[] schedulerNames = schedulerProperties.getProperty("schedulers").split(",");
+            String[] schedulerNames = Arrays.stream(schedulerProperties.getProperty("schedulers").split(","))
+                    .map(String::trim)
+                    .toArray(String[]::new);
 
             initialized = true;
 
             for (String schedulerName : schedulerNames) {
                 Map<Key, String> propertyMap = new EnumMap<>(Key.class);
 
-                String jobClass = schedulerProperties.getProperty(schedulerName.trim() + ".job.class");
-                String schedulerType = schedulerProperties.getProperty(schedulerName.trim() + ".type");
-                String schedulerExpression = schedulerProperties.getProperty(schedulerName.trim() + ".expression");
+                propertyMap.put(Key.PK, schedulerName);
+                log.info("SCHEDULER PK: {}", schedulerName);
 
-                propertyMap.put(Key.NAME, schedulerName.trim());
-                propertyMap.put(Key.JOB_CLASS, jobClass);
-                propertyMap.put(Key.TYPE, schedulerType);
-                propertyMap.put(Key.EXPRESSION, schedulerExpression);
+                for(Key key : Key.values()) {
+                    if(key.equals(Key.PK)) {continue;}
 
-                schedulerProps.add(propertyMap);
+                    String property = schedulerProperties.getProperty(schedulerName + key.suffix);
+                    propertyMap.put(key, property);
+                    log.info("SCHEDULER {}: {}", key.name(), property);
+                }
 
-                log.info("SCHEDULER NAME: {}", schedulerName);
-                log.info("SCHEDULER JOB CLASS: {}", jobClass);
-                log.info("SCHEDULER TYPE: {}", schedulerType);
-                log.info("SCHEDULER EXPRESSION: {}", schedulerExpression);
-
+                SCHEDULER_SETTINGS_BY_PK.put(schedulerName, propertyMap);
             }
 
             log.info("<= SchedulerProperties initialized successfully");
@@ -82,18 +82,27 @@ public class SchedulerProperties implements InitializableProperties{
         }
     }
 
+    /**
+     * KEY로 선언한 값이 모두 properties 파일에 설정되어 있는지 확인
+     */
     @Override
     public void verify() {
-        for(Map<Key, String> schedulerPropMap : schedulerProps) {
+        for (Map.Entry<String, Map<Key, String>> entry : SCHEDULER_SETTINGS_BY_PK.entrySet()) {
+            String schedulerName = entry.getKey();
+            Map<Key, String> schedulerPropMap = entry.getValue();
+
             for (Key key : Key.values()) {
                 if (!schedulerPropMap.containsKey(key)) {
-                    throw new IllegalStateException("Missing required key: " + key + " in bookie.properties");
+                    throw new IllegalStateException("Missing required key: " + key + " in scheduler: " + schedulerName);
                 }
             }
+
+            // TODO: enable 값 true or false verify
+            // TODO: expression cron or interval verify
         }
     }
 
-    public List<Map<Key, String>> getProps() {
-        return this.schedulerProps;
+    public Map<SchedulerProperties.Key, String> getSchedulerSettingsByPk(String schedulerName) {
+        return SCHEDULER_SETTINGS_BY_PK.get(schedulerName);
     }
 }

@@ -53,6 +53,10 @@ class BaseRequestTest {
         HttpRequestExecutor.execute(new WatchaDeck("byLKj8M", 1, 10));
     }
 
+    @Test
+    public void initTest() {
+
+    }
 
 
 }
