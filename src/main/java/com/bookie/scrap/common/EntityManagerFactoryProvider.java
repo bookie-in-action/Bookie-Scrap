@@ -1,5 +1,6 @@
 package com.bookie.scrap.common;
 
+import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
@@ -17,10 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bookie.scrap.properties.DbProperties.*;
+
 @Slf4j
 public class EntityManagerFactoryProvider {
 
     private static final EntityManagerFactoryProvider INSTANCE = new EntityManagerFactoryProvider();
+    private static final DbProperties dbProperties = DbProperties.getInstance();
+
     private static EntityManagerFactory emf;
 
     private EntityManagerFactoryProvider() {}
@@ -39,24 +44,18 @@ public class EntityManagerFactoryProvider {
             Configuration configuration = new Configuration();
 
             HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setJdbcUrl("jdbc:mariadb://112.144.253.56:3306/bookie_dev");
-            hikariConfig.setUsername("bookie_dev");
-            hikariConfig.setPassword("bookie_dev");
-            hikariConfig.setMaximumPoolSize(10);
-
-
-
+            hikariConfig.setJdbcUrl(dbProperties.getValue(Key.JDBC_URL));
+            hikariConfig.setUsername(dbProperties.getValue(Key.USER));
+            hikariConfig.setPassword(dbProperties.getValue(Key.PASSWORD));
+            hikariConfig.setMaximumPoolSize(Integer.parseInt(dbProperties.getValue(Key.MAX_POOL)));
 
             configuration.getProperties().put(AvailableSettings.DATASOURCE, new HikariDataSource(hikariConfig));
-//            configuration.setProperty(AvailableSettings.DIALECT, "org.hibernate.dialect.MariaDBDialect");
 
-            configuration.setProperty(AvailableSettings.SHOW_SQL, "true");
-            configuration.setProperty(AvailableSettings.FORMAT_SQL, "true");
-            configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, "none");
-
+            configuration.setProperty(AvailableSettings.SHOW_SQL, dbProperties.getValue(Key.SHOW_SQL));
+            configuration.setProperty(AvailableSettings.FORMAT_SQL, dbProperties.getValue(Key.FORMAT_SQL));
+            configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, dbProperties.getValue(Key.HBM2DDL_AUTO));
 
             // 엔티티 클래스 목록을 직접 지정
-//            configuration.addAnnotatedClass(com.bookie.scrap.watcha.dto.WatchaEntity.class);
             configuration.addAnnotatedClass(com.bookie.scrap.watcha.dto.WatchaBookEntity.class);
 
 
@@ -74,8 +73,6 @@ public class EntityManagerFactoryProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
     }
 
