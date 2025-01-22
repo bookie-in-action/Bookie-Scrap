@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,14 +26,19 @@ public class WatchaEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
     @PrePersist
     private void prePersist() {
         if (this.snowflakeId == null) {
 //            TODO: this.pk = UUID.randomUUID().toString();
-            this.snowflakeId = "1";
+            this.snowflakeId = UUID.randomUUID().toString();
         }
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
+            this.updatedAt = LocalDateTime.now();
         }
     }
 

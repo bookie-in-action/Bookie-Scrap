@@ -49,7 +49,7 @@ public class WatchaHibenateImpl<T extends WatchaEntity> implements WatchaReposit
         try {
             em.getTransaction().begin();
 
-            T existingEntity = em.find(this.entityClass, targetEntity.getCode());
+            T existingEntity = em.find(this.entityClass, targetEntity.getSnowflakeId());
 
             if (existingEntity != null) {
                 em.merge(targetEntity);

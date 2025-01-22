@@ -22,12 +22,17 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaBookDetail {
 
+    @JsonProperty("code")
     private String bookCode;
+
+    @JsonProperty("title")
     private String mainTitle;
     private String subtitle;
 
     @JsonProperty("content")
     private String bookIndex;
+
+    @JsonProperty("year")
     private String publishYear;
 
     @JsonProperty("poster")
@@ -38,6 +43,7 @@ public class WatchaBookDetail {
     private List<String> nations;
     private List<String> genres;
 
+    @JsonProperty("description")
     private String bookDescription;
 
     @JsonProperty("publisher_description")
@@ -83,7 +89,8 @@ public class WatchaBookDetail {
 
     public WatchaBookEntity toEntity() {
         return WatchaBookEntity.builder()
-                .bookDescription(this.bookCode)
+                .bookCode(this.bookCode)
+                .bookDescription(this.bookDescription)
                 .bookTitle(this.mainTitle)
                 .bookSubtitle(this.subtitle)
                 .bookIndex(this.bookIndex)

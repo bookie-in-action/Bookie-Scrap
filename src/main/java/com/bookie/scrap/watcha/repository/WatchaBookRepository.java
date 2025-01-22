@@ -41,15 +41,24 @@ public class WatchaBookRepository implements WatchaRepository<WatchaBookEntity> 
         try {
             em.getTransaction().begin();
 
-            WatchaBookEntity existingEntity = em.find(WatchaBookEntity.class, targetEntity.getSnowflakeId());
+            WatchaBookEntity existingEntity = em.createQuery(
+                            "SELECT e FROM WatchaBookEntity e WHERE e.bookCode = :bookCode", WatchaBookEntity.class)
+                    .setParameter("bookCode", targetEntity.getBookCode())
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
 
             if (existingEntity != null) {
-                em.merge(targetEntity);
-                log.info("update: {}", targetEntity);
+                // 기존 엔티티가 존재하면 업데이트
+                existingEntity.setBookTitle(targetEntity.getBookTitle());
+                existingEntity.setBookSubtitle(targetEntity.getBookSubtitle());
+                // 필요한 필드만 업데이트
+                log.info("update: {}", existingEntity);
             } else {
                 em.persist(targetEntity);
                 log.info("insert: {}", targetEntity);
             }
+
 
             em.getTransaction().commit();
 

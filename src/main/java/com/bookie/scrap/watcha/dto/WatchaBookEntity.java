@@ -2,15 +2,13 @@ package com.bookie.scrap.watcha.dto;
 
 import com.bookie.scrap.common.ListStringConverter;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Getter @ToString
+@ToString
+@Getter @Setter
 @Entity @SuperBuilder
 @Table(name = "BS_WATCHA_BOOK")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
