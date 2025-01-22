@@ -58,28 +58,40 @@ public class SchedulerProperties implements InitializableProperties {
 
             initialized = true;
 
+            log.info("============ [SCHEDULER PROPERTIES] ============");
+
+            int paddingLength = 15;
             for (String schedulerName : schedulerNames) {
                 Map<Key, String> propertyMap = new EnumMap<>(Key.class);
 
+
                 propertyMap.put(Key.PK, schedulerName);
-                log.info("SCHEDULER PK: {}", schedulerName);
+                log.info("SCHEDULER {}: {}", getFormat("PK", paddingLength), schedulerName);
 
                 for(Key key : Key.values()) {
                     if(key.equals(Key.PK)) {continue;}
 
                     String property = schedulerProperties.getProperty(schedulerName + key.suffix);
                     propertyMap.put(key, property);
-                    log.info("SCHEDULER {}: {}", key.name(), property);
+                    log.info("SCHEDULER {}: {}", getFormat(key.name(), paddingLength), property);
                 }
+
+                log.info("");
 
                 SCHEDULER_SETTINGS_BY_PK.put(schedulerName, propertyMap);
             }
+
+            log.info("================================================");
 
             log.info("<= SchedulerProperties initialized successfully");
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load bookie properties", e);
         }
+    }
+
+    private static String getFormat(String value, int paddingLength) {
+        return String.format("%-" + paddingLength + "s", value);
     }
 
     /**

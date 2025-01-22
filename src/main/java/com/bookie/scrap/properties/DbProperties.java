@@ -1,5 +1,6 @@
 package com.bookie.scrap.properties;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -9,11 +10,17 @@ import java.util.*;
 @Slf4j
 public class DbProperties implements InitializableProperties {
 
+    @RequiredArgsConstructor
     public enum Key {
-        DRIVER_NAME, USER, JDBC_URL, PASSWORD
+        DRIVER_NAME(".driver", ""), JDBC_URL(".url", ""), USER(".user", ""),PASSWORD(".password", ""),
+        MAX_POOL(".poolsize", "10"),
+        SHOW_SQL(".showsql", "false"), FORMAT_SQL(".formatsql", "false"), HBM2DDL_AUTO(".ddl_auto", "none");
+
+        private final String suffix;
+        private final String defaultValue;
     }
 
-    private final Map<Key, String> propertyMap = new EnumMap<>(Key.class);
+    private final Map<Key, String> PROPERTY_MAP = new EnumMap<>(Key.class);
     private static final DbProperties INSTANCE = new DbProperties();
     private boolean initialized = false;
 
@@ -23,19 +30,12 @@ public class DbProperties implements InitializableProperties {
         return INSTANCE;
     }
 
-    public synchronized void init(Map<Key, String> testProperties) {
-        if (initialized) {
-            throw new IllegalStateException("DbProperties is already initialized");
-        }
-        propertyMap.putAll(testProperties);
-        initialized = true;
-    }
-
     @Override
     public synchronized void init(String runningOption) {
 
         if (initialized) {
-            throw new IllegalStateException("DbProperties is already initialized");
+            log.debug("DbProperties is already initialized");
+            return;
         }
 
         log.info("=> Initializing DbProperties with running option: {}", runningOption);
@@ -50,18 +50,25 @@ public class DbProperties implements InitializableProperties {
 
             String prefix = String.format("db.%s", runningOption);
 
-            propertyMap.put(Key.DRIVER_NAME, dbProperties.getProperty(prefix + ".driver"));
-            propertyMap.put(Key.USER, dbProperties.getProperty(prefix + ".user"));
-            propertyMap.put(Key.JDBC_URL, dbProperties.getProperty(prefix + ".url"));
-            propertyMap.put(Key.PASSWORD, dbProperties.getProperty(prefix + ".password"));
+            log.info("============ [DB PROPERTIES: {}] ============", runningOption.toUpperCase());
+            for(Key key : Key.values()) {
+                String fileLoadedValue = dbProperties.getProperty(prefix + key.suffix);
+
+                if (fileLoadedValue != null && !fileLoadedValue.isEmpty()) {
+                    PROPERTY_MAP.put(key, fileLoadedValue);
+                } else if(!key.defaultValue.isEmpty() || fileLoadedValue != null) {
+                    PROPERTY_MAP.put(key, key.defaultValue);
+                }
+
+                // 로그 길이 맞추기
+                int paddingLength = 15;
+                String formattedKey = String.format("%-" + paddingLength + "s", key.name());
+                log.info("DB {}: {}", formattedKey, PROPERTY_MAP.get(key));
+            }
+            log.info("==============================================");
 
             // 초기화 상태 플래그 업데이트
             initialized = true;
-
-            log.info("DB URL: {}", propertyMap.get(Key.JDBC_URL));
-            log.info("DB USER: {}", propertyMap.get(Key.USER));
-            log.info("DB DRIVER: {}", propertyMap.get(Key.DRIVER_NAME));
-            log.info("DB PASSWORD: {}", propertyMap.get(Key.PASSWORD));
 
             log.info("<= DbProperties initialized successfully");
 
@@ -73,7 +80,7 @@ public class DbProperties implements InitializableProperties {
     @Override
     public void verify() {
         for (Key key : Key.values()) {
-            if (!propertyMap.containsKey(key)) {
+            if (!PROPERTY_MAP.containsKey(key)) {
                 throw new IllegalStateException("Missing required key: " + key + " in db.properties");
             }
         }
@@ -84,16 +91,8 @@ public class DbProperties implements InitializableProperties {
             throw new IllegalStateException("DbProperties is not initialized. Please call init() first.");
         }
 
-        return Optional.ofNullable(propertyMap.get(key))
+        return Optional.ofNullable(PROPERTY_MAP.get(key))
                 .orElseThrow(() -> new IllegalArgumentException("Key [" + key + "] not found in properties"));
-    }
-
-    public String getValue(Key key, String defaultValue) {
-        if (!initialized) {
-            throw new IllegalStateException("DbProperties is not initialized. Please call init() first.");
-        }
-
-        return propertyMap.getOrDefault(key, defaultValue);
     }
 
 }

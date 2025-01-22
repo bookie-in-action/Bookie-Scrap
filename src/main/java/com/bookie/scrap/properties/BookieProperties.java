@@ -41,11 +41,15 @@ public class BookieProperties implements InitializableProperties {
             Properties bookieProperties = new Properties();
             bookieProperties.load(inputStream);
 
+            log.info("============ [BOOKIE PROPERTIES] ============");
             propertyMap.put(Key.RETRY_COUNT, bookieProperties.getProperty("retry.max"));
 
             initialized = true;
 
+            int paddingLength = 15;
             log.info("RETRY MAX: {}", propertyMap.get(Key.RETRY_COUNT));
+            log.info("=============================================");
+
             log.info("<= BookieProperties initialized successfull");
 
 
