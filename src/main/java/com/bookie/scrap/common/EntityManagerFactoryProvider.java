@@ -65,7 +65,7 @@ public class EntityManagerFactoryProvider implements Initializable {
             log.info("<= EntityManagerFactory initialization complete");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occurred during EntityManagerFactory initialization", e);
         }
 
     }

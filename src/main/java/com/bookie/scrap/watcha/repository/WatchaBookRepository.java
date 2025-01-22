@@ -3,7 +3,6 @@ package com.bookie.scrap.watcha.repository;
 
 import com.bookie.scrap.common.EntityManagerFactoryProvider;
 import com.bookie.scrap.watcha.dto.WatchaBookEntity;
-import com.bookie.scrap.watcha.dto.WatchaEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class WatchaBookRepository implements WatchaRepository<WatchaBookEntity> 
             WatchaBookEntity entity = em.find(WatchaBookEntity.class, code);
             return Optional.ofNullable(entity);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occurred while selecting an entity with code: {}", code, e);
             return Optional.empty();
         }
     }
@@ -56,8 +55,13 @@ public class WatchaBookRepository implements WatchaRepository<WatchaBookEntity> 
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
+            log.error("An error occurred while inserting or updating an entity: {}", targetEntity, e);
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...");
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback");
+            }
             return false;
         } finally {
             em.close();
