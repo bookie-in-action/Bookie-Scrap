@@ -1,6 +1,5 @@
 package com.bookie.scrap.watcha.config;
 
-import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.bookie.scrap.watcha.type.WatchaBookType.EXTERNAL_SERVICE;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +49,7 @@ public class WatchaBook extends WatchaBaseRequest<WatchaBookDetail> {
                         WatchaBookDetail.class
                 );
 
-                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getCode(), bookDetail.getTitle());
+                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
                 List<String> redirectUrls = bookDetail.getExternalServices().stream()
                         .map(this::fetchWatchaRedirectUrl).collect(Collectors.toList());
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));

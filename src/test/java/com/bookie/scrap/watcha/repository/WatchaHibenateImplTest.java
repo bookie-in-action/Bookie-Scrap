@@ -37,6 +37,6 @@ class WatchaHibenateImplTest {
 
         Optional<WatchaBookEntity> select = WatchaHibenateImpl.getInstance(WatchaBookEntity.class).select("1");
         Assertions.assertTrue(select.isPresent());
-        Assertions.assertEquals("byLKj8M", select.get().getCode());
+        Assertions.assertEquals("byLKj8M", select.get().getBookCode());
     }
 }

@@ -42,7 +42,7 @@ public class WatchaBookRepository implements WatchaRepository<WatchaBookEntity> 
         try {
             em.getTransaction().begin();
 
-            WatchaBookEntity existingEntity = em.find(WatchaBookEntity.class, targetEntity.getCode());
+            WatchaBookEntity existingEntity = em.find(WatchaBookEntity.class, targetEntity.getSnowflakeId());
 
             if (existingEntity != null) {
                 em.merge(targetEntity);

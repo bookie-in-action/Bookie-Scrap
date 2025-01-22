@@ -6,19 +6,37 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WatchaEntity {
 
     @Id
-    private String pk;
+    @Column(name = "snowflake_id", nullable = false, updatable = false)
+    @Getter private String snowflakeId;
 
-    @Column(name = "created_at")
-    private String createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
-    @Getter private String code;
+    @PrePersist
+    private void prePersist() {
+        if (this.snowflakeId == null) {
+//            TODO: this.pk = UUID.randomUUID().toString();
+            this.snowflakeId = "1";
+        }
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

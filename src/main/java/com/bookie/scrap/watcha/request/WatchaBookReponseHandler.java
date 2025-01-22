@@ -33,7 +33,7 @@ public class WatchaBookReponseHandler {
                         WatchaBookDetail.class
                 );
 
-                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getCode(), bookDetail.getTitle());
+                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
                 List<String> redirectUrls = bookDetail.getExternalServices().stream()
                         .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));

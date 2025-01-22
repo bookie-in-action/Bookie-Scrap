@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaBookDetail {
 
-    private String code;
-    private String title;
+    private String bookCode;
+    private String mainTitle;
     private String subtitle;
 
     @JsonProperty("content")
-    private String index;
-    private String year;
+    private String bookIndex;
+    private String publishYear;
 
     @JsonProperty("poster")
     private WatchaBookType.Poster poster;
@@ -38,7 +38,7 @@ public class WatchaBookDetail {
     private List<String> nations;
     private List<String> genres;
 
-    private String description;
+    private String bookDescription;
 
     @JsonProperty("publisher_description")
     private String publisherDescription;
@@ -82,16 +82,12 @@ public class WatchaBookDetail {
     }
 
     public WatchaBookEntity toEntity() {
-        //TODO: pk, createdAt, modifiedAt 처리
         return WatchaBookEntity.builder()
-                .pk("1")
-                .createdAt("11")
-                .updatedAt("11")
-                .code(this.code)
-                .bookTitle(this.title)
+                .bookDescription(this.bookCode)
+                .bookTitle(this.mainTitle)
                 .bookSubtitle(this.subtitle)
-                .bookIndex(this.index)
-                .publishYear(this.year)
+                .bookIndex(this.bookIndex)
+                .publishYear(this.publishYear)
                 .posterHd(this.poster.getHd())
                 .posterXlarge(this.poster.getXlarge())
                 .posterLarge(this.poster.getLarge())
@@ -100,7 +96,7 @@ public class WatchaBookDetail {
                 .authors(this.authors)
                 .nations(this.nations)
                 .genres(this.genres)
-                .bookDescription(this.description)
+                .bookDescription(this.bookDescription)
                 .publisherDescription(this.publisherDescription)
                 .authorDescription(this.authorDescription)
                 .averageRating(this.averageRating)

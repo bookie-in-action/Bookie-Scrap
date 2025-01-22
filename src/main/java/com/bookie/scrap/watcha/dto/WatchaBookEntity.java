@@ -14,7 +14,10 @@ import java.util.List;
 @Entity @SuperBuilder
 @Table(name = "BS_WATCHA_BOOK")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class WatchaBookEntity extends WatchaEntity{
+public final class WatchaBookEntity extends WatchaEntity{
+
+    @Column(name = "book_code")
+    private String bookCode;
 
     @Column(name = "book_title")
     private String bookTitle;
