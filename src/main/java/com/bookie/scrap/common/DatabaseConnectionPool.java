@@ -1,5 +1,6 @@
 package com.bookie.scrap.common;
 
+import com.bookie.scrap.domain.Initializable;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -9,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 
 @Slf4j
-public class DatabaseConnectionPool {
+public class DatabaseConnectionPool implements Initializable {
 
     private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();
     private HikariDataSource dataSource;
@@ -18,7 +19,8 @@ public class DatabaseConnectionPool {
 
     public static DatabaseConnectionPool getInstance() {return INSTANCE;}
 
-    public void init() {
+    @Override
+    public void init(String runningOption) {
 
         if (dataSource != null) {
             return;

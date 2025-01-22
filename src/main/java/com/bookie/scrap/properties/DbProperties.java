@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
-public class DbProperties implements InitializableProperties{
+public class DbProperties implements InitializableProperties {
 
     public enum Key {
         DRIVER_NAME, USER, JDBC_URL, PASSWORD
