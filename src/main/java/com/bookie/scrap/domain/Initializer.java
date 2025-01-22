@@ -1,6 +1,7 @@
 package com.bookie.scrap.domain;
 
 import com.bookie.scrap.common.DatabaseConnectionPool;
+import com.bookie.scrap.common.EntityManagerFactoryProvider;
 import com.bookie.scrap.http.HttpClientProvider;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
@@ -22,7 +23,8 @@ public class Initializer implements Initializable {
     );
 
     private static final List<Initializable> INITIALIZABLE_COMPONENTS = Arrays.asList(
-            DatabaseConnectionPool.getInstance(),
+//            DatabaseConnectionPool.getInstance(),
+            EntityManagerFactoryProvider.getInstance(),
             HttpClientProvider.getInstance(),
             SchedulerManager.getInstance()
     );
@@ -39,7 +41,7 @@ public class Initializer implements Initializable {
         log.info("[STEP 2] Initializing components");
 
         INITIALIZABLE_COMPONENTS.forEach(component -> {
-            log.info("Initializing component: {}", component.getClass().getSimpleName());
+            log.info(""); log.info("[Initializing component: {}]", component.getClass().getSimpleName());
             component.init(runningOption);
         });
     }

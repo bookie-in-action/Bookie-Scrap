@@ -1,27 +1,20 @@
 package com.bookie.scrap.common;
 
+import com.bookie.scrap.domain.Initializable;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.MappingSettings;
-import org.hibernate.jpa.HibernatePersistenceProvider;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.bookie.scrap.properties.DbProperties.*;
 
 @Slf4j
-public class EntityManagerFactoryProvider {
+public class EntityManagerFactoryProvider implements Initializable {
 
     private static final EntityManagerFactoryProvider INSTANCE = new EntityManagerFactoryProvider();
     private static final DbProperties dbProperties = DbProperties.getInstance();
@@ -32,7 +25,8 @@ public class EntityManagerFactoryProvider {
 
     public static EntityManagerFactoryProvider getInstance() {return INSTANCE;}
 
-    public synchronized void init() {
+    @Override
+    public synchronized void init(String runningOption) {
 
         if (emf != null) {
             return;
