@@ -1,5 +1,6 @@
 package com.bookie.scrap.scheduler;
 
+import com.bookie.scrap.domain.Initializable;
 import com.bookie.scrap.properties.SchedulerProperties;
 import com.bookie.scrap.properties.SchedulerProperties.Key;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class SchedulerManager {
+public class SchedulerManager implements Initializable {
     private static final Map<String, Scheduler> SCHEDULERS = new ConcurrentHashMap<>();
     private static final SchedulerManager INSTANCE = new SchedulerManager();
 
@@ -20,7 +21,8 @@ public class SchedulerManager {
 
     public static SchedulerManager getInstance() {return INSTANCE;}
 
-    public void init() {
+    @Override
+    public void init(String runningOption) {
 
         SchedulerProperties.getInstance()
                 .getSCHEDULER_SETTINGS_BY_PK().forEach((schedulerPk, schedulerProp) -> {
