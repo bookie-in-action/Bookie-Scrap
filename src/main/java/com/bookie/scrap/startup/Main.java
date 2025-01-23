@@ -1,6 +1,6 @@
 package com.bookie.scrap.startup;
 
-import com.bookie.scrap.domain.Initializer;
+import com.bookie.scrap.common.scheduler.SchedulerManager;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 
@@ -17,7 +17,7 @@ public class Main {
         log.info("************************************************");
         log.info("   Initializing......                           ");
         log.info("   Running in {} MODE", serverMode.toUpperCase() );
-        log.info("   Bookie Scrap Version: 0.0.1-SNAPSHOT         ");
+        log.info("   Bookie Scrap Version: 0S.0.1-SNAPSHOT         ");
         log.info("                                                ");
         log.info("************************************************");
         log.info("");
@@ -30,7 +30,6 @@ public class Main {
 
         // TODO: 유휴 http 커넥션 정리하는 스레드 생성
         // TODO: 스케줄러 생성
-        SchedulerManager.getInstance().init();
         try {
             SchedulerManager.getInstance().startSchedulers();
         } catch (SchedulerException e) {

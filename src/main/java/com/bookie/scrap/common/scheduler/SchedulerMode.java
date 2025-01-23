@@ -1,4 +1,4 @@
-package com.bookie.scrap.scheduler;
+package com.bookie.scrap.common.scheduler;
 
 import java.util.HashMap;
 import java.util.Map;

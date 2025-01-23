@@ -1,11 +1,14 @@
-package com.bookie.scrap.watcha.response;
+package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.dto.WatchaBookDetailDTO;
+import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,15 +20,20 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookDetail {
+public class WatchaBookDTO {
 
-    private String code;
-    private String title;
+    @JsonProperty("code")
+    private String bookCode;
+
+    @JsonProperty("title")
+    private String mainTitle;
     private String subtitle;
 
     @JsonProperty("content")
-    private String index;
-    private String year;
+    private String bookIndex;
+
+    @JsonProperty("year")
+    private Integer publishYear;
 
     @JsonProperty("poster")
     private WatchaBookType.Poster poster;
@@ -35,9 +43,8 @@ public class WatchaBookDetail {
     private List<String> nations;
     private List<String> genres;
 
-    private List<String> externalServices;
-
-    private String description;
+    @JsonProperty("description")
+    private String bookDescription;
 
     @JsonProperty("publisher_description")
     private String publisherDescription;
@@ -46,15 +53,14 @@ public class WatchaBookDetail {
     private String authorDescription;
 
     @JsonProperty("ratings_avg")
-    private String averageRating;
+    private Double averageRating;
 
     @JsonProperty("ratings_count")
-    private String ratingsCount;
+    private Long ratingsCount;
 
     @JsonProperty("wishes_count")
-    private String wishesCount;
+    private Long wishesCount;
 
-    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("nations")
     protected void setNations(List<JsonNode> nationsNode) {
@@ -64,6 +70,9 @@ public class WatchaBookDetail {
                 .map(node -> node.path("name").asText())
                 .collect(Collectors.toList());
     }
+
+    private List<String> externalServices;
+    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("external_services")
     protected void setExternalServices(List<JsonNode> externalServicesNode) {
@@ -78,31 +87,31 @@ public class WatchaBookDetail {
                 }).collect(Collectors.toList());
     }
 
-    public WatchaBookDetailDTO toDto() {
-        //TODO: pk, createdAt, modifiedAt 처리
-        return WatchaBookDetailDTO.builder()
-                .code(this.code)
-                .title(this.title)
-                .subtitle(this.subtitle)
-                .index(this.index)
-                .year(this.year)
-                .poster(this.poster != null ? new WatchaBookType.Poster() {{
-                    setHd(poster.getHd());
-                    setXlarge(poster.getXlarge());
-                    setLarge(poster.getLarge());
-                    setMedium(poster.getMedium());
-                    setSmall(poster.getSmall());
-                }} : null)
+    public WatchaBookEntity toEntity() {
+        return WatchaBookEntity.builder()
+                .bookCode(this.bookCode)
+                .bookDescription(this.bookDescription)
+                .bookTitle(this.mainTitle)
+                .bookSubtitle(this.subtitle)
+                .bookIndex(this.bookIndex)
+                .publishYear(this.publishYear)
+                .posterHd(this.poster.getHd())
+                .posterXlarge(this.poster.getXlarge())
+                .posterLarge(this.poster.getLarge())
+                .posterMedium(this.poster.getMedium())
+                .posterSmall(this.poster.getSmall())
                 .authors(this.authors)
                 .nations(this.nations)
                 .genres(this.genres)
-                .description(this.description)
+                .bookDescription(this.bookDescription)
                 .publisherDescription(this.publisherDescription)
                 .authorDescription(this.authorDescription)
                 .averageRating(this.averageRating)
                 .ratingsCount(this.ratingsCount)
                 .wishesCount(this.wishesCount)
-                .urlMap(this.urlMap)
+                .aladinUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.ALADIN))
+                .yes24Url(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.YES24))
+                .kyoboUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.KYOBO))
                 .build();
     }
 }

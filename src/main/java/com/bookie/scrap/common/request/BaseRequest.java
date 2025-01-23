@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;

@@ -1,10 +1,10 @@
-package com.bookie.scrap.watcha.response;
+package com.bookie.scrap.watcha.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-class WatchaBookDetailTest {
+class WatchaBookDTOTest {
 
     @Test
     public void testPoster() throws JsonProcessingException {
@@ -21,7 +21,7 @@ class WatchaBookDetailTest {
 
 
         ObjectMapper objectMapper = new ObjectMapper();
-        WatchaBookDetail detail = objectMapper.readValue(json, WatchaBookDetail.class);
+        WatchaBookDTO detail = objectMapper.readValue(json, WatchaBookDTO.class);
         System.out.println(detail);
     }
 }

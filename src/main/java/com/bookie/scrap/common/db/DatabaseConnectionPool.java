@@ -1,6 +1,6 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.db;
 
-import com.bookie.scrap.domain.Initializable;
+import com.bookie.scrap.common.Initializable;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
