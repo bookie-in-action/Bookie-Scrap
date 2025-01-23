@@ -1,8 +1,8 @@
-package com.bookie.scrap.watcha.repository;
+package com.bookie.scrap.common;
 
 import java.util.Optional;
 
-public interface WatchaRepository<T> {
+public interface Repository<T> {
 
     Optional<T> select(String code);
 

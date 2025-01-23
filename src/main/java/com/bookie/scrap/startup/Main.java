@@ -1,7 +1,6 @@
 package com.bookie.scrap.startup;
 
-import com.bookie.scrap.domain.Initializer;
-import com.bookie.scrap.scheduler.SchedulerManager;
+import com.bookie.scrap.common.scheduler.SchedulerManager;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 
@@ -18,7 +17,7 @@ public class Main {
         log.info("************************************************");
         log.info("   Initializing......                           ");
         log.info("   Running in {} MODE", serverMode.toUpperCase() );
-        log.info("   Bookie Scrap Version: 0.0.1-SNAPSHOT         ");
+        log.info("   Bookie Scrap Version: 0S.0.1-SNAPSHOT         ");
         log.info("                                                ");
         log.info("************************************************");
         log.info("");

@@ -1,11 +1,7 @@
 package com.bookie.scrap.http;
 
-import com.bookie.scrap.common.Request;
+import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.properties.BookieProperties;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.cookie.CookieStore;
@@ -16,9 +12,8 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.NoHttpResponseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.common.BaseRequest;
+import com.bookie.scrap.common.request.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;

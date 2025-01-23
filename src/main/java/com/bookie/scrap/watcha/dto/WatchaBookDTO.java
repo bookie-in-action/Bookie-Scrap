@@ -1,6 +1,6 @@
-package com.bookie.scrap.watcha.response;
+package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.dto.WatchaBookEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookDetail {
+public class WatchaBookDTO {
 
     @JsonProperty("code")
     private String bookCode;
@@ -33,7 +33,7 @@ public class WatchaBookDetail {
     private String bookIndex;
 
     @JsonProperty("year")
-    private String publishYear;
+    private Integer publishYear;
 
     @JsonProperty("poster")
     private WatchaBookType.Poster poster;
@@ -53,13 +53,13 @@ public class WatchaBookDetail {
     private String authorDescription;
 
     @JsonProperty("ratings_avg")
-    private String averageRating;
+    private Double averageRating;
 
     @JsonProperty("ratings_count")
-    private String ratingsCount;
+    private Long ratingsCount;
 
     @JsonProperty("wishes_count")
-    private String wishesCount;
+    private Long wishesCount;
 
 
     @JsonProperty("nations")

@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.dto;
+package com.bookie.scrap.watcha.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,6 +1,6 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.db;
 
-import com.bookie.scrap.domain.Initializable;
+import com.bookie.scrap.common.Initializable;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -50,7 +50,7 @@ public class EntityManagerFactoryProvider implements Initializable {
             configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, dbProperties.getValue(Key.HBM2DDL_AUTO));
 
             // 엔티티 클래스 목록을 직접 지정
-            configuration.addAnnotatedClass(com.bookie.scrap.watcha.dto.WatchaBookEntity.class);
+            configuration.addAnnotatedClass(com.bookie.scrap.watcha.entity.WatchaBookEntity.class);
 
 
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()

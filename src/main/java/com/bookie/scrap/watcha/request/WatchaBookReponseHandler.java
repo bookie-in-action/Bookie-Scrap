@@ -2,8 +2,8 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.http.HttpRequestExecutor;
 import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.util.ResponseHandlerMaker;
-import com.bookie.scrap.watcha.response.WatchaBookDetail;
+import com.bookie.scrap.common.util.ResponseHandlerMaker;
+import com.bookie.scrap.watcha.dto.WatchaBookDTO;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WatchaBookReponseHandler {
 
-    public static Function<HttpResponseWrapper, WatchaBookDetail> getHandlerLogic() {
+    public static Function<HttpResponseWrapper, WatchaBookDTO> getHandlerLogic() {
 
         return responseWrapper -> {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
-                WatchaBookDetail bookDetail = objectMapper.treeToValue(
+                WatchaBookDTO bookDetail = objectMapper.treeToValue(
                         responseWrapper.getJsonNode().path("result"),
-                        WatchaBookDetail.class
+                        WatchaBookDTO.class
                 );
 
                 log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());

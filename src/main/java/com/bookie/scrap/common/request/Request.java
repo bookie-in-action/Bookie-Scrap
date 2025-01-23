@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.request;
 
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.http.HttpRequestExecutor;
@@ -71,7 +71,12 @@ abstract public class Request<T> {
         return HttpRequestExecutor.execute(this);
     }
 
-//
+}
+
+
+/*
+
+
 //    public static void main(String[] args) {
 //        BasicCookieStore basicCookieStore = new BasicCookieStore();
 //
@@ -114,4 +119,6 @@ abstract public class Request<T> {
 //        authCache.put(targetHost, new BasicScheme()); // 기본 인증(Basic Authentication) 설정
 //        context.setAuthCache(authCache);
 //    }
-}
+
+
+ */

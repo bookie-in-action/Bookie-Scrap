@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.Request;
+import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.http.HttpMethod;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 

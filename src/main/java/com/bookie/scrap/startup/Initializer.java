@@ -1,13 +1,13 @@
-package com.bookie.scrap.domain;
+package com.bookie.scrap.startup;
 
-import com.bookie.scrap.common.DatabaseConnectionPool;
-import com.bookie.scrap.common.EntityManagerFactoryProvider;
+import com.bookie.scrap.common.Initializable;
+import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.http.HttpClientProvider;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.scheduler.SchedulerManager;
+import com.bookie.scrap.common.scheduler.SchedulerManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -44,6 +44,10 @@ public class Initializer implements Initializable {
             log.info(""); log.info("[Initializing component: {}]", component.getClass().getSimpleName());
             component.init(runningOption);
         });
+    }
+
+    public void devInit() {
+        init("dev");
     }
 
 

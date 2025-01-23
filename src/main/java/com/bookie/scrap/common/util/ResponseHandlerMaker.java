@@ -1,4 +1,4 @@
-package com.bookie.scrap.util;
+package com.bookie.scrap.common.util;
 
 import com.bookie.scrap.http.HttpResponseWrapper;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;

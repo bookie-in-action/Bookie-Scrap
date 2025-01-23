@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
