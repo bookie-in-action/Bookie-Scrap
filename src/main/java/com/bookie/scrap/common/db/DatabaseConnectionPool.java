@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 
 @Slf4j
+@Deprecated
 public class DatabaseConnectionPool implements Initializable {
 
     private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();

@@ -15,6 +15,7 @@ import com.bookie.scrap.common.util.HttpResponseWrapper;
 import java.util.function.Function;
 
 
+@Deprecated
 public abstract class BaseRequest<T> {
 
     @Getter @Setter private String implClassName;
