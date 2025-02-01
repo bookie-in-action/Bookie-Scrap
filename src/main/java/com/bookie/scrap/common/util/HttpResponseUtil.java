@@ -1,10 +1,7 @@
 package com.bookie.scrap.common.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
@@ -15,52 +12,20 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Slf4j
-@Deprecated
-public class HttpResponseWrapper {
+public class HttpResponseUtil {
 
-    @Getter private final int code;
-    @Getter private final String responseBody;
-    @Getter private JsonNode jsonNode;
-    @Getter private final Header[] headers;
-
-    static final ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-        objectMapper.enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
-    }
-
-    public HttpResponseWrapper(int code, Header[] headers, HttpEntity entity) {
-
-        this.code = code;
-        this.headers = headers;
-        try {
-            this.responseBody = EntityUtils.toString(entity);
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException("error while parsing entity" + e.getMessage());
-        }
-
-        try {
-            this.jsonNode = objectMapper.readTree(responseBody);
-        } catch (JsonProcessingException e) {
-//            log.trace("no json involved or have trailing tokens");
-        }
-
-    }
-
-    public Header[] findHeaders(String name) {
-        return Arrays.stream(headers)
-                .filter(header -> name.equalsIgnoreCase(header.getName()))
-                .toArray(Header[]::new);
-    }
-
-    public Header findHeader(String name) {
+    public static Header findHeader(Header[] headers, String name) {
         return Arrays.stream(headers)
                 .filter(header -> name.equalsIgnoreCase(header.getName()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("cannot find header [" + name + "]"));
     }
 
-    public void printLog() {
+    public static void printLog(HttpEntity entity, Header[] headers, int code) throws IOException, ParseException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = EntityUtils.toString(entity);
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         log.debug("=========================== HTTP RESPONSE ===========================");
         log.debug("[Response Status Code]: " + code);
@@ -84,6 +49,4 @@ public class HttpResponseWrapper {
         log.debug("================================ END ================================\n\n");
 
     }
-
 }
-

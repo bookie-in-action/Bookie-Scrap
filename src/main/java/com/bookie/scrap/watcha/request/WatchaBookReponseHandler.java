@@ -1,17 +1,22 @@
 package com.bookie.scrap.watcha.request;
 
+import com.bookie.scrap.common.util.HttpResponseUtil;
 import com.bookie.scrap.http.HttpRequestExecutor;
-import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.common.util.ResponseHandlerMaker;
+import com.bookie.scrap.common.util.HttpResponseWrapper;
 import com.bookie.scrap.watcha.dto.WatchaBookDTO;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +27,45 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class WatchaBookReponseHandler {
+
+    public static HttpClientResponseHandler<WatchaBookDTO> create() {
+        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
+    }
+
+    private static Function<HttpEntity, WatchaBookDTO> createHandlerLogic() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return httpEntity -> {
+            try {
+
+                String jsonString = EntityUtils.toString(httpEntity);
+                JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+                WatchaBookDTO bookDetail = objectMapper.treeToValue(
+                        jsonNode.path("result"),
+                        WatchaBookDTO.class
+                );
+
+                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
+                List<String> redirectUrls = bookDetail.getExternalServices().stream()
+                        .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
+                bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
+                log.debug("<= End searching for External Service URL");
+
+                log.debug("Parsed BookDetail: {}", bookDetail);
+
+                return bookDetail;
+
+            } catch (JsonProcessingException e) {
+                log.error("Error parsing JSON response", e);
+                throw new RuntimeException(e);
+            } catch (IOException | ParseException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+    }
 
     public static Function<HttpResponseWrapper, WatchaBookDTO> getHandlerLogic() {
 
@@ -106,9 +150,10 @@ public class WatchaBookReponseHandler {
         headers.forEach(httpRequest::addHeader);
 
         HttpClientResponseHandler<String> locationHandler =
-                ResponseHandlerMaker.getWatchaHandlerTemplate(
-                        responseWrapper -> responseWrapper.findHeader("location").getValue()
+                WatchaHandlerTemplate.createTemplateWithHeaders(
+                        responseHeaders -> HttpResponseUtil.findHeader(responseHeaders, "location").getValue()
                 );
+
         return HttpRequestExecutor.execute(httpRequest, locationHandler);
     }
 }
