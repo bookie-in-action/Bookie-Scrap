@@ -16,3 +16,11 @@ public enum HttpMethod {
         this.className = pkg + simpleName;
     }
 }
+
+class HttpMethodTest {
+    public static void main(String[] args) {
+        System.out.println(HttpMethod.GET.getSimpleName());
+        System.out.println(HttpMethod.POST.getClassName());
+    }
+}
+    

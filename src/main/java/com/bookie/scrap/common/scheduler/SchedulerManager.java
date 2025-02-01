@@ -1,6 +1,6 @@
 package com.bookie.scrap.common.scheduler;
 
-import com.bookie.scrap.common.Initializable;
+import com.bookie.scrap.startup.Initializable;
 import com.bookie.scrap.properties.SchedulerProperties;
 import com.bookie.scrap.properties.SchedulerProperties.Key;
 import lombok.extern.slf4j.Slf4j;

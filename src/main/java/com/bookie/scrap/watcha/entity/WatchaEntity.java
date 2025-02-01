@@ -10,11 +10,10 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WatchaEntity {
+public abstract class WatchaEntity {
 
     @Id
     @Column(name = "snowflake_id", nullable = false, updatable = false)
