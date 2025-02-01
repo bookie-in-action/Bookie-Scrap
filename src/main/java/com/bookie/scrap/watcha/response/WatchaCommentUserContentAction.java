@@ -16,17 +16,23 @@ import lombok.ToString;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaCommentUserContentAction {
-    
-    private String rating;
-    private String status;
+
+    @JsonProperty("rating")
+    private String commentUserContentRating;
+
+    @JsonProperty("status")
+    private String commentUserContentStatus;
+
+    @JsonProperty("mehed")
+    private String commentUserContentMehed;
 
     @JsonProperty("watched_at")
-    private String watchedAt;
+    private String commentUserContentWatchedAt;
     
     @JsonProperty("user_code")
-    private String userCode;
+    private String commentUserContentUserCode;
     
     @JsonProperty("content_code")
-    private String contentCode;
+    private String bookCode;
 
 }

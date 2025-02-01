@@ -19,12 +19,15 @@ public class DatabaseConnectionPool {
     public static DatabaseConnectionPool getInstance() {return INSTANCE;}
 
     public void init() {
+        log.info("=> HiKariDataSource init execute");
 
         if (dataSource != null) {
+            log.info("=> HiKariDataSource is Not Null");
             return;
         }
+
+        log.info("=> HiKariDataSource is Null => HiKariDataSource init Start");
         DbProperties dbProperties = DbProperties.getInstance();
-        log.info("=> HiKariDataSource init start");
 
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(dbProperties.getValue(DbProperties.Key.JDBC_URL));

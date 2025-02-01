@@ -1,15 +1,15 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.watcha.dto.WatchaBookDetailDTO;
+import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
 
 import java.util.Optional;
 
-public interface WatchaBookRepository {
+public interface WatchaCommentRepository {
 
-    Optional<WatchaBookDetailDTO> select(String bookCode);
+    Optional<WatchaCommentDetailDTO> select(String bookCode);
 
-    boolean update(WatchaBookDetailDTO watchaBookDTO);
+    boolean update(WatchaCommentDetailDTO watchaCommentDTO);
 
-    Optional<String> insert(WatchaBookDetailDTO watchaBookDTO);
+    Optional<String> insert(WatchaCommentDetailDTO watchaCommentDTO);
 
 }

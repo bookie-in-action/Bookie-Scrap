@@ -4,6 +4,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 *.properties
+*.json
+*.sh
+
+# .sh 파일 제외
+src/**/*.sh
 
 ### IntelliJ IDEA ###
 *.log

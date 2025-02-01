@@ -17,63 +17,44 @@ import lombok.ToString;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaCommentDetail {
-    
-    private String code;
+
+    @JsonProperty("code")
+    private String commentCode;
     
     @JsonProperty("user")
     private WatchaCommentUser commentUser;
-    
-    private String text;
+
+    @JsonProperty("text")
+    private String commentText;
     
     @JsonProperty("likes_count")
-    private String likesCount;
+    private String commentLikesCount;
     
     @JsonProperty("replies_count")
-    private String repliesCount;
+    private String commentRepliesCount;
     
     @JsonProperty("content_code")
-    private String contentCode;
+    private String bookCode;
 
     @JsonProperty("user_code")
-    private String userCode;
+    private String commentUserCode;
 
     @JsonProperty("watched_at")
-    private String watchedAt;
+    private String commentWatchedAt;
 
-    private String spoiler;
-    
+    @JsonProperty("spoiler")
+    private String commentSpoiler;
+
+    @JsonProperty("improper")
+    private String commentImproper;
+
+    @JsonProperty("replyable")
+    private String commentReplyable;
+
+    @JsonProperty("created_at")
+    private String commentCreatedAt;
+
     @JsonProperty("user_content_action")
     private WatchaCommentUserContentAction commentUserContentAction;
 
-    private WatchaCommentUserDTO setCommentUser() {
-        return WatchaCommentUserDTO.builder()
-                .code(code)
-                .name(code)
-                .watchaPlayUser(code)
-                .officialUser(code)
-                .build();
-    }
-
-    private WatchaCommentUserContentActionDTO setUserContentAction() {
-        return WatchaCommentUserContentActionDTO.builder()
-                .rating(code)
-                .status(code)
-                .watchedAt(code)
-                .userCode(code)
-                .contentCode(code)
-                .build();
-    }
-
-    public WatchaCommentDetailDTO toDto() {
-        return WatchaCommentDetailDTO.builder()
-                .code(this.code)
-                .text(this.text)
-                .likesCount(this.likesCount)
-                .repliesCount(this.repliesCount)
-                .contentCode(this.contentCode)
-                .userCode(this.userCode)
-                .watchedAt(this.watchedAt)
-                .spoiler(this.spoiler)
-                .build();
-    }
 }

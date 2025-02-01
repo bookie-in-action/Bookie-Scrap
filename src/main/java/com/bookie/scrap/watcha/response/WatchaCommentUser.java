@@ -16,9 +16,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaCommentUser {
-    
-    private String code;
-    private String name;
+
+    @JsonProperty("code")
+    private String commentUserCode;
+
+    @JsonProperty("name")
+    private String commentUserName;
+
+    @JsonProperty("photo")
+    private WatchaCommentUserPhoto commentUserPhoto;
     
     @JsonProperty("watcha_play_user")
     private String watchaPlayUser;
