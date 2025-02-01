@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-class WatchaBookDTOTest {
+class WatchaBookDtoTest {
 
     @Test
     public void testPoster() throws JsonProcessingException {
@@ -21,7 +21,7 @@ class WatchaBookDTOTest {
 
 
         ObjectMapper objectMapper = new ObjectMapper();
-        WatchaBookDTO detail = objectMapper.readValue(json, WatchaBookDTO.class);
+        WatchaBookDto detail = objectMapper.readValue(json, WatchaBookDto.class);
         System.out.println(detail);
     }
 }

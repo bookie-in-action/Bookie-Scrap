@@ -6,7 +6,7 @@ import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.watcha.dto.WatchaBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,10 +33,10 @@ class WatchaBookRequestFactoryTest {
 
     @Test
     void createRequest() {
-        RequestFactory<WatchaBookDTO> watchaBookRequestFactory = WatchaBookRequestFactory.getInstance();
+        RequestFactory<WatchaBookDto> watchaBookRequestFactory = WatchaBookRequestFactory.getInstance();
 
-        Request<WatchaBookDTO> watchaRequest = watchaBookRequestFactory.createRequest("byLKj8M");
-        WatchaBookDTO bookDetail = watchaRequest.execute();
+        Request<WatchaBookDto> watchaRequest = watchaBookRequestFactory.createRequest("byLKj8M");
+        WatchaBookDto bookDetail = watchaRequest.execute();
         Assertions.assertEquals("https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=284657330", bookDetail.getUrlMap().get(WatchaBookType.EXTERNAL_SERVICE.ALADIN));
         Assertions.assertEquals("https://www.yes24.com/Product/Goods/105526047", bookDetail.getUrlMap().get(WatchaBookType.EXTERNAL_SERVICE.YES24));
         Assertions.assertEquals("https://product.kyobobook.co.kr/detail/S000001925800", bookDetail.getUrlMap().get(WatchaBookType.EXTERNAL_SERVICE.KYOBO));
