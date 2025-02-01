@@ -1,31 +1,26 @@
 package com.bookie.scrap.common.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 public class HttpResponseUtil {
 
-    public static Header findHeader(Header[] headers, String name) {
+    public static Optional<Header> findHeader(Header[] headers, String name) {
         return Arrays.stream(headers)
                 .filter(header -> name.equalsIgnoreCase(header.getName()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("cannot find header [" + name + "]"));
+                .findFirst();
     }
 
-    public static void printLog(HttpEntity entity, Header[] headers, int code) throws IOException, ParseException {
+    public static void printLog(HttpEntity entity, Header[] headers, int code){
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String responseBody = EntityUtils.toString(entity);
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
+
 
         log.debug("=========================== HTTP RESPONSE ===========================");
         log.debug("[Response Status Code]: " + code);
@@ -36,11 +31,15 @@ public class HttpResponseUtil {
 
 
         try {
+
+            Optional<Header> contentTypeOpt = HttpResponseUtil.findHeader(headers, "Content-Type");
+
             log.debug("[Response Body]");
-            if (jsonNode != null) {
+            if (contentTypeOpt.isPresent() && contentTypeOpt.get().getValue().contains("application/json")) {
+                JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString(entity));
                 log.debug("\n" + jsonNode.toPrettyString());
             } else {
-                log.debug("   " + responseBody);
+                log.debug("   not a json Response");
             }
 
         }catch (Exception e) {
