@@ -28,19 +28,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WatchaBookReponseHandler {
 
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     public static HttpClientResponseHandler<WatchaBookDTO> create() {
         return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
     }
 
     private static Function<HttpEntity, WatchaBookDTO> createHandlerLogic() {
 
-        ObjectMapper objectMapper = new ObjectMapper();
 
         return httpEntity -> {
+
             try {
 
-                String jsonString = EntityUtils.toString(httpEntity);
-                JsonNode jsonNode = objectMapper.readTree(jsonString);
+                JsonNode jsonNode = objectMapper.readTree(EntityUtils.toString(httpEntity));
 
                 WatchaBookDTO bookDetail = objectMapper.treeToValue(
                         jsonNode.path("result"),
@@ -50,6 +52,7 @@ public class WatchaBookReponseHandler {
                 log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
                 List<String> redirectUrls = bookDetail.getExternalServices().stream()
                         .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
+
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
                 log.debug("<= End searching for External Service URL");
 
@@ -61,34 +64,6 @@ public class WatchaBookReponseHandler {
                 log.error("Error parsing JSON response", e);
                 throw new RuntimeException(e);
             } catch (IOException | ParseException e) {
-                throw new RuntimeException(e);
-            }
-        };
-
-    }
-
-    public static Function<HttpResponseWrapper, WatchaBookDTO> getHandlerLogic() {
-
-        return responseWrapper -> {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                WatchaBookDTO bookDetail = objectMapper.treeToValue(
-                        responseWrapper.getJsonNode().path("result"),
-                        WatchaBookDTO.class
-                );
-
-                log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
-                List<String> redirectUrls = bookDetail.getExternalServices().stream()
-                        .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
-                bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
-                log.debug("<= End searching for External Service URL");
-
-                log.debug("Parsed BookDetail: {}", bookDetail);
-
-                return bookDetail;
-
-            } catch (JsonProcessingException e) {
-                log.error("Error parsing JSON response", e);
                 throw new RuntimeException(e);
             }
         };
@@ -130,15 +105,7 @@ public class WatchaBookReponseHandler {
     }
 
     private static String fetchWatchaRedirectUrl(String requestUrl) {
-         Map<String, String> watchaHeaders = Map.of(
-                "Referer", "https://pedia.watcha.com",
-                "X-Frograms-App-Code", "Galaxy",
-                "X-Frograms-Client", "Galaxy-Web-App",
-                "X-Frograms-Galaxy-Language", "ko",
-                "X-Frograms-Galaxy-Region", "KR",
-                "X-Frograms-Version", "2.1.0"
-        );
-        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, watchaHeaders);
+        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, WatchaRequest.getWATCHA_HEADERS());
     }
 
     private static String fetchAladinRedirectUrl(String requestUrl) {

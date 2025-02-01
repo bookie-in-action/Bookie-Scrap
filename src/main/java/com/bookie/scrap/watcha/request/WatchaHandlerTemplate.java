@@ -12,6 +12,7 @@ public class WatchaHandlerTemplate {
 
     public static <T> HttpClientResponseHandler<T> createTemplateWithEntity(Function<HttpEntity, T> handlerFunction) {
         return httpResponse ->
+
         {
 
             int statusCode = httpResponse.getCode();
@@ -25,11 +26,14 @@ public class WatchaHandlerTemplate {
                 String exceptionMsg = String.format("Unexpected status code: ");
                 throw new IllegalStateException(exceptionMsg + statusCode);
             }
+
         };
+
     }
 
     public static <T> HttpClientResponseHandler<T> createTemplateWithHeaders(Function<Header[], T> handlerFunction) {
         return httpResponse ->
+
         {
 
             int statusCode = httpResponse.getCode();
@@ -43,6 +47,7 @@ public class WatchaHandlerTemplate {
                 String exceptionMsg = String.format("Unexpected status code: ");
                 throw new IllegalStateException(exceptionMsg + statusCode);
             }
+
         };
     }
 

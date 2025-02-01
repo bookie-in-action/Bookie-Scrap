@@ -13,8 +13,7 @@ public class WatchaBookRequestFactory implements RequestFactory<WatchaBookDTO> {
 
     private final String HTTP_URL_PATTERN ="https://pedia.watcha.com/api/contents/%s";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    HttpClientResponseHandler<WatchaBookDTO> handler
-            = WatchaBookReponseHandler.create();
+    HttpClientResponseHandler<WatchaBookDTO> handler = WatchaBookReponseHandler.create();
 
     private final static WatchaBookRequestFactory INSTANCE = new WatchaBookRequestFactory();
 

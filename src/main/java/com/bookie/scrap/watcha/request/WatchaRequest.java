@@ -2,6 +2,7 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.http.HttpMethod;
+import lombok.Getter;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.function.Consumer;
 
 public class WatchaRequest<T> extends Request<T> {
 
+    @Getter
     private static final Map<String, String> WATCHA_HEADERS = Map.of(
             "Referer", "https://pedia.watcha.com",
             "X-Frograms-App-Code", "Galaxy",
