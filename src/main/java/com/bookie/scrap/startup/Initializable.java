@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.startup;
 
 public interface Initializable {
 

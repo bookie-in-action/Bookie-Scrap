@@ -1,4 +1,4 @@
-package com.bookie.scrap.http;
+package com.bookie.scrap.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -13,9 +13,9 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Slf4j
+@Deprecated
 public class HttpResponseWrapper {
 
     @Getter private final int code;

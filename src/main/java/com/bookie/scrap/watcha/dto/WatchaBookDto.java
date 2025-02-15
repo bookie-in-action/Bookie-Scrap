@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookDTO {
+public class WatchaBookDto {
 
     @JsonProperty("code")
     private String bookCode;

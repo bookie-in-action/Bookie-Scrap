@@ -1,17 +1,23 @@
 package com.bookie.scrap.watcha.request;
 
+import com.bookie.scrap.common.util.HttpResponseUtil;
+import com.bookie.scrap.common.util.ObjectMapperUtil;
 import com.bookie.scrap.http.HttpRequestExecutor;
-import com.bookie.scrap.http.HttpResponseWrapper;
-import com.bookie.scrap.common.util.ResponseHandlerMaker;
-import com.bookie.scrap.watcha.dto.WatchaBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +29,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WatchaBookReponseHandler {
 
-    public static Function<HttpResponseWrapper, WatchaBookDTO> getHandlerLogic() {
 
-        return responseWrapper -> {
+    public static HttpClientResponseHandler<WatchaBookDto> create() {
+        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
+    }
+
+    private static Function<HttpEntity, WatchaBookDto> createHandlerLogic() {
+
+
+        return httpEntity -> {
+
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                WatchaBookDTO bookDetail = objectMapper.treeToValue(
-                        responseWrapper.getJsonNode().path("result"),
-                        WatchaBookDTO.class
-                );
+
+                WatchaBookDto bookDetail =
+                        ObjectMapperUtil.readValue(EntityUtils.toString(httpEntity), Response.class).getWatchaBookDto();
+
 
                 log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
                 List<String> redirectUrls = bookDetail.getExternalServices().stream()
                         .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
+
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
                 log.debug("<= End searching for External Service URL");
 
@@ -45,6 +58,8 @@ public class WatchaBookReponseHandler {
 
             } catch (JsonProcessingException e) {
                 log.error("Error parsing JSON response", e);
+                throw new RuntimeException(e);
+            } catch (IOException | ParseException e) {
                 throw new RuntimeException(e);
             }
         };
@@ -86,15 +101,7 @@ public class WatchaBookReponseHandler {
     }
 
     private static String fetchWatchaRedirectUrl(String requestUrl) {
-         Map<String, String> watchaHeaders = Map.of(
-                "Referer", "https://pedia.watcha.com",
-                "X-Frograms-App-Code", "Galaxy",
-                "X-Frograms-Client", "Galaxy-Web-App",
-                "X-Frograms-Galaxy-Language", "ko",
-                "X-Frograms-Galaxy-Region", "KR",
-                "X-Frograms-Version", "2.1.0"
-        );
-        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, watchaHeaders);
+        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, WatchaRequest.getWATCHA_HEADERS());
     }
 
     private static String fetchAladinRedirectUrl(String requestUrl) {
@@ -106,9 +113,21 @@ public class WatchaBookReponseHandler {
         headers.forEach(httpRequest::addHeader);
 
         HttpClientResponseHandler<String> locationHandler =
-                ResponseHandlerMaker.getWatchaHandlerTemplate(
-                        responseWrapper -> responseWrapper.findHeader("location").getValue()
+                WatchaHandlerTemplate.createTemplateWithHeaders(
+                        responseHeaders -> {
+                            Header locationHeader = HttpResponseUtil.findHeader(responseHeaders, "location")
+                                    .orElseThrow(() -> new IllegalArgumentException("cannot get location header from " + requestUrl));
+
+                            return locationHeader.getValue();
+                        }
                 );
+
         return HttpRequestExecutor.execute(httpRequest, locationHandler);
+    }
+
+    private static class Response {
+        @Getter
+        @JsonProperty("result")
+        private WatchaBookDto watchaBookDto;
     }
 }

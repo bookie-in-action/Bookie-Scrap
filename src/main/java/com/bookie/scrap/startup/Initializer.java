@@ -1,6 +1,5 @@
 package com.bookie.scrap.startup;
 
-import com.bookie.scrap.common.Initializable;
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.http.HttpClientProvider;
 import com.bookie.scrap.properties.BookieProperties;

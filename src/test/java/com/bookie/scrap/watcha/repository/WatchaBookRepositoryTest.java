@@ -3,7 +3,7 @@ package com.bookie.scrap.watcha.repository;
 import com.bookie.scrap.startup.Initializer;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.watcha.request.WatchaBookRequestFactory;
-import com.bookie.scrap.watcha.dto.WatchaBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class WatchaBookRepositoryTest {
 
     @Test
     public void dbTest() {
-        WatchaBookDTO book = WatchaBookRequestFactory.getInstance().createRequest("byLKj8M").execute();
+        WatchaBookDto book = WatchaBookRequestFactory.getInstance().createRequest("byLKj8M").execute();
 
         boolean isInserted = WatchaBookRepository.getInstance().insertOrUpdate(book.toEntity());
         Assertions.assertTrue(isInserted);
