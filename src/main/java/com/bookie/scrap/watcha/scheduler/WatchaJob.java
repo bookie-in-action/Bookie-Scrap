@@ -4,7 +4,7 @@ import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.common.Repository;
 import com.bookie.scrap.watcha.repository.WatchaBookRepository;
 import com.bookie.scrap.watcha.request.WatchaBookRequestFactory;
-import com.bookie.scrap.watcha.dto.WatchaBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -21,7 +21,7 @@ public class WatchaJob implements Job {
 
         log.info("watcha job executed!!!!!");
 
-        WatchaBookDTO bookDetail = bookRequestFactory.createRequest("byLKj8M").execute();
+        WatchaBookDto bookDetail = bookRequestFactory.createRequest("byLKj8M").execute();
         boolean result = bookRepository.insertOrUpdate(bookDetail.toEntity());
 
     }

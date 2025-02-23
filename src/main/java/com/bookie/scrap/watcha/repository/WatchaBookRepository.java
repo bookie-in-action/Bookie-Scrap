@@ -48,14 +48,12 @@ public class WatchaBookRepository implements Repository<WatchaBookEntity> {
         try {
             em.getTransaction().begin();
 
-            String jpql = "SELECT w FROM WatchaBookEntity w WHERE w.bookCode = :bookCode";
+            String jpql = "SELECT e FROM WatchaBookEntity e WHERE e.bookCode = :bookCode";
 
             WatchaBookEntity existingEntity =
                     em.createQuery(jpql, WatchaBookEntity.class)
-                    .setParameter("bookCode", targetEntity.getBookCode())
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                            .setParameter("bookCode", targetEntity.getBookCode())
+                            .getSingleResult();
 
             if (existingEntity != null) {
                 existingEntity.updateEntity(targetEntity);
@@ -64,19 +62,18 @@ public class WatchaBookRepository implements Repository<WatchaBookEntity> {
                 em.persist(targetEntity);
                 log.info("insert: {}", targetEntity);
             }
-
-
             em.getTransaction().commit();
 
             return true;
         } catch (Exception e) {
             log.error("An error occurred while inserting or updating an entity: {}", targetEntity, e);
             if (em.getTransaction().isActive()) {
-                log.warn("Transaction is active, rolling back...");
+                log.warn("Transaction is active, rolling back...", e);
                 em.getTransaction().rollback();
             } else {
-                log.warn("Transaction is not active, skipping rollback");
+                log.warn("Transaction is not active, skipping rollback", e);
             }
+
             return false;
         } finally {
             em.close();

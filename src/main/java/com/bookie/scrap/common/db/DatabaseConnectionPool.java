@@ -1,6 +1,6 @@
 package com.bookie.scrap.common.db;
 
-import com.bookie.scrap.common.Initializable;
+import com.bookie.scrap.startup.Initializable;
 import com.bookie.scrap.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 
 @Slf4j
+@Deprecated
 public class DatabaseConnectionPool implements Initializable {
 
     private static final DatabaseConnectionPool INSTANCE = new DatabaseConnectionPool();
