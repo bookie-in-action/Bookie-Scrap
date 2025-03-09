@@ -40,7 +40,6 @@ public class WatchaBookReponseHandler {
         return httpEntity -> {
 
             try {
-
                 WatchaBookDto bookDetail =
                         ObjectMapperUtil.readValue(EntityUtils.toString(httpEntity), Response.class).getWatchaBookDto();
 
