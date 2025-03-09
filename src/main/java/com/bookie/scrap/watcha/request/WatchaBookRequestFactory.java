@@ -37,9 +37,4 @@ public class WatchaBookRequestFactory implements RequestFactory<WatchaBookDto> {
         return watchaRequest;
     }
 
-    @Override
-    public Request<WatchaBookDto> createRequest(WatchaBaseRequestParam watchaRequestParamDTO) {
-        return null;
-    }
-
 }

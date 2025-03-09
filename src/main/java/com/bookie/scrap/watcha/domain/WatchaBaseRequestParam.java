@@ -24,7 +24,7 @@ public class WatchaBaseRequestParam {
         this.size = size;
     }
 
-    public String buildUrl(String baseUrl) throws URISyntaxException {
+    public String buildUrl(String baseUrl) {
         // 필수 값 검증
         if (baseUrl == null || baseUrl.isBlank()) {
             throw new IllegalArgumentException("Base URL must not be null or empty.");
@@ -39,10 +39,15 @@ public class WatchaBaseRequestParam {
             throw new IllegalArgumentException("Size parameter must not be null or empty.");
         }
 
-        return new URIBuilder(baseUrl + "/" + URLEncoder.encode(bookCode, StandardCharsets.UTF_8))
-                .addParameter("page", page)
-                .addParameter("size", size)
-                .build()
-                .toString();
+        try {
+            return new URIBuilder(baseUrl + "/" + URLEncoder.encode(bookCode, StandardCharsets.UTF_8))
+                    .addParameter("page", page)
+                    .addParameter("size", size)
+                    .build()
+                    .toString();
+        } catch (URISyntaxException e) {
+            log.error("Invalid URL : {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }

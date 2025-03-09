@@ -38,13 +38,7 @@ public class WatchaBookcaseRequestFactory implements RequestFactory<List<WatchaB
     public Request<List<WatchaBookcaseDTO>> createRequest(WatchaBaseRequestParam watchaRequestParamDTO) {
         Request<List<WatchaBookcaseDTO>> watchaRequest = new WatchaRequest<>();
 
-        String endPoint = "";
-        try {
-            endPoint = watchaRequestParamDTO.buildUrl(HTTP_BASE_URL);
-        } catch (URISyntaxException e) {
-            log.error("Invalid URL : {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
+        String endPoint = watchaRequestParamDTO.buildUrl(HTTP_BASE_URL);
 
         watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
         watchaRequest.setResponseHandler(handler);
