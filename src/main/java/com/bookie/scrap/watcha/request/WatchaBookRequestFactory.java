@@ -3,7 +3,7 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
 import com.bookie.scrap.http.HttpMethod;
-import com.bookie.scrap.watcha.dto.WatchaBaseRequestParamDTO;
+import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
@@ -38,7 +38,7 @@ public class WatchaBookRequestFactory implements RequestFactory<WatchaBookDto> {
     }
 
     @Override
-    public Request<WatchaBookDto> createRequest(WatchaBaseRequestParamDTO watchaRequestParamDTO) {
+    public Request<WatchaBookDto> createRequest(WatchaBaseRequestParam watchaRequestParamDTO) {
         return null;
     }
 

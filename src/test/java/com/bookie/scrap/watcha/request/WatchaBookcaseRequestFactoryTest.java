@@ -6,11 +6,9 @@ import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
 import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.watcha.dto.WatchaBaseRequestParamDTO;
+import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
-import com.bookie.scrap.watcha.type.WatchaBookType;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -38,10 +36,10 @@ class WatchaBookcaseRequestFactoryTest {
     void createRequest() {
         RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
 
-        WatchaBaseRequestParamDTO watchaBaseRequestParamDTO = new WatchaBaseRequestParamDTO("gcdkyKnXjN", "1", "12");
+        WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", "1", "12");
 
         log.info("======================== testGetDetail Execute =============================");
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParamDTO);
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
         log.info("Result Data : {}", bookcaseList);
         log.info("======================== testGetDetail END =============================");

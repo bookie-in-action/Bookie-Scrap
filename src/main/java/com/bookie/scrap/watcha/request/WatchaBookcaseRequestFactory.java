@@ -4,7 +4,7 @@ import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
 import com.bookie.scrap.http.HttpMethod;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
-import com.bookie.scrap.watcha.dto.WatchaBaseRequestParamDTO;
+import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
@@ -35,14 +35,19 @@ public class WatchaBookcaseRequestFactory implements RequestFactory<List<WatchaB
     }
 
     @Override
-    public Request<List<WatchaBookcaseDTO>> createRequest(WatchaBaseRequestParamDTO watchaRequestParamDTO) {
+    public Request<List<WatchaBookcaseDTO>> createRequest(WatchaBaseRequestParam watchaRequestParamDTO) {
         Request<List<WatchaBookcaseDTO>> watchaRequest = new WatchaRequest<>();
-        String endPoint = watchaRequestParamDTO.buildUrl(HTTP_BASE_URL);
 
-        if(endPoint != null) {
-            watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
-            watchaRequest.setResponseHandler(handler);
+        String endPoint = "";
+        try {
+            endPoint = watchaRequestParamDTO.buildUrl(HTTP_BASE_URL);
+        } catch (URISyntaxException e) {
+            log.error("Invalid URL : {}", e.getMessage());
+            throw new RuntimeException(e);
         }
+
+        watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
+        watchaRequest.setResponseHandler(handler);
 
         log.debug("Created WatchaRequest value: {}, endpoint: {}, method: {}", watchaRequestParamDTO.getBookCode(), endPoint, HTTP_METHOD);
 
