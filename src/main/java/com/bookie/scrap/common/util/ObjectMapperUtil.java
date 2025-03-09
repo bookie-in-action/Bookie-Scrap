@@ -1,13 +1,23 @@
 package com.bookie.scrap.common.util;
 
+import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
+import com.bookie.scrap.watcha.request.WatchaBookcaseReponseHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 public class ObjectMapperUtil {
 
     private static final ObjectMapper OBJECT_MAPPER;
@@ -45,4 +55,7 @@ public class ObjectMapperUtil {
         return OBJECT_MAPPER.readTree(inputStream);
     }
 
+    public static <T> T treeToValue(JsonNode jsonNode, Class<T> clazz) throws IOException {
+        return OBJECT_MAPPER.treeToValue(jsonNode, clazz);
+    }
 }
