@@ -1,4 +1,4 @@
-package com.bookie.scrap.startup;
+package com.bookie.scrap.common.startup;
 
 import com.bookie.scrap.common.scheduler.SchedulerManager;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,12 @@ import org.quartz.SchedulerException;
 
 @Slf4j
 public class Main {
+    /**
+     * 1. 서버 초기화
+     * 2. 스케줄러 시작
+     * 3. 셧다운 훅 등록
+     * @param args
+     */
     public static void main(String[] args) {
 
         // -Dmode=dev or -Dmode=prod
@@ -22,36 +28,15 @@ public class Main {
         log.info("************************************************");
         log.info("");
 
-
         new Initializer().init(serverMode);
 
-
-
-
-        // TODO: 유휴 http 커넥션 정리하는 스레드 생성
-        // TODO: 스케줄러 생성
         try {
             SchedulerManager.getInstance().startSchedulers();
         } catch (SchedulerException e) {
             throw new RuntimeException(e);
         }
 
-//        // Shutdown Hook 등록
-//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//            try {
-//                1. db 커넥션 풀 닫기
-//                System.out.println("Shutting down connection pool...");
-//                DatabaseConnectionPool.close();
-//                2. 스케줄러 종료
-
-//                SchedulerManager.getInstance().stopSchedulers();
-//                System.out.println("Scheduler stopped gracefully.");
-
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }));
-
+        new ShutDownManager().registerShutdownHooks();
 
     }
 }
