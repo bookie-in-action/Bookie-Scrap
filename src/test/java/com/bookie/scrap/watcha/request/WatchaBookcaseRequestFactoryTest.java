@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
-import com.bookie.scrap.common.startup.Initializer;
+import com.bookie.scrap.common.startup.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +16,8 @@ class WatchaBookcaseRequestFactoryTest {
 
     @BeforeAll
     public static void init() {
-        Initializer initializer = new Initializer();
-        initializer.devInit();
+        InitManager initManager = new InitManager();
+        initManager.devInit();
     }
 
     @Test

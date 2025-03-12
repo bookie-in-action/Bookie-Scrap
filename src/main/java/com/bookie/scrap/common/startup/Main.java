@@ -28,7 +28,7 @@ public class Main {
         log.info("************************************************");
         log.info("");
 
-        new Initializer().init(serverMode);
+        new InitManager().init(serverMode);
 
         try {
             SchedulerManager.getInstance().startSchedulers();

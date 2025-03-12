@@ -1,7 +1,7 @@
 //package com.bookie.scrap.watcha.repository;
 //
 //import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-//import com.bookie.scrap.startup.Initializer;
+//import com.bookie.scrap.startup.InitManager;
 //import com.bookie.scrap.http.HttpRequestExecutor;
 //import com.bookie.scrap.watcha.config.WatchaBook;
 //import com.bookie.scrap.watcha.dto.WatchaBookEntity;
@@ -18,7 +18,7 @@
 //
 //    @BeforeAll
 //    public static void init() {
-//        new Initializer().devInit();
+//        new InitManager().devInit();
 //    }
 //
 //    @Test

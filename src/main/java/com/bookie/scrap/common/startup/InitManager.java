@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class Initializer implements Initializable {
+public class InitManager implements Initializable {
 
     private static final List<InitializableProperties> PROPERTIES = Arrays.asList(
             BookieProperties.getInstance(),

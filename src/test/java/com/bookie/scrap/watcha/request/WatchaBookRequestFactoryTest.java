@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
-import com.bookie.scrap.common.startup.Initializer;
+import com.bookie.scrap.common.startup.InitManager;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import org.junit.jupiter.api.Assertions;
@@ -13,8 +13,8 @@ class WatchaBookRequestFactoryTest {
 
     @BeforeAll
     public static void init() {
-        Initializer initializer = new Initializer();
-        initializer.devInit();
+        InitManager initManager = new InitManager();
+        initManager.devInit();
     }
 
     @Test
