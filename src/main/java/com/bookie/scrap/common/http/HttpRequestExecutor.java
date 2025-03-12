@@ -1,7 +1,7 @@
-package com.bookie.scrap.http;
+package com.bookie.scrap.common.http;
 
 import com.bookie.scrap.common.request.Request;
-import com.bookie.scrap.properties.BookieProperties;
+import com.bookie.scrap.common.properties.BookieProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.cookie.CookieStore;

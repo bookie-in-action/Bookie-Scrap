@@ -2,13 +2,12 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
-import com.bookie.scrap.http.HttpMethod;
+import com.bookie.scrap.common.http.HttpMethod;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j

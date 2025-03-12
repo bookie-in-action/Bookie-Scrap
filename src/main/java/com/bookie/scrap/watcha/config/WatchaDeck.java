@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.config;
 
 import lombok.Getter;
-import com.bookie.scrap.http.HttpMethod;
+import com.bookie.scrap.common.http.HttpMethod;
 
 @Getter
 public class WatchaDeck extends WatchaBaseRequest<String> {
