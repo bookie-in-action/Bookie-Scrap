@@ -1,7 +1,7 @@
 package com.bookie.scrap.common.db;
 
-import com.bookie.scrap.startup.Initializable;
-import com.bookie.scrap.properties.DbProperties;
+import com.bookie.scrap.common.startup.Initializable;
+import com.bookie.scrap.common.properties.DbProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;

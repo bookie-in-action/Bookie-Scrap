@@ -1,7 +1,7 @@
 package com.bookie.scrap.common.request;
 
-import com.bookie.scrap.http.HttpMethod;
-import com.bookie.scrap.http.HttpRequestExecutor;
+import com.bookie.scrap.common.http.HttpMethod;
+import com.bookie.scrap.common.http.HttpRequestExecutor;
 
 import lombok.Getter;
 import lombok.Setter;

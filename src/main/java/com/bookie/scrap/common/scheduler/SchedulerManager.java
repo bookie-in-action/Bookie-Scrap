@@ -1,8 +1,9 @@
 package com.bookie.scrap.common.scheduler;
 
-import com.bookie.scrap.startup.Initializable;
-import com.bookie.scrap.properties.SchedulerProperties;
-import com.bookie.scrap.properties.SchedulerProperties.Key;
+import com.bookie.scrap.common.startup.Initializable;
+import com.bookie.scrap.common.properties.SchedulerProperties;
+import com.bookie.scrap.common.properties.SchedulerProperties.Key;
+import com.bookie.scrap.common.startup.Shutdownable;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.DirectSchedulerFactory;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class SchedulerManager implements Initializable {
+public class SchedulerManager implements Initializable, Shutdownable {
     private static final Map<String, Scheduler> SCHEDULERS = new ConcurrentHashMap<>();
     private static final SchedulerManager INSTANCE = new SchedulerManager();
 
@@ -84,15 +85,16 @@ public class SchedulerManager implements Initializable {
         }
     }
 
-    public void stopSchedulers() {
+    @Override
+    public void shutdown() {
         SCHEDULERS.values().stream().parallel().forEach(scheduler -> {
             try {
-                log.info("Start to Stop Scheduler [{}]", scheduler.getSchedulerName());
                 scheduler.shutdown(true);
-                log.info("End to Stop Scheduler [{}]", scheduler.getSchedulerName());
+                log.info("Stop [{}] Scheduler successfully", scheduler.getSchedulerName());
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }
         });
     }
+
 }

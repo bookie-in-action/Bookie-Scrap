@@ -1,11 +1,11 @@
-package com.bookie.scrap.startup;
+package com.bookie.scrap.common.startup;
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.http.HttpClientProvider;
-import com.bookie.scrap.properties.BookieProperties;
-import com.bookie.scrap.properties.DbProperties;
-import com.bookie.scrap.properties.InitializableProperties;
-import com.bookie.scrap.properties.SchedulerProperties;
+import com.bookie.scrap.common.http.HttpClientProvider;
+import com.bookie.scrap.common.properties.BookieProperties;
+import com.bookie.scrap.common.properties.DbProperties;
+import com.bookie.scrap.common.properties.InitializableProperties;
+import com.bookie.scrap.common.properties.SchedulerProperties;
 import com.bookie.scrap.common.scheduler.SchedulerManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class Initializer implements Initializable {
+public class InitManager implements Initializable {
 
     private static final List<InitializableProperties> PROPERTIES = Arrays.asList(
             BookieProperties.getInstance(),

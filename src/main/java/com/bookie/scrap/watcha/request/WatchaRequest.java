@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
-import com.bookie.scrap.http.HttpMethod;
+import com.bookie.scrap.common.http.HttpMethod;
 import lombok.Getter;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 
