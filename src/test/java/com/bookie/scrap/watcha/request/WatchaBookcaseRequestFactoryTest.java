@@ -51,5 +51,32 @@ class WatchaBookcaseRequestFactoryTest {
 
         log.info("bookCaseList : {}", bookcaseList);
     }
+
+    /** Watcha API 응답 객체가 예상된 응답 객체와 일치하는지 검증하는 테스트  */
+    @Test
+    void testWatchaApiResponse() {
+        // Given: 테스트용 JSON 파일을 읽어 기대하는 응답 값 설정
+        Path filePath = Paths.get("src/test/Test_bookcaseResponse.txt");
+
+        String expectedJson = null;
+        try {
+            expectedJson = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("error occured : {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        // When : API 요청을 실행하여 실제 응답 데이터를 가져옴
+        RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
+
+        WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", "1", "12");
+
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
+        List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
+        log.info("bookCaseList : {}", bookcaseList);
+
+        // Then: 예상된 JSON과 실제 응답을 비교
+        Assertions.assertEquals(expectedJson, bookcaseList.toString(), "API response does not match the expected JSON.");
+    }
 }
 
