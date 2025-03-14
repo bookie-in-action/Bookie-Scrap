@@ -22,34 +22,20 @@ public class WatchaBookcaseReponseHandler {
     public static Function<HttpEntity, List<WatchaBookcaseDTO>> createHandlerLogic() {
 
         return httpEntity -> {
-            log.debug("============== Parsed WatchaBookcaseReponseHandler ==============");
             try {
                 JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("items").get("result");
-                log.debug("resultNode: {}", resultNode.toString());
 
                 List<WatchaBookcaseDTO> bookcaseDetailList = new ArrayList<>();
-                log.debug("resultNode size: {}", resultNode.size());
 
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");
 
-                    log.debug("node {}", node);
-                    log.debug("contentNode {}", contentNode);
-
-                    log.debug("============== resultNode get content ==============");
-                    log.debug("contentNode.isNull ? {}", contentNode.isNull());
                         if(!contentNode.isNull()){
-                            log.debug("============== contentNode is Not Null ==============");
-
                             WatchaBookcaseDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseDTO.class);
-                            log.debug("Parsed bookcaseDetail: {}", watchaBookcase);
-
                             bookcaseDetailList.add(watchaBookcase);
                         }
                     }
-                log.debug("Parsed bookcaseDetail: {}", bookcaseDetailList.toString());
-
-                return null;
+                return bookcaseDetailList;
 
             } catch (Exception e) {
                 log.error("Error Execute", e);

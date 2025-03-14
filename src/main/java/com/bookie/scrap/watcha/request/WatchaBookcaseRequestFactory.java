@@ -3,20 +3,16 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
 import com.bookie.scrap.http.HttpMethod;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
+import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
 public class WatchaBookcaseRequestFactory implements RequestFactory<List<WatchaBookcaseDTO>> {
 
-    // COMMENT  : /api/contents/gcdkyKnXjN/comments?page=1&size=12;
-    // DECK     : /api/decks/gcdkyKnXjN/items?page=1&size=12
-    private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%d/items?page=%s&size=%s";
     private final String HTTP_BASE_URL = "https://pedia.watcha.com/api/decks";
 
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;

@@ -14,9 +14,9 @@ import java.nio.charset.StandardCharsets;
 @Setter
 public class WatchaBaseRequestParam {
 
-    String bookCode;
-    String page;
-    String size;
+    private String bookCode;
+    private String page;
+    private String size;
 
     public WatchaBaseRequestParam(String bookCode, String page, String size) {
         this.bookCode = bookCode;

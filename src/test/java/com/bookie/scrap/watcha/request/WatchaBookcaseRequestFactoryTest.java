@@ -2,6 +2,7 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
+import com.bookie.scrap.common.util.ObjectMapperUtil;
 import com.bookie.scrap.properties.BookieProperties;
 import com.bookie.scrap.properties.DbProperties;
 import com.bookie.scrap.properties.InitializableProperties;
@@ -9,9 +10,16 @@ import com.bookie.scrap.properties.SchedulerProperties;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,28 +46,10 @@ class WatchaBookcaseRequestFactoryTest {
 
         WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", "1", "12");
 
-        log.info("======================== testGetDetail Execute =============================");
         Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
-        log.info("Result Data : {}", bookcaseList);
-        log.info("======================== testGetDetail END =============================");
 
+        log.info("bookCaseList : {}", bookcaseList);
     }
-
-//    void createRequest1() {
-//        RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
-//
-//        int cnt = 1;
-//        while (true) {
-//            Request<List<WatchaBookcaseDTO>> bookcase = watchaBookcaseRequestFactory.createRequest(
-//                    "gcdkyKnXjN",
-//                    String.valueOf(cnt++),
-//                    "15"
-//            );
-//            if (bookcase == null) {
-//                break;
-//            }
-//        }
-//    }
 }
 
