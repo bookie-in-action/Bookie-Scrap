@@ -1,4 +1,4 @@
-package com.bookie.scrap.properties;
+package com.bookie.scrap.common.properties;
 
 
 import lombok.extern.slf4j.Slf4j;

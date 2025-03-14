@@ -1,7 +1,8 @@
 package com.bookie.scrap.common.db;
 
-import com.bookie.scrap.startup.Initializable;
-import com.bookie.scrap.properties.DbProperties;
+import com.bookie.scrap.common.startup.Initializable;
+import com.bookie.scrap.common.properties.DbProperties;
+import com.bookie.scrap.common.startup.Shutdownable;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,10 +12,10 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 
-import static com.bookie.scrap.properties.DbProperties.*;
+import static com.bookie.scrap.common.properties.DbProperties.*;
 
 @Slf4j
-public class EntityManagerFactoryProvider implements Initializable {
+public class EntityManagerFactoryProvider implements Initializable, Shutdownable {
 
     private static final EntityManagerFactoryProvider INSTANCE = new EntityManagerFactoryProvider();
     private static final DbProperties dbProperties = DbProperties.getInstance();
@@ -77,12 +78,13 @@ public class EntityManagerFactoryProvider implements Initializable {
         return EntityManagerFactoryProvider.emf;
     }
 
-    public void close() {
+    @Override
+    public void shutdown() {
         if (EntityManagerFactoryProvider.emf != null) {
             EntityManagerFactoryProvider.emf.close();
             log.info("EntityManagerFactory closed successfully");
         } else {
-            log.warn("EntityManagerFactory is not initialized. Nothing to close");
+            log.debug("EntityManagerFactory is not initialized. Nothing to close");
         }
     }
 }

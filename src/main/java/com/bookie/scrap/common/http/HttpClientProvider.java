@@ -1,6 +1,7 @@
-package com.bookie.scrap.http;
+package com.bookie.scrap.common.http;
 
-import com.bookie.scrap.startup.Initializable;
+import com.bookie.scrap.common.startup.Initializable;
+import com.bookie.scrap.common.startup.Shutdownable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -16,8 +17,10 @@ import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 
+import java.io.IOException;
+
 @Slf4j
-public class HttpClientProvider implements Initializable {
+public class HttpClientProvider implements Initializable, Shutdownable {
 
     private static final Timeout CONNECT_TIMEOUT = Timeout.ofSeconds(30);
     private static final Timeout SOCKET_TIMEOUT = Timeout.ofMinutes(1);
@@ -99,5 +102,11 @@ public class HttpClientProvider implements Initializable {
                 //시스템 기본 SSL/TLS 설정을 사용하여 보안 연결을 생성 (시스템에 설치된 인증서 사용)
                 .setSslContext(SSLContexts.createSystemDefault())
                 .build();
+    }
+
+    @Override
+    public void shutdown() throws IOException {
+        HTTP_CLIENT.close();
+        log.info("Db ConnectionPool closed successfully");
     }
 }

@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.util.HttpResponseUtil;
 import com.bookie.scrap.common.util.ObjectMapperUtil;
-import com.bookie.scrap.http.HttpRequestExecutor;
+import com.bookie.scrap.common.http.HttpRequestExecutor;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonProperty;

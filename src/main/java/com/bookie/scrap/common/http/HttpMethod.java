@@ -1,4 +1,4 @@
-package com.bookie.scrap.http;
+package com.bookie.scrap.common.http;
 
 import lombok.Getter;
 

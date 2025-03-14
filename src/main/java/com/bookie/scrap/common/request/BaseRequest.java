@@ -9,7 +9,7 @@ import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
-import com.bookie.scrap.http.HttpMethod;
+import com.bookie.scrap.common.http.HttpMethod;
 import com.bookie.scrap.common.util.HttpResponseWrapper;
 
 import java.util.function.Function;

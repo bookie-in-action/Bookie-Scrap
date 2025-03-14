@@ -1,7 +1,7 @@
 package com.bookie.scrap.common;
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.properties.DbProperties;
+import com.bookie.scrap.common.properties.DbProperties;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
