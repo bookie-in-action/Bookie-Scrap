@@ -20,15 +20,17 @@ import java.util.List;
 @Slf4j
 class WatchaBookcaseRequestFactoryTest {
 
+    private static RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory;
+
     @BeforeAll
     public static void init() {
         InitManager initManager = new InitManager();
         initManager.devInit();
+        watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
     }
 
     @Test
     void createRequest() {
-        RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
 
         WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", 1, 12);
 
@@ -53,8 +55,6 @@ class WatchaBookcaseRequestFactoryTest {
         }
 
         // WatchaBookcase Response
-        RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
-
         WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", 1, 12);
 
         Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
@@ -62,6 +62,17 @@ class WatchaBookcaseRequestFactoryTest {
         log.info("bookCaseList : {}", bookcaseList);
 
         Assertions.assertEquals(expectedJson, bookcaseList.toString());
+    }
+
+    @Test
+    void endPageTest() {
+
+        WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", 12, 12);
+
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
+        List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
+
+        Assertions.assertTrue(bookcaseList.isEmpty());
     }
 }
 
