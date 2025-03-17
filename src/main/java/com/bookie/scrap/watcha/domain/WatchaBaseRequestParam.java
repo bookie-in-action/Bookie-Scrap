@@ -28,6 +28,10 @@ public class WatchaBaseRequestParam {
         this.size = size;
     }
 
+    public void nextPage() {
+        this.page += 1;
+    }
+
     public String buildUrl(String baseUrl) {
 
         validNotEmpty(baseUrl, "BaseURL");
