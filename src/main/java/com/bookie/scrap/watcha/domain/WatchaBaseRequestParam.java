@@ -37,11 +37,15 @@ public class WatchaBaseRequestParam {
         validNotEmpty(baseUrl, "BaseURL");
 
         try {
-            return new URIBuilder(baseUrl + "/" + URLEncoder.encode(bookCode, StandardCharsets.UTF_8))
+            String encodedBookCode = URLEncoder.encode("gcdkyKnXjN", StandardCharsets.UTF_8);
+
+            return new URIBuilder(baseUrl)
+                    .appendPathSegments(encodedBookCode, "items")
                     .addParameter("page", String.valueOf(page))
                     .addParameter("size", String.valueOf(size))
                     .build()
                     .toString();
+
         } catch (URISyntaxException e) {
             log.error("Failed to build URL for bookCode: {} with baseUrl: {}", bookCode, baseUrl, e);
             throw new IllegalStateException(e);
