@@ -1,8 +1,4 @@
-package com.bookie.scrap.common;
-
-import com.bookie.scrap.watcha.repository.WatchaCommentJDBCImpl;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+package com.bookie.scrap.common.util;
 
 public class SnowflakeIdGenerator {
 

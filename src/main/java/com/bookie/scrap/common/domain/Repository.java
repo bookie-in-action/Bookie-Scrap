@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.domain;
 
 import java.util.Optional;
 

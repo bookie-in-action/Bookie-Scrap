@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.repository;
 
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.Repository;
+import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

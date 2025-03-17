@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.request.Request;
-import com.bookie.scrap.common.request.RequestFactory;
+import com.bookie.scrap.common.domain.Request;
+import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;

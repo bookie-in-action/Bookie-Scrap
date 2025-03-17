@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.scheduler;
 
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
-import com.bookie.scrap.common.Repository;
+import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.repository.WatchaBookRepository;
 import com.bookie.scrap.watcha.request.WatchaBookRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;

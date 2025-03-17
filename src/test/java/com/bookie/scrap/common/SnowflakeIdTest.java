@@ -1,15 +1,12 @@
 package com.bookie.scrap.common;
 
+import com.bookie.scrap.common.util.SnowflakeIdGenerator;
 import com.bookie.scrap.service.WatchaCommentService;
-import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
 import com.bookie.scrap.watcha.response.WatchaCommentTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 @Slf4j
 class SnowflakeIdTest {
