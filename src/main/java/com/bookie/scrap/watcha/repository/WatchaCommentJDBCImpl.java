@@ -1,9 +1,7 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.DatabaseConnectionPool;
-import com.bookie.scrap.watcha.dto.WatchaBookDetailDTO;
+import com.bookie.scrap.common.db.DatabaseConnectionPool;
 import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
-import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
