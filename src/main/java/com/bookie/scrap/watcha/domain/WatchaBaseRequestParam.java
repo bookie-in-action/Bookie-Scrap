@@ -37,7 +37,7 @@ public class WatchaBaseRequestParam {
         validNotEmpty(baseUrl, "BaseURL");
 
         try {
-            String encodedBookCode = URLEncoder.encode("gcdkyKnXjN", StandardCharsets.UTF_8);
+            String encodedBookCode = URLEncoder.encode(bookCode, StandardCharsets.UTF_8);
 
             return new URIBuilder(baseUrl)
                     .appendPathSegments(encodedBookCode, "items")
