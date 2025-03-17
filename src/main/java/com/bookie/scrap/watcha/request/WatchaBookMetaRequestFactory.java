@@ -3,29 +3,29 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
 import com.bookie.scrap.common.http.HttpMethod;
-import com.bookie.scrap.watcha.dto.WatchaBookDto;
+import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 
 @Slf4j
-public class WatchaBookRequestFactory implements RequestFactory<WatchaBookDto> {
+public class WatchaBookMetaRequestFactory implements RequestFactory<WatchaBookMetaDto> {
 
     private final String HTTP_URL_PATTERN ="https://pedia.watcha.com/api/contents/%s";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    HttpClientResponseHandler<WatchaBookDto> handler = WatchaBookReponseHandler.create();
+    HttpClientResponseHandler<WatchaBookMetaDto> handler = WatchaBookMetaReponseHandler.create();
 
-    private final static WatchaBookRequestFactory INSTANCE = new WatchaBookRequestFactory();
+    private final static WatchaBookMetaRequestFactory INSTANCE = new WatchaBookMetaRequestFactory();
 
-    private WatchaBookRequestFactory() {}
+    private WatchaBookMetaRequestFactory() {}
 
-    public static WatchaBookRequestFactory getInstance() {
+    public static WatchaBookMetaRequestFactory getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public Request<WatchaBookDto> createRequest(final String value) {
-        Request<WatchaBookDto> watchaRequest = new WatchaRequest<>();
+    public Request<WatchaBookMetaDto> createRequest(final String value) {
+        Request<WatchaBookMetaDto> watchaRequest = new WatchaRequest<>();
         String endPoint = String.format(HTTP_URL_PATTERN, value);
 
         watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
