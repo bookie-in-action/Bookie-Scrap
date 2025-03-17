@@ -15,39 +15,50 @@ import java.nio.charset.StandardCharsets;
 public class WatchaBaseRequestParam {
 
     private String bookCode;
-    private String page;
-    private String size;
+    private int page;
+    private int size;
 
-    public WatchaBaseRequestParam(String bookCode, String page, String size) {
+    public WatchaBaseRequestParam(String bookCode, int page, int size) {
+        validNotEmpty(bookCode, "BookCode parameter");
+        validatePage(page);
+        validateSize(size);
+
         this.bookCode = bookCode;
         this.page = page;
         this.size = size;
     }
 
     public String buildUrl(String baseUrl) {
-        // 필수 값 검증
-        if (baseUrl == null || baseUrl.isBlank()) {
-            throw new IllegalArgumentException("Base URL must not be null or empty.");
-        }
-        if (bookCode == null || bookCode.isBlank()) {
-            throw new IllegalArgumentException("Book Code parameter must not be null or empty.");
-        }
-        if (page == null || page.isBlank()) {
-            throw new IllegalArgumentException("Page parameter must not be null or empty.");
-        }
-        if (size == null || size.isBlank()) {
-            throw new IllegalArgumentException("Size parameter must not be null or empty.");
-        }
+
+        validNotEmpty(baseUrl, "BaseURL");
 
         try {
             return new URIBuilder(baseUrl + "/" + URLEncoder.encode(bookCode, StandardCharsets.UTF_8))
-                    .addParameter("page", page)
-                    .addParameter("size", size)
+                    .addParameter("page", String.valueOf(page))
+                    .addParameter("size", String.valueOf(size))
                     .build()
                     .toString();
         } catch (URISyntaxException e) {
-            log.error("Invalid URL : {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("Failed to build URL for bookCode: {} with baseUrl: {}", bookCode, baseUrl, e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void validNotEmpty(String text, String fieldName) {
+        if (text == null || text.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " must not be null or empty");
+        }
+    }
+
+    private void validatePage(int page) {
+        if (page < 0) {
+            throw new IllegalArgumentException("page parameter must be greater than or equal to 0");
+        }
+    }
+
+    private void validateSize(int size) {
+        if (size < 1) {
+            throw new IllegalArgumentException("size parameter must be greater than or equal to 1");
         }
     }
 }
