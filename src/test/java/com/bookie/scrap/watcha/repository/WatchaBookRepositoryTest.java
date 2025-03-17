@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.startup.InitManager;
+import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.watcha.request.WatchaBookRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookDto;

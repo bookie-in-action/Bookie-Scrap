@@ -1,7 +1,7 @@
 package com.bookie.scrap.common.http;
 
-import com.bookie.scrap.common.startup.Initializable;
-import com.bookie.scrap.common.startup.Shutdownable;
+import com.bookie.scrap.common.lifecycle.Initializable;
+import com.bookie.scrap.common.lifecycle.Shutdownable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
