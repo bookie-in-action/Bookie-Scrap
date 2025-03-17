@@ -30,11 +30,11 @@ public class WatchaBookcaseReponseHandler {
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");
 
-                        if(!contentNode.isNull()){
-                            WatchaBookcaseDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseDTO.class);
-                            bookcaseDetailList.add(watchaBookcase);
-                        }
+                    if(!contentNode.isNull()){
+                        WatchaBookcaseDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseDTO.class);
+                        bookcaseDetailList.add(watchaBookcase);
                     }
+                }
                 return bookcaseDetailList;
 
             } catch (Exception e) {
