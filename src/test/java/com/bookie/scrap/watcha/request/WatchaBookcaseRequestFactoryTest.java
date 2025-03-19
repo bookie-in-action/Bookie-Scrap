@@ -3,7 +3,6 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.request.Request;
 import com.bookie.scrap.common.request.RequestFactory;
 import com.bookie.scrap.common.startup.InitManager;
-import com.bookie.scrap.watcha.domain.PageInfo;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +30,12 @@ class WatchaBookcaseRequestFactoryTest {
     void createRequest() {
         RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
 
-        PageInfo pageInfo = PageInfo.builder()
-                .page("1")
-                .size("12")
-                .build();
+        WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", "1", "12");
 
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", pageInfo);
+        log.info("======================== testGetDetail Execute =============================");
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
-        log.info("bookCaseList : {}", bookcaseList);
+        log.info("Result Data : {}", bookcaseList);
         log.info("======================== testGetDetail END =============================");
 
     }
@@ -58,12 +55,9 @@ class WatchaBookcaseRequestFactoryTest {
         // WatchaBookcase Response
         RequestFactory<List<WatchaBookcaseDTO>> watchaBookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
 
-        PageInfo pageInfo = PageInfo.builder()
-                                .page("1")
-                                .size("12")
-                                .build();
+        WatchaBaseRequestParam watchaBaseRequestParam = new WatchaBaseRequestParam("gcdkyKnXjN", "1", "12");
 
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", pageInfo);
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaBaseRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
         log.info("bookCaseList : {}", bookcaseList);
 

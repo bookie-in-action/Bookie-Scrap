@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Getter
 @Setter
-@Deprecated
 public class WatchaBaseRequestParam {
 
     private String bookCode;
