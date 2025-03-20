@@ -1,29 +1,23 @@
-package com.bookie.scrap.watcha.domain;
+package com.bookie.scrap.common.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.bookie.scrap.common.util.StringUtil;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
 
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+
 
 @Slf4j
-@Getter
-@Setter
-public class WatchaBaseRequestParam {
+public class PageInfo {
 
-    private String bookCode;
-    private int page;
-    private int size;
+    protected int page;
+    protected int size;
 
-    public WatchaBaseRequestParam(String bookCode, int page, int size) {
-        validNotEmpty(bookCode, "BookCode parameter");
+    public PageInfo(int page, int size) {
         validatePage(page);
         validateSize(size);
 
-        this.bookCode = bookCode;
         this.page = page;
         this.size = size;
     }
@@ -32,28 +26,25 @@ public class WatchaBaseRequestParam {
         this.page += 1;
     }
 
-    public String buildUrl(String baseUrl) {
+    public String buildUrlWithPageInfo(String baseUrl) {
 
-        validNotEmpty(baseUrl, "BaseURL");
+        validNotEmpty(baseUrl, "baseUrl");
 
         try {
-            String encodedBookCode = URLEncoder.encode(bookCode, StandardCharsets.UTF_8);
-
             return new URIBuilder(baseUrl)
-                    .appendPathSegments(encodedBookCode, "items")
                     .addParameter("page", String.valueOf(page))
                     .addParameter("size", String.valueOf(size))
                     .build()
                     .toString();
 
         } catch (URISyntaxException e) {
-            log.error("Failed to build URL for bookCode: {} with baseUrl: {}", bookCode, baseUrl, e);
+            log.error("Failed to build URL for baseUrl {} with PageInfo: {}", baseUrl, this);
             throw new IllegalStateException(e);
         }
     }
 
-    private void validNotEmpty(String text, String fieldName) {
-        if (text == null || text.isBlank()) {
+    protected void validNotEmpty(String text, String fieldName) {
+        if (!StringUtil.hasText(text)) {
             throw new IllegalArgumentException(fieldName + " must not be null or empty");
         }
     }
@@ -69,4 +60,6 @@ public class WatchaBaseRequestParam {
             throw new IllegalArgumentException("size parameter must be greater than or equal to 1");
         }
     }
+
 }
+
