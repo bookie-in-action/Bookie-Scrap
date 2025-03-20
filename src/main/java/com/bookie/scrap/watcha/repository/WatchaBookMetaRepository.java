@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.repository;
 
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.Repository;
+import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,16 +11,16 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 
 @Slf4j
-public class WatchaBookRepository implements Repository<WatchaBookEntity> {
+public class WatchaBookMetaRepository implements Repository<WatchaBookEntity> {
 
-    private static final WatchaBookRepository INSTANCE = new WatchaBookRepository();
+    private static final WatchaBookMetaRepository INSTANCE = new WatchaBookMetaRepository();
     private final EntityManagerFactory emf;
 
-    private WatchaBookRepository() {
+    private WatchaBookMetaRepository() {
         this.emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();
     }
 
-    public static WatchaBookRepository getInstance() {
+    public static WatchaBookMetaRepository getInstance() {
         return INSTANCE;
     }
 

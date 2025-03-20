@@ -1,9 +1,9 @@
 package com.bookie.scrap.common.scheduler;
 
-import com.bookie.scrap.common.startup.Initializable;
+import com.bookie.scrap.common.lifecycle.Initializable;
 import com.bookie.scrap.common.properties.SchedulerProperties;
 import com.bookie.scrap.common.properties.SchedulerProperties.Key;
-import com.bookie.scrap.common.startup.Shutdownable;
+import com.bookie.scrap.common.lifecycle.Shutdownable;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.DirectSchedulerFactory;

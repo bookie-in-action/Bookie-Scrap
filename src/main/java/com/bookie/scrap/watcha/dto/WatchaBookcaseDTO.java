@@ -55,9 +55,12 @@ public class WatchaBookcaseDTO {
 
     @JsonProperty("nations")
     protected void setNations(List<JsonNode> nationsNode) {
-        this.nations = Optional.ofNullable(nationsNode)
-                .orElse(Collections.emptyList())
-                .stream()
+        if (nationsNode == null) {
+            this.nations = Collections.emptyList();
+            return;
+        }
+
+        this.nations = nationsNode.stream()
                 .map(node -> node.path("name").asText())
                 .collect(Collectors.toList());
     }

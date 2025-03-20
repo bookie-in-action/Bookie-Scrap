@@ -3,7 +3,7 @@
 APP_NAME="BookieScrap"
 
 #JAVA_BIN="/c/Java/jdk-11.0.22/bin/java"
-MAIN_CLASS="com.bookie.scrap.startup.Main"
+MAIN_CLASS="com.bookie.scrap.lifecycle.Main"
 JAVA_BIN="$JAVA_HOME/bin/java"
 
 HOME_DIR="/Users/hs_/Documents/github/bookie_pjt/Bookie-Scrap/server"

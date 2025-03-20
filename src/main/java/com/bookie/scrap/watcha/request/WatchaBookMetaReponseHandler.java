@@ -3,7 +3,7 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.util.HttpResponseUtil;
 import com.bookie.scrap.common.util.ObjectMapperUtil;
 import com.bookie.scrap.common.http.HttpRequestExecutor;
-import com.bookie.scrap.watcha.dto.WatchaBookDto;
+import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.type.WatchaBookType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,26 +27,26 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class WatchaBookReponseHandler {
+public class WatchaBookMetaReponseHandler {
 
 
-    public static HttpClientResponseHandler<WatchaBookDto> create() {
+    public static HttpClientResponseHandler<WatchaBookMetaDto> create() {
         return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
     }
 
-    private static Function<HttpEntity, WatchaBookDto> createHandlerLogic() {
+    private static Function<HttpEntity, WatchaBookMetaDto> createHandlerLogic() {
 
 
         return httpEntity -> {
 
             try {
-                WatchaBookDto bookDetail =
-                        ObjectMapperUtil.readValue(EntityUtils.toString(httpEntity), Response.class).getWatchaBookDto();
+                WatchaBookMetaDto bookDetail =
+                        ObjectMapperUtil.readValue(EntityUtils.toString(httpEntity), Response.class).getWatchaBookMetaDto();
 
 
                 log.debug("=> Start searching for External Service URL [{}/{}]", bookDetail.getBookCode(), bookDetail.getMainTitle());
                 List<String> redirectUrls = bookDetail.getExternalServices().stream()
-                        .map(WatchaBookReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
+                        .map(WatchaBookMetaReponseHandler::fetchWatchaRedirectUrl).collect(Collectors.toList());
 
                 bookDetail.setUrlMap(mapExternalUrlsToTypes(redirectUrls));
                 log.debug("<= End searching for External Service URL");
@@ -88,7 +88,7 @@ public class WatchaBookReponseHandler {
                     //http://www.kyobobook.co.kr/cooper/redirect_over.jsp?LINK=WPD&next_url=https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9791189327156&utm_source=watchapedia&utm_medium=posts&utm_campaign=9791189327156";
                     matcher = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)").matcher(href);
                     if (matcher.find()) {
-                        String kyoUrl = WatchaBookReponseHandler.fetchAladinRedirectUrl("https://" + matcher.group(1));
+                        String kyoUrl = WatchaBookMetaReponseHandler.fetchAladinRedirectUrl("https://" + matcher.group(1));
                         urlMap.put(WatchaBookType.EXTERNAL_SERVICE.KYOBO, kyoUrl);
                     }
                 }
@@ -100,11 +100,11 @@ public class WatchaBookReponseHandler {
     }
 
     private static String fetchWatchaRedirectUrl(String requestUrl) {
-        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, WatchaRequest.getWATCHA_HEADERS());
+        return WatchaBookMetaReponseHandler.fetchRedirectUrl(requestUrl, WatchaRequest.getWATCHA_HEADERS());
     }
 
     private static String fetchAladinRedirectUrl(String requestUrl) {
-        return WatchaBookReponseHandler.fetchRedirectUrl(requestUrl, Map.of());
+        return WatchaBookMetaReponseHandler.fetchRedirectUrl(requestUrl, Map.of());
     }
 
     private static String fetchRedirectUrl(String requestUrl, Map<String, String> headers) {
@@ -127,6 +127,6 @@ public class WatchaBookReponseHandler {
     private static class Response {
         @Getter
         @JsonProperty("result")
-        private WatchaBookDto watchaBookDto;
+        private WatchaBookMetaDto watchaBookMetaDto;
     }
 }
