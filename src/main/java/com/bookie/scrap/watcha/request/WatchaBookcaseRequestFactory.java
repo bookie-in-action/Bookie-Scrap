@@ -1,17 +1,19 @@
 package com.bookie.scrap.watcha.request;
 
+import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.common.http.HttpMethod;
+import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
+import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
-import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import java.util.List;
 
 @Slf4j
-public class WatchaBookcaseRequestFactory implements RequestFactory<List<WatchaBookcaseDTO>> {
+public class WatchaBookcaseRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseDTO>> {
 
     private final String HTTP_BASE_URL = "https://pedia.watcha.com/api/decks";
 
@@ -31,15 +33,15 @@ public class WatchaBookcaseRequestFactory implements RequestFactory<List<WatchaB
     }
 
     @Override
-    public Request<List<WatchaBookcaseDTO>> createRequest(WatchaBaseRequestParam watchaRequestParamDTO) {
+    public Request<List<WatchaBookcaseDTO>> createRequest(WatchaRequestParam requestParam) {
         Request<List<WatchaBookcaseDTO>> watchaRequest = new WatchaRequest<>();
 
-        String endPoint = watchaRequestParamDTO.buildUrl(HTTP_BASE_URL);
+        String endPoint = requestParam.buildUrlWithParamInfo(HTTP_BASE_URL);
 
         watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
         watchaRequest.setResponseHandler(handler);
 
-        log.debug("Created WatchaRequest value: {}, endpoint: {}, method: {}", watchaRequestParamDTO.getBookCode(), endPoint, HTTP_METHOD);
+//        log.debug("Created WatchaRequest value: {}, endpoint: {}, method: {}", watchaWatchaRequestParamDTO.getBookCode(), endPoint, HTTP_METHOD);
 
         return watchaRequest;
     }
