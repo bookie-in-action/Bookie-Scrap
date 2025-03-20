@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.startup;
+package com.bookie.scrap.common.lifecycle;
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.common.http.HttpClientProvider;

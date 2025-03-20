@@ -1,8 +1,8 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.request.Request;
-import com.bookie.scrap.common.request.RequestFactory;
-import com.bookie.scrap.common.startup.InitManager;
+import com.bookie.scrap.common.domain.Request;
+import com.bookie.scrap.common.domain.RequestFactory;
+import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import lombok.extern.slf4j.Slf4j;

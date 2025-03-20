@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.request;
+package com.bookie.scrap.common.domain;
 
 import com.bookie.scrap.watcha.domain.WatchaBaseRequestParam;
 
