@@ -69,10 +69,4 @@ class ThreadTest {
 
     }
 
-    @Test
-    void currentTimeMillis() {
-        System.out.println(System.currentTimeMillis());
-    }
-
-
 }
