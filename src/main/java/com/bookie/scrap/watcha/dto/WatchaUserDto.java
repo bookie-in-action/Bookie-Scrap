@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.dto;
 
 
+import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaUser {
+public class WatchaUserDto {
 
     @JsonProperty("code")
     private String userCode;
@@ -42,6 +43,20 @@ public class WatchaUser {
     private Integer wishesCnt;
 
     @JsonProperty("decks_count")
-    private Integer decksCnt;
+    private Integer bookcaseCnt;
 
+    public WatchaUserEntity toEntity() {
+        return WatchaUserEntity.builder()
+                .userCode(userCode)
+                .userName(userName)
+                .userPhoto(userPhoto)
+                .isWatchaPlayUser(isWatchaPlayUser)
+                .isOfficialUser(isOfficialUser)
+                .userDescription(userDescription)
+                .commentsCnt(commentsCnt)
+                .ratingsCnt(ratingsCnt)
+                .wishesCnt(wishesCnt)
+                .bookcaseCnt(bookcaseCnt)
+                .build();
+    }
 }

@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.type;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,9 @@ public class WatchaType {
 
     public enum EXTERNAL_SERVICE {ALADIN, YES24, KYOBO}
 
-    @Getter
-    @Setter
     @ToString
+    @Embeddable
+    @Getter @Setter
     @NoArgsConstructor
     public static class Poster {
         private String hd;
@@ -21,9 +22,9 @@ public class WatchaType {
         private String small;
     }
 
-    @Getter
-    @Setter
     @ToString
+    @Embeddable
+    @Getter @Setter
     @NoArgsConstructor
     public static class UserPhoto {
         private String original;
