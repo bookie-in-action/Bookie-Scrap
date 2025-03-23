@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.dto;
 
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
-import com.bookie.scrap.watcha.type.WatchaBookType;
+import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +36,7 @@ public class WatchaBookMetaDto {
     private Integer publishYear;
 
     @JsonProperty("poster")
-    private WatchaBookType.Poster poster;
+    private WatchaType.Poster poster;
 
     @JsonProperty("author_names")
     private List<String> authors;
@@ -72,7 +72,7 @@ public class WatchaBookMetaDto {
     }
 
     private List<String> externalServices;
-    @Setter private Map<WatchaBookType.EXTERNAL_SERVICE, String> urlMap;
+    @Setter private Map<WatchaType.EXTERNAL_SERVICE, String> urlMap;
 
     @JsonProperty("external_services")
     protected void setExternalServices(List<JsonNode> externalServicesNode) {
@@ -109,9 +109,9 @@ public class WatchaBookMetaDto {
                 .averageRating(this.averageRating)
                 .ratingsCount(this.ratingsCount)
                 .wishesCount(this.wishesCount)
-                .aladinUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.ALADIN))
-                .yes24Url(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.YES24))
-                .kyoboUrl(this.urlMap.get(WatchaBookType.EXTERNAL_SERVICE.KYOBO))
+                .aladinUrl(this.urlMap.get(WatchaType.EXTERNAL_SERVICE.ALADIN))
+                .yes24Url(this.urlMap.get(WatchaType.EXTERNAL_SERVICE.YES24))
+                .kyoboUrl(this.urlMap.get(WatchaType.EXTERNAL_SERVICE.KYOBO))
                 .build();
     }
 }

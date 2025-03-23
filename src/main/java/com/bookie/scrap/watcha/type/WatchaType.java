@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-public class WatchaBookType {
+public class WatchaType {
 
     public enum EXTERNAL_SERVICE {ALADIN, YES24, KYOBO}
 
@@ -18,6 +18,16 @@ public class WatchaBookType {
         private String xlarge;
         private String large;
         private String medium;
+        private String small;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    public static class UserPhoto {
+        private String original;
+        private String large;
         private String small;
     }
 }
