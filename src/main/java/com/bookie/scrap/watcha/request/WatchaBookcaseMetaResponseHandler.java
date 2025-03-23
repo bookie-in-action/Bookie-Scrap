@@ -28,8 +28,12 @@ public class WatchaBookcaseMetaResponseHandler {
         return httpEntity -> {
 
             try {
-                JsonNode jsonNode = ObjectMapperUtil.readTree(httpEntity.getContent()).path("result").path("result");
-                List<WatchaBookcaseMetaDto> watchaBookcaseMetaDtoList = ObjectMapperUtil.parseListFromTree(jsonNode, WatchaBookcaseMetaDto.class);
+                JsonNode jsonNode = ObjectMapperUtil.readTree(httpEntity.getContent()).path("result");
+                JsonNode resultNode = jsonNode.path("result");
+                List<WatchaBookcaseMetaDto> watchaBookcaseMetaDtoList = ObjectMapperUtil.parseListFromTree(resultNode, WatchaBookcaseMetaDto.class);
+
+                String bookCode = jsonNode.path("next_uri").asText().split("/")[3];
+                watchaBookcaseMetaDtoList.stream().forEach(dto -> dto.setBookCode(bookCode));
 
                 log.debug("Parsed BookcaseMeta: {}", watchaBookcaseMetaDtoList);
 
