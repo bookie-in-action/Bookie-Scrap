@@ -52,4 +52,15 @@ public final class WatchaUserEntity extends BaseEntity {
     @Column(name = "bookcase_count")
     private Integer bookcaseCnt;
 
+    public void updateEntity(WatchaUserEntity that) {
+        this.userName = that.userName;
+        this.userPhoto = that.userPhoto;
+        this.isWatchaPlayUser = that.isWatchaPlayUser;
+        this.isOfficialUser = that.isOfficialUser;
+        this.userDescription = that.userDescription;
+        this.commentsCnt = that.commentsCnt;
+        this.ratingsCnt = that.ratingsCnt;
+        this.wishesCnt = that.wishesCnt;
+        this.bookcaseCnt = that.bookcaseCnt;
+    }
 }
