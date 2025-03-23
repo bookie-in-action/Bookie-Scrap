@@ -28,7 +28,7 @@ public class WatchaBookcaseMetaResponseHandler {
         return httpEntity -> {
 
             try {
-                JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString(httpEntity)).path("result").path("result");
+                JsonNode jsonNode = ObjectMapperUtil.readTree(httpEntity.getContent()).path("result").path("result");
                 List<WatchaBookcaseMetaDto> watchaBookcaseMetaDtoList = ObjectMapperUtil.parseListFromTree(jsonNode, WatchaBookcaseMetaDto.class);
 
                 log.debug("Parsed BookcaseMeta: {}", watchaBookcaseMetaDtoList);
@@ -38,7 +38,7 @@ public class WatchaBookcaseMetaResponseHandler {
             } catch (JsonProcessingException e) {
                 log.error("Error parsing JSON response", e);
                 throw new RuntimeException(e);
-            } catch (IOException | ParseException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
