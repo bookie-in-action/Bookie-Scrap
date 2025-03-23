@@ -27,8 +27,8 @@ class WatchaBookMetaRepositoryTest {
     }
 
     @Test
-    public void selectTest() {
-        List<WatchaBookEntity> results = WatchaBookMetaRepository.getInstance().select("byLKj8M");
+    public void selectWithCodeTest() {
+        List<WatchaBookEntity> results = WatchaBookMetaRepository.getInstance().selectWithCode("byLKj8M");
     }
 
 

@@ -9,7 +9,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NonUniqueResultException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.SQLDataException;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +26,7 @@ public class WatchaBookMetaRepository implements Repository<WatchaBookEntity> {
     }
 
     @Override
-    public List<WatchaBookEntity> select(String bookCode) {
+    public List<WatchaBookEntity> selectWithCode(String bookCode) {
         try (EntityManager em = emf.createEntityManager()) {
 
             String jpql = "SELECT w FROM WatchaBookEntity w WHERE w.bookCode = :bookCode";
