@@ -14,7 +14,7 @@ public class WatchaBookMetaRequestFactory implements WatchaRequestFactory<Watcha
 
     private final String HTTP_URL_PATTERN ="https://pedia.watcha.com/api/contents/%s";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    HttpClientResponseHandler<WatchaBookMetaDto> handler = WatchaBookMetaReponseHandler.create();
+    private final HttpClientResponseHandler<WatchaBookMetaDto> handler = WatchaBookMetaReponseHandler.create();
 
     private final static WatchaBookMetaRequestFactory INSTANCE = new WatchaBookMetaRequestFactory();
 
