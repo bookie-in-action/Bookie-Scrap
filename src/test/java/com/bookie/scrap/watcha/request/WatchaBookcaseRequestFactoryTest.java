@@ -1,7 +1,6 @@
 package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
@@ -37,7 +36,7 @@ class WatchaBookcaseRequestFactoryTest {
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
         log.info("======================== testGetDetail Execute =============================");
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaRequestParam);
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("", watchaRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
         log.info("Result Data : {}", bookcaseList);
         log.info("======================== testGetDetail END =============================");
@@ -60,7 +59,7 @@ class WatchaBookcaseRequestFactoryTest {
 //        WatchaRequestParam watchaRequestParam = new WatchaRequestParam("gcdkyKnXjN", 1, 12);
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaRequestParam);
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("", watchaRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
         log.info("bookCaseList : {}", bookcaseList);
 
@@ -73,7 +72,7 @@ class WatchaBookcaseRequestFactoryTest {
 //        WatchaRequestParam watchaRequestParam = new WatchaRequestParam("gcdkyKnXjN", 1, 12);
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(watchaRequestParam);
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("", watchaRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
 
         Assertions.assertTrue(bookcaseList.isEmpty());

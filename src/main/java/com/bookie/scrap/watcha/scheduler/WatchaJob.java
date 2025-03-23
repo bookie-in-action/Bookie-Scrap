@@ -2,14 +2,13 @@ package com.bookie.scrap.watcha.scheduler;
 
 import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
+import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
-import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.request.WatchaBookcaseRequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -30,7 +29,7 @@ public class WatchaJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
-        Request<List<WatchaBookcaseDTO>> bookcaseRequest = bookcaseRequestFactory.createRequest(watchaRequestParam);
+        Request<List<WatchaBookcaseDTO>> bookcaseRequest = bookcaseRequestFactory.createRequest("", watchaRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = bookcaseRequest.execute();
 
         for (WatchaBookcaseDTO bookcaseDTO : bookcaseList) {

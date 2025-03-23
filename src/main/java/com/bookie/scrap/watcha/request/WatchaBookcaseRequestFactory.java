@@ -1,8 +1,6 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.common.http.HttpMethod;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
@@ -33,7 +31,7 @@ public class WatchaBookcaseRequestFactory implements WatchaRequestFactory<List<W
     }
 
     @Override
-    public Request<List<WatchaBookcaseDTO>> createRequest(WatchaRequestParam requestParam) {
+    public Request<List<WatchaBookcaseDTO>> createRequest(String bookCode, WatchaRequestParam requestParam) {
         Request<List<WatchaBookcaseDTO>> watchaRequest = new WatchaRequest<>();
 
         String endPoint = requestParam.buildUrlWithParamInfo(HTTP_BASE_URL);
