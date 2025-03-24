@@ -6,7 +6,7 @@ import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
-import com.bookie.scrap.watcha.entity.WatchaBookEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.request.WatchaBookcaseRequestFactory;
@@ -24,7 +24,7 @@ public class WatchaJob implements Job {
     private final WatchaRequestFactory<List<WatchaBookcaseDTO>> bookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
     private final WatchaRequestFactory<WatchaBookMetaDto> bookRequestFactory = WatchaBookMetaRequestFactory.getInstance();
 
-    private final Repository<WatchaBookEntity> bookMetaRepository = WatchaBookMetaRepository.getInstance();
+    private final Repository<WatchaBookMetaEntity> bookMetaRepository = WatchaBookMetaRepository.getInstance();
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
@@ -38,7 +38,7 @@ public class WatchaJob implements Job {
             String bookCode = bookcaseDTO.getBookCode();
             Request<WatchaBookMetaDto> bookMetaRequest = bookRequestFactory.createRequest(bookCode);
             WatchaBookMetaDto bookMetaDto = bookMetaRequest.execute();
-            bookMetaRepository.insertOrUpdate(bookMetaDto.toEntity());
+//            bookMetaRepository.insertOrUpdate(bookMetaDto.toEntity(), );
 
             // comment repo에 저장
         }
