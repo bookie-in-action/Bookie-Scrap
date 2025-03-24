@@ -12,9 +12,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public final class WatchaBookcaseMetaEntity extends BaseEntity {
 
-    @Column(name = "book_code")
-    private String bookCode;
-
     @Column(name = "bookcase_code")
     private String bookcaseCode;
 
@@ -40,18 +37,29 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
     @Column(name = "bookcase_updated_at")
     private String bookcaseUpdatedAt;
 
+    @Column(name = "user_code")
+    private String userCode;
+
+    @Column(name = "book_code")
+    private String bookCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_code", referencedColumnName = "user_code")
+    @JoinColumn(name = "user_code", referencedColumnName = "user_code", insertable = false, updatable = false)
     private WatchaUserEntity user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_code", referencedColumnName = "book_code", insertable = false, updatable = false)
+    private WatchaBookMetaEntity bookMeta;
+
     public void updateEntity(WatchaBookcaseMetaEntity that) {
+        this.userCode = that.userCode;
         this.bookCode = that.bookCode;
+        this.bookMeta = that.bookMeta;
         this.bookcaseTitle = that.bookcaseTitle;
         this.bookcaseDescription = that.bookcaseDescription;
         this.bookcaseLikes = that.bookcaseLikes;
         this.bookcaseRepliesCnt = that.bookcaseRepliesCnt;
         this.bookcaseCreatedAt = that.bookcaseCreatedAt;
         this.bookcaseUpdatedAt = that.bookcaseUpdatedAt;
-        this.user = that.user;
     }
 }

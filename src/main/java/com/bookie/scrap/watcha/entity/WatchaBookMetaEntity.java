@@ -13,7 +13,7 @@ import java.util.List;
 @Entity @SuperBuilder
 @Table(name = "BS_WATCHA_BOOK")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public final class WatchaBookEntity extends BaseEntity {
+public final class WatchaBookMetaEntity extends BaseEntity {
 
     @Column(name = "book_code")
     private String bookCode;
@@ -87,7 +87,7 @@ public final class WatchaBookEntity extends BaseEntity {
     @Column(name = "kyobo_url")
     private String kyoboUrl;
 
-    public WatchaBookEntity updateEntity(WatchaBookEntity that) {
+    public WatchaBookMetaEntity updateEntity(WatchaBookMetaEntity that) {
         this.bookSubtitle = that.bookSubtitle;
         this.bookIndex = that.bookIndex;
         this.publishYear = that.publishYear;

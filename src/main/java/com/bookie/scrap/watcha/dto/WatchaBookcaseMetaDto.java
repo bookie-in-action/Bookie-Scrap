@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
+import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,9 +15,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaBookcaseMetaDto {
-
-    @Setter @JsonIgnore
-    private String bookCode;
 
     @JsonProperty("code")
     private String bookcaseCode;
@@ -44,6 +42,9 @@ public class WatchaBookcaseMetaDto {
 
     private WatchaUserDto user;
 
+    @Setter @JsonIgnore
+    private String bookCode;
+
     public WatchaBookcaseMetaEntity toEntity() {
         return WatchaBookcaseMetaEntity.builder()
                 .bookCode(bookCode)
@@ -55,7 +56,7 @@ public class WatchaBookcaseMetaDto {
                 .bookcaseRepliesCnt(bookcaseRepliesCnt)
                 .bookcaseCreatedAt(createdAt)
                 .bookcaseUpdatedAt(updatedAt)
-                .user(user.toEntity())
+                .userCode(user.getUserCode())
                 .build();
     }
 }

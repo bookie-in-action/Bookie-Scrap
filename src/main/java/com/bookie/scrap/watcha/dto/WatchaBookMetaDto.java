@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.entity.WatchaBookEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -87,8 +87,8 @@ public class WatchaBookMetaDto {
                 }).collect(Collectors.toList());
     }
 
-    public WatchaBookEntity toEntity() {
-        return WatchaBookEntity.builder()
+    public WatchaBookMetaEntity toEntity() {
+        return WatchaBookMetaEntity.builder()
                 .bookCode(this.bookCode)
                 .bookDescription(this.bookDescription)
                 .bookTitle(this.mainTitle)
