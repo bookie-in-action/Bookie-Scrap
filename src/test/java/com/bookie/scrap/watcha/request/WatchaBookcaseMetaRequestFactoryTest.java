@@ -75,4 +75,15 @@ class WatchaBookcaseMetaRequestFactoryTest {
         Assertions.assertNotNull(result.getUser().getUserPhoto().getLarge());
     }
 
+    @Test
+    void endOfPageTest() {
+        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaRequestParam requestParam = new WatchaRequestParam(100, 20, "", "");
+        String bookCode = "byLKj8M";
+        Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
+        List<WatchaBookcaseMetaDto> result = request.execute();
+
+        Assertions.assertEquals(0, result.size());
+    }
+
 }
