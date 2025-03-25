@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.util;
+package com.bookie.scrap.common.domain.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
