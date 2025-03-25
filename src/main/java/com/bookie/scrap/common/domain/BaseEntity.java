@@ -1,10 +1,9 @@
-package com.bookie.scrap.watcha.entity;
+package com.bookie.scrap.common.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.util.UUID;
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class WatchaEntity {
+public abstract class BaseEntity {
 
     @Id
     @Column(name = "snowflake_id", nullable = false, updatable = false)
@@ -24,10 +23,6 @@ public abstract class WatchaEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Version
-    @Column(name = "version", nullable = false)
-    private Long version;
 
     @PrePersist
     private void prePersist() {

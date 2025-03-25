@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.type.WatchaBookType;
+import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +10,6 @@ import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -32,7 +31,7 @@ public class WatchaBookcaseDTO {
     private Integer publishYear;
 
     @JsonProperty("poster")
-    private WatchaBookType.Poster poster;
+    private WatchaType.Poster poster;
 
     @JsonProperty("background_color")
     private String backgroundColor;

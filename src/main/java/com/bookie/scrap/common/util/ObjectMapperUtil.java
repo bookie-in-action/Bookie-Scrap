@@ -1,20 +1,13 @@
 package com.bookie.scrap.common.util;
 
-import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
-import com.bookie.scrap.watcha.request.WatchaBookcaseReponseHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -57,5 +50,19 @@ public class ObjectMapperUtil {
 
     public static <T> T treeToValue(JsonNode jsonNode, Class<T> clazz) throws IOException {
         return OBJECT_MAPPER.treeToValue(jsonNode, clazz);
+    }
+
+    /**
+     * [{}, {}, {}]
+     * jsonNode([]) 안에 들어있는 여러 {}를 dto로 변환 시키는 메서드 <br>
+     * 1개의 {}가 clazz 1개에 매핑됨
+     * @param jsonNode []
+     * @param clazz
+     * @return List<T>
+     * @param <T>
+     * @throws IOException
+     */
+    public static <T> List<T> parseListFromTree(JsonNode jsonNode, Class<T> clazz) throws IOException {
+        return OBJECT_MAPPER.readerForListOf(clazz).readValue(jsonNode);
     }
 }

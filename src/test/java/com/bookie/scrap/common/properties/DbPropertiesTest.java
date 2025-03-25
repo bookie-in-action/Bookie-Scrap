@@ -1,6 +1,5 @@
-package com.bookie.scrap.properties;
+package com.bookie.scrap.common.properties;
 
-import com.bookie.scrap.common.properties.DbProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

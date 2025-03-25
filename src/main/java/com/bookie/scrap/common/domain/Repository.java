@@ -1,12 +1,13 @@
 package com.bookie.scrap.common.domain;
 
+import jakarta.persistence.EntityManager;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface Repository<T> {
 
-    List<T> select(String code);
+    List<T> selectWithCode(String code, EntityManager em);
 
-    boolean insertOrUpdate(T dto);
+    void insertOrUpdate(T dto, EntityManager em);
 
 }
