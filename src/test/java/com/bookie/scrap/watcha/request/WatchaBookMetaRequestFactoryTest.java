@@ -26,6 +26,15 @@ class WatchaBookMetaRequestFactoryTest {
         Assertions.assertEquals("https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=284657330", bookDetail.getUrlMap().get(WatchaType.EXTERNAL_SERVICE.ALADIN));
         Assertions.assertEquals("https://www.yes24.com/Product/Goods/105526047", bookDetail.getUrlMap().get(WatchaType.EXTERNAL_SERVICE.YES24));
         Assertions.assertEquals("https://product.kyobobook.co.kr/detail/S000001925800", bookDetail.getUrlMap().get(WatchaType.EXTERNAL_SERVICE.KYOBO));
+//boBNGJd
+    }
+
+    @Test
+    void test() {
+        RequestFactory<WatchaBookMetaDto> watchaBookRequestFactory = WatchaBookMetaRequestFactory.getInstance();
+
+        Request<WatchaBookMetaDto> watchaRequest = watchaBookRequestFactory.createRequest("boBNGJd");
+        WatchaBookMetaDto bookDetail = watchaRequest.execute();
 
     }
 }
