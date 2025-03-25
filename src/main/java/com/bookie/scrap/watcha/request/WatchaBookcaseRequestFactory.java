@@ -13,10 +13,8 @@ import java.util.List;
 @Slf4j
 public class WatchaBookcaseRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseDTO>> {
 
-    private final String HTTP_BASE_URL = "https://pedia.watcha.com/api/decks";
-
+    private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s/items?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-
     HttpClientResponseHandler<List<WatchaBookcaseDTO>> handler = WatchaBookcaseReponseHandler.create();
 
     private final static WatchaBookcaseRequestFactory INSTANCE = new WatchaBookcaseRequestFactory();
@@ -34,12 +32,13 @@ public class WatchaBookcaseRequestFactory implements WatchaRequestFactory<List<W
     public Request<List<WatchaBookcaseDTO>> createRequest(String bookCode, WatchaRequestParam requestParam) {
         Request<List<WatchaBookcaseDTO>> watchaRequest = new WatchaRequest<>();
 
-        String endPoint = requestParam.buildUrlWithParamInfo(HTTP_BASE_URL);
+        String endPoint = String.format(HTTP_URL_PATTERN, bookCode);
+        String endPointWithParam = requestParam.buildUrlWithPageInfo(endPoint);
 
-        watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
+        watchaRequest.setMainRequest(HTTP_METHOD, endPointWithParam);
         watchaRequest.setResponseHandler(handler);
 
-//        log.debug("Created WatchaRequest value: {}, endpoint: {}, method: {}", watchaWatchaRequestParamDTO.getBookCode(), endPoint, HTTP_METHOD);
+        log.debug("Created WatchaRequest value: {}, endpoint: {}, method: {}", bookCode, endPointWithParam, HTTP_METHOD);
 
         return watchaRequest;
     }
