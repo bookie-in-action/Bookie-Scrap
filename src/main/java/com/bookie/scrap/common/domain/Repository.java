@@ -1,10 +1,11 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.domain;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Repository<T> {
 
-    Optional<T> select(String code);
+    List<T> select(String code);
 
     boolean insertOrUpdate(T dto);
 

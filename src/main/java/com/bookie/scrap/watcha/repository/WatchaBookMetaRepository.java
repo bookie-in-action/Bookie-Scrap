@@ -2,42 +2,44 @@ package com.bookie.scrap.watcha.repository;
 
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.Repository;
+import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaBookEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NonUniqueResultException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
+import java.sql.SQLDataException;
+import java.util.List;
 
 @Slf4j
-public class WatchaBookRepository implements Repository<WatchaBookEntity> {
+public class WatchaBookMetaRepository implements Repository<WatchaBookEntity> {
 
-    private static final WatchaBookRepository INSTANCE = new WatchaBookRepository();
+    private static final WatchaBookMetaRepository INSTANCE = new WatchaBookMetaRepository();
     private final EntityManagerFactory emf;
 
-    private WatchaBookRepository() {
+    private WatchaBookMetaRepository() {
         this.emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();
     }
 
-    public static WatchaBookRepository getInstance() {
+    public static WatchaBookMetaRepository getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public Optional<WatchaBookEntity> select(String bookCode) {
+    public List<WatchaBookEntity> select(String bookCode) {
         try (EntityManager em = emf.createEntityManager()) {
 
             String jpql = "SELECT w FROM WatchaBookEntity w WHERE w.bookCode = :bookCode";
 
-            WatchaBookEntity entity = em.createQuery(jpql, WatchaBookEntity.class)
+            List<WatchaBookEntity> results = em.createQuery(jpql, WatchaBookEntity.class)
                     .setParameter("bookCode", bookCode)
-                    .getSingleResult();
+                    .getResultList();
 
-            return Optional.ofNullable(entity);
+            return results;
         } catch (Exception e) {
-            log.error("An error occurred while selecting an entity with code: {}", bookCode, e);
-            return Optional.empty();
+            log.error("Error selecting entity with bookCode: {}", bookCode, e);
+            throw e;
         }
     }
 
@@ -50,18 +52,21 @@ public class WatchaBookRepository implements Repository<WatchaBookEntity> {
 
             String jpql = "SELECT e FROM WatchaBookEntity e WHERE e.bookCode = :bookCode";
 
-            WatchaBookEntity existingEntity =
-                    em.createQuery(jpql, WatchaBookEntity.class)
-                            .setParameter("bookCode", targetEntity.getBookCode())
-                            .getSingleResult();
+            List<WatchaBookEntity> existingEntities = em.createQuery(jpql, WatchaBookEntity.class)
+                    .setParameter("bookCode", targetEntity.getBookCode())
+                    .getResultList();
 
-            if (existingEntity != null) {
+            if (existingEntities.isEmpty()) {
+                em.persist(targetEntity);
+                log.info("insert: {}", targetEntity);
+            } else if (existingEntities.size() == 1) {
+                WatchaBookEntity existingEntity = existingEntities.get(0);
                 existingEntity.updateEntity(targetEntity);
                 log.info("update: {}", existingEntity);
             } else {
-                em.persist(targetEntity);
-                log.info("insert: {}", targetEntity);
+                throw new NonUniqueResultException("select result is multiple: " + existingEntities.size());
             }
+
             em.getTransaction().commit();
 
             return true;

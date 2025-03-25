@@ -26,7 +26,7 @@
 //        EntityManagerFactoryProvider.getInstance().init("dev");
 //        WatchaBookDetail book = HttpRequestExecutor.execute(new WatchaBook("byLKj8M"));
 //
-//        boolean isInserted = WatchaBookRepository.getInstance().insertOrUpdate(book.toEntity());
+//        boolean isInserted = WatchaBookMetaRepository.getInstance().insertOrUpdate(book.toEntity());
 //        Assertions.assertTrue(isInserted);
 //
 //    }

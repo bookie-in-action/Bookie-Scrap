@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.config;
 
-import com.bookie.scrap.common.request.BaseRequest;
+import com.bookie.scrap.common.domain.BaseRequest;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 
 import java.util.Map;

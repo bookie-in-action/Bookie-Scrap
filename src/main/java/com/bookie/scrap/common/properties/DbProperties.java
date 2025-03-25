@@ -52,13 +52,9 @@ public class DbProperties implements InitializableProperties {
 
             log.info("============ [DB PROPERTIES: {}] ============", runningOption.toUpperCase());
             for(Key key : Key.values()) {
-                String fileLoadedValue = dbProperties.getProperty(prefix + key.suffix);
+                String fileLoadedValue = dbProperties.getProperty(prefix + key.suffix, key.defaultValue);
 
-                if (fileLoadedValue != null && !fileLoadedValue.isEmpty()) {
-                    PROPERTY_MAP.put(key, fileLoadedValue);
-                } else if(!key.defaultValue.isEmpty() || fileLoadedValue != null) {
-                    PROPERTY_MAP.put(key, key.defaultValue);
-                }
+                PROPERTY_MAP.put(key, fileLoadedValue);
 
                 // 로그 길이 맞추기
                 int paddingLength = 15;
