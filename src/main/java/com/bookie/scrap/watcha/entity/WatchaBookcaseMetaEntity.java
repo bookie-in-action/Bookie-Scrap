@@ -17,12 +17,10 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
     private String bookcaseCode;
 
     @Column(name = "bookcase_title")
-    @Convert(converter = EmojiAndSymbolConverter.class)
     private String bookcaseTitle;
 
     @Lob
     @Column(name = "bookcase_description", columnDefinition = "MEDIUMTEXT")
-    @Convert(converter = EmojiAndSymbolConverter.class)
     private String bookcaseDescription;
 
     @Column(name = "book_cnt_in_bookcase")

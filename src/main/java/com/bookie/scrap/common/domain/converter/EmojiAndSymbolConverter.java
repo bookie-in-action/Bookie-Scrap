@@ -2,7 +2,7 @@ package com.bookie.scrap.common.domain.converter;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-@Converter
+@Converter(autoApply = true)
 public class EmojiAndSymbolConverter implements AttributeConverter<String, String> {
 
     @Override
