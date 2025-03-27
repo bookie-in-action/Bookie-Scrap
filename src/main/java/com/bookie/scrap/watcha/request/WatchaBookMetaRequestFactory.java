@@ -3,6 +3,7 @@ package com.bookie.scrap.watcha.request;
 import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.domain.RequestFactory;
 import com.bookie.scrap.common.http.HttpMethod;
+import com.bookie.scrap.common.util.ThreadUtil;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class WatchaBookMetaRequestFactory implements WatchaRequestFactory<Watcha
 
     @Override
     public Request<WatchaBookMetaDto> createRequest(final String value) {
+        ThreadUtil.sleep();
+
         Request<WatchaBookMetaDto> watchaRequest = new WatchaRequest<>();
         String endPoint = String.format(HTTP_URL_PATTERN, value);
 

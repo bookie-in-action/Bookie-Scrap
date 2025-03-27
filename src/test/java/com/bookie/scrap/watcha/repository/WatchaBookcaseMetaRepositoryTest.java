@@ -7,11 +7,9 @@ import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
-import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
-import com.bookie.scrap.watcha.request.WatchaBookcaseMetaRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetaRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +61,7 @@ class WatchaBookcaseMetaRepositoryTest {
             String bookCode = "byLKj8M";
 
 
-            List<WatchaBookcaseMetaDto> result = WatchaBookcaseMetaRequestFactory.getInstance().createRequest(bookCode, requestParam).execute();
+            List<WatchaBookcaseMetaDto> result = WatchaBookToBookcaseMetaRequestFactory.getInstance().createRequest(bookCode, requestParam).execute();
 
             Request<WatchaBookMetaDto> request = WatchaBookMetaRequestFactory.getInstance().createRequest(bookCode);
             WatchaBookMetaDto bookMetaDto = request.execute();

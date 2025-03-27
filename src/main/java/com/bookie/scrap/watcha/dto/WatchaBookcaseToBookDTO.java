@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.entity.WatchaBookcaseEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookcaseDTO {
+public class WatchaBookcaseToBookDTO {
 
     @JsonProperty("code")
     private String bookCode;
@@ -66,8 +66,8 @@ public class WatchaBookcaseDTO {
     }
 
     // Entity 로 변환
-    public static WatchaBookcaseEntity toEntity(WatchaBookcaseDTO dto) {
-        return WatchaBookcaseEntity.builder()
+    public static WatchaBookcaseToBookEntity toEntity(WatchaBookcaseToBookDTO dto) {
+        return WatchaBookcaseToBookEntity.builder()
                 .bookCode(dto.getBookCode())
                 .contentType(dto.getContentType())
                 .mainTitle(dto.getMainTitle())

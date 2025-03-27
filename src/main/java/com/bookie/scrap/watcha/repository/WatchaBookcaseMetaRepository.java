@@ -37,6 +37,8 @@ public class WatchaBookcaseMetaRepository implements Repository<WatchaBookcaseMe
     @Override
     public void insertOrUpdate(WatchaBookcaseMetaEntity targetEntity, EntityManager em) {
 
+        WatchaUserRepository.getInstance().insertOrUpdate(targetEntity.getUser(), em);
+
         String jpql = "SELECT e FROM WatchaBookcaseMetaEntity e WHERE e.bookcaseCode = :bookcaseCode";
 
         List<WatchaBookcaseMetaEntity> existingEntities = em.createQuery(jpql, WatchaBookcaseMetaEntity.class)
