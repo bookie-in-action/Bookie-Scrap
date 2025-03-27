@@ -33,12 +33,15 @@ class WatchaBookcaseRequestFactoryTest {
     }
 
     @Test
-    void createRequest() {
+    void checkBookcaseCodeIsInDto() {
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+        String bookcaseCode = "gcdkyKnXjN";
+        Request<List<WatchaBookcaseDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest(bookcaseCode, watchaRequestParam);
         List<WatchaBookcaseDTO> bookcaseList = watchaRequest.execute();
         log.info("Result Data : {}", bookcaseList);
+
+        Assertions.assertTrue(bookcaseList.stream().allMatch(item -> item.getBookcaseCode().equals(bookcaseCode)));
     }
 
     @Test
