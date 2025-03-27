@@ -30,7 +30,7 @@ class WatchaBookcaseMetaRepositoryTest {
     @BeforeAll
     public static void init() {
         new InitManager().devInit();
-        emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();;
+        emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();
     }
 
     @Test

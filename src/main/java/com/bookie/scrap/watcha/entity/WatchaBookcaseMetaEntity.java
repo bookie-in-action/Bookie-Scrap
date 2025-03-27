@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
+import com.bookie.scrap.common.domain.converter.EmojiAndSymbolConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -37,7 +37,8 @@ class WatchaBookcaseMetaRequestFactoryTest {
         WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 12, "", "");
         String bookCode = "byLKj8M";
-        Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
+//        Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
+        Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode);
 
         List<WatchaBookcaseMetaDto> executedList1 = request.execute();
 
@@ -85,5 +86,6 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
         Assertions.assertEquals(0, result.size());
     }
+
 
 }

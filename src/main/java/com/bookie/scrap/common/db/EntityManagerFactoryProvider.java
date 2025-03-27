@@ -1,5 +1,7 @@
 package com.bookie.scrap.common.db;
 
+import com.bookie.scrap.common.domain.converter.EmojiAndSymbolConverter;
+import com.bookie.scrap.common.domain.converter.ListStringConverter;
 import com.bookie.scrap.common.lifecycle.Initializable;
 import com.bookie.scrap.common.properties.DbProperties;
 import com.bookie.scrap.common.lifecycle.Shutdownable;
@@ -59,6 +61,9 @@ public class EntityManagerFactoryProvider implements Initializable, Shutdownable
             configuration.addAnnotatedClass(WatchaBookcaseMetaEntity.class);
             configuration.addAnnotatedClass(WatchaUserEntity.class);
 
+            //컨버터 목록 직접 지정
+            configuration.addAttributeConverter(EmojiAndSymbolConverter.class);
+            configuration.addAttributeConverter(ListStringConverter.class);
 
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties())
