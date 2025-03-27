@@ -5,6 +5,7 @@ import com.bookie.scrap.common.properties.DbProperties;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 
+
 public class RedisConnectionProducer implements Shutdownable {
 
     private static final DbProperties dbProperties = DbProperties.getInstance();
