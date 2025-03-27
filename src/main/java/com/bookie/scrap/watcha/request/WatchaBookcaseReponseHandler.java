@@ -23,7 +23,10 @@ public class WatchaBookcaseReponseHandler {
 
         return httpEntity -> {
             try {
-                JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("result");
+                JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result");
+
+                String bookcaseCode = jsonNode.get("next_uri").asText().split("/")[3];
+                JsonNode resultNode = jsonNode.get("result");
 
                 List<WatchaBookcaseDTO> bookcaseDetailList = new ArrayList<>();
 
@@ -32,6 +35,7 @@ public class WatchaBookcaseReponseHandler {
 
                     if(!contentNode.isNull()){
                         WatchaBookcaseDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseDTO.class);
+                        watchaBookcase.setBookcaseCode(bookcaseCode);
                         bookcaseDetailList.add(watchaBookcase);
                     }
                 }
