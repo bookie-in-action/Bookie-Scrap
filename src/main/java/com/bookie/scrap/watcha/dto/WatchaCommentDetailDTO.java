@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
+import com.bookie.scrap.watcha.entity.WatchaCommentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -69,6 +70,29 @@ public class WatchaCommentDetailDTO {
                 .commentUserContentStatus(resultSet.getString("comment_user_content_status"))
                 .commentUserContentMehed(resultSet.getString("comment_user_content_mehed"))
                 .commentUserContentWatchedAt(resultSet.getString("comment_user_content_watched_at"))
+                .build();
+    }
+    
+    // Entity 로 변환
+    public static WatchaCommentEntity toEntity(WatchaCommentDetailDTO dto) {
+        return WatchaCommentEntity.builder()
+                .bookCode(dto.getBookCode())
+                .commentUserCode(dto.getCommentUserCode())
+                .commentText(dto.getCommentText())
+                .commentLikesCount(dto.getCommentLikesCount())
+                .commentRepliesCount(dto.getCommentRepliesCount())
+                .commentWatchedAt(dto.getCommentWatchedAt())
+                .commentSpoiler(dto.getCommentSpoiler())
+                .commentImproper(dto.getCommentImproper())
+                .commentReplyable(dto.getCommentReplyable())
+                .commentCreatedAt(dto.getCommentCreatedAt())
+                .commentUserName(dto.getCommentUserName())
+                .watchaPlayUser(dto.getWatchaPlayUser())
+                .officialUser(dto.getOfficialUser())
+                .commentUserContentRating(dto.getCommentUserContentRating())
+                .commentUserContentStatus(dto.getCommentUserContentStatus())
+                .commentUserContentMehed(dto.getCommentUserContentMehed())
+                .commentUserContentWatchedAt(dto.getCommentUserContentWatchedAt())
                 .build();
     }
 }
