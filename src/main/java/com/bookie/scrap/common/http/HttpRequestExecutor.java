@@ -1,6 +1,6 @@
 package com.bookie.scrap.common.http;
 
-import com.bookie.scrap.common.request.Request;
+import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.properties.BookieProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.HttpResponseException;
@@ -13,7 +13,7 @@ import org.apache.hc.core5.http.NoHttpResponseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.common.request.BaseRequest;
+import com.bookie.scrap.common.domain.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;

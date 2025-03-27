@@ -23,7 +23,7 @@ public class WatchaBookcaseReponseHandler {
 
         return httpEntity -> {
             try {
-                JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("items").get("result");
+                JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("result");
 
                 List<WatchaBookcaseDTO> bookcaseDetailList = new ArrayList<>();
 

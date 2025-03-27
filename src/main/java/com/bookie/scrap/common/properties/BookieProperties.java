@@ -1,17 +1,26 @@
 package com.bookie.scrap.common.properties;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static com.bookie.scrap.common.properties.BookieProperties.Key.RETRY_COUNT;
+import static com.bookie.scrap.common.properties.BookieProperties.Key.SERVER_ID;
+
 @Slf4j
 public class BookieProperties implements InitializableProperties {
 
+    @RequiredArgsConstructor
     public enum Key {
-        RETRY_COUNT
+        RETRY_COUNT("retry.count", "3"),
+        SERVER_ID("server.id", "");
+
+        private final String value;
+        private final String defaultValue;
     }
 
     private final Map<Key, String> propertyMap = new EnumMap<>(Key.class);
@@ -42,12 +51,17 @@ public class BookieProperties implements InitializableProperties {
             bookieProperties.load(inputStream);
 
             log.info("============ [BOOKIE PROPERTIES] ============");
-            propertyMap.put(Key.RETRY_COUNT, bookieProperties.getProperty("retry.max"));
+            propertyMap.put(RETRY_COUNT, bookieProperties.getProperty(RETRY_COUNT.value, RETRY_COUNT.defaultValue));
+            String serverId = bookieProperties.getProperty(SERVER_ID.value, SERVER_ID.defaultValue);
+            if (serverId.isBlank()) {
+                throw new RuntimeException("server.id in bookie.properties is empty");
+            }
+            propertyMap.put(Key.SERVER_ID, serverId);
 
             initialized = true;
 
-            int paddingLength = 15;
-            log.info("RETRY MAX: {}", propertyMap.get(Key.RETRY_COUNT));
+            log.info("RETRY MAX: {}", propertyMap.get(RETRY_COUNT));
+            log.info("SERVER ID: {}", propertyMap.get(Key.SERVER_ID));
             log.info("=============================================");
 
             log.info("<= BookieProperties initialized successfull");

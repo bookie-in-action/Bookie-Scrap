@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.type.WatchaBookType;
+import com.bookie.scrap.watcha.entity.WatchaBookcaseEntity;
+import com.bookie.scrap.watcha.type.WatchaType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +11,6 @@ import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -32,7 +32,7 @@ public class WatchaBookcaseDTO {
     private Integer publishYear;
 
     @JsonProperty("poster")
-    private WatchaBookType.Poster poster;
+    private WatchaType.Poster poster;
 
     @JsonProperty("background_color")
     private String backgroundColor;
@@ -65,4 +65,21 @@ public class WatchaBookcaseDTO {
                 .collect(Collectors.toList());
     }
 
+    // Entity 로 변환
+    public static WatchaBookcaseEntity toEntity(WatchaBookcaseDTO dto) {
+        return WatchaBookcaseEntity.builder()
+                .bookCode(dto.getBookCode())
+                .contentType(dto.getContentType())
+                .mainTitle(dto.getMainTitle())
+                .publishYear(dto.getPublishYear())
+                .poster(dto.getPoster())
+                .backgroundColor(dto.getBackgroundColor())
+                .averageRating(dto.getAverageRating())
+                .authors(dto.getAuthors())
+                .nations(dto.getNations())
+                .ratingsCount(dto.getRatingsCount())
+                .wishesCount(dto.getWishesCount())
+                .genres(dto.getGenres())
+                .build();
+    }
 }
