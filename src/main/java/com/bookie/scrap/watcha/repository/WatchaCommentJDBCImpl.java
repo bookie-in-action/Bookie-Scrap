@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class WatchaCommentJDBCImpl implements WatchaCommentRepository{
+public class WatchaCommentJDBCImpl {
 
     private static final WatchaCommentJDBCImpl INSTANCE = new WatchaCommentJDBCImpl();
     private DataSource dataSource = DatabaseConnectionPool.getInstance().getDataSource();
@@ -24,7 +24,6 @@ public class WatchaCommentJDBCImpl implements WatchaCommentRepository{
 
     private final String selectQuery = "SELECT * FROM bookie_dev.bs_watcha_comment c WHERE c.book_code = ?";
 
-    @Override
     public Optional<WatchaCommentDetailDTO> select(String bookCode) {
 
         try(
@@ -55,12 +54,10 @@ public class WatchaCommentJDBCImpl implements WatchaCommentRepository{
         return Optional.empty();
     }
 
-    @Override
     public boolean update(WatchaCommentDetailDTO watchaCommentDTO) {
         return false;
     }
 
-    @Override
     public Optional<String> insert(WatchaCommentDetailDTO watchaCommentDTO) {
         return Optional.empty();
     }

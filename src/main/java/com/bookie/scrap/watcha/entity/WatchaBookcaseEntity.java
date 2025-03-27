@@ -1,7 +1,6 @@
 package com.bookie.scrap.watcha.entity;
 
-import com.bookie.scrap.common.util.ListStringConverter;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
+import com.bookie.scrap.common.domain.converter.ListStringConverter;
 import com.bookie.scrap.watcha.type.WatchaType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,11 +8,11 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "BS_WATCHA_BOOKCASE")
-@Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor
 @Builder
+@Getter @Setter
+@AllArgsConstructor
+@Table(name = "BS_WATCHA_BOOKCASE")
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class WatchaBookcaseEntity {
 
     @Column(name = "book_code")
