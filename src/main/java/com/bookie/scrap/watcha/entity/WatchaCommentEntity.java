@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.entity;
 
+import com.bookie.scrap.common.domain.BaseEntity;
 import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,10 @@ import org.checkerframework.checker.units.qual.A;
 @Table(name = "BS_WATCHA_COMMENT")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class WatchaCommentEntity {
+public class WatchaCommentEntity extends BaseEntity {
+
+    @Column(name = "comment_code", nullable = false)
+    private String commentCode;
 
     @Column(name = "book_code", nullable = false)
     private String bookCode;
@@ -67,6 +71,7 @@ public class WatchaCommentEntity {
 
     public void update(WatchaCommentEntity that) {
         this.userCode = that.userCode;
+        this.bookCode = that.bookCode;
         this.commentText = that.commentText;
         this.commentLikesCount = that.commentLikesCount;
         this.commentRepliesCount = that.commentRepliesCount;

@@ -1,15 +1,12 @@
 package com.bookie.scrap.watcha.repository;
 
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
-import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.request.WatchaBookcaseMetaRequestFactory;
 import jakarta.persistence.EntityManager;
@@ -24,7 +21,7 @@ import java.util.List;
 @Slf4j
 class WatchaBookcaseMetaRepositoryTest {
 
-    private static Repository<WatchaBookcaseMetaEntity> bookcaseMetaRepository = WatchaBookcaseMetaRepository.getInstance();
+    private static WatchaBookcaseMetaRepository bookcaseMetaRepository = WatchaBookcaseMetaRepository.getInstance();
     private static EntityManagerFactory emf;
 
     @BeforeAll

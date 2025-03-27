@@ -1,6 +1,5 @@
 package com.bookie.scrap.watcha.scheduler;
 
-import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
@@ -24,7 +23,7 @@ public class WatchaJob implements Job {
     private final WatchaRequestFactory<List<WatchaBookcaseDTO>> bookcaseRequestFactory = WatchaBookcaseRequestFactory.getInstance();
     private final WatchaRequestFactory<WatchaBookMetaDto> bookRequestFactory = WatchaBookMetaRequestFactory.getInstance();
 
-    private final Repository<WatchaBookMetaEntity> bookMetaRepository = WatchaBookMetaRepository.getInstance();
+    private final WatchaBookMetaRepository bookMetaRepository = WatchaBookMetaRepository.getInstance();
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
