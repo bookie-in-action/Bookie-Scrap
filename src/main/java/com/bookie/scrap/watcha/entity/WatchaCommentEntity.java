@@ -3,14 +3,16 @@ package com.bookie.scrap.watcha.entity;
 import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.checkerframework.checker.units.qual.A;
 
 @Entity
-@Table(name = "BS_WATCHA_COMMENT")
-@Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor
 @Builder
+@Getter @Setter
+@Table(name = "BS_WATCHA_COMMENT")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class WatchaCommentEntity {
+
     @Column(name = "book_code", nullable = false)
     private String bookCode;
 
@@ -62,5 +64,21 @@ public class WatchaCommentEntity {
 
     @Column(name = "comment_user_content_watched_at")
     private String commentUserContentWatchedAt;
+
+    public void update(WatchaCommentEntity that) {
+        this.userCode = that.userCode;
+        this.commentText = that.commentText;
+        this.commentLikesCount = that.commentLikesCount;
+        this.commentRepliesCount = that.commentRepliesCount;
+        this.commentWatchedAt = that.commentWatchedAt;
+        this.commentSpoiler = that.commentSpoiler;
+        this.commentImproper = that.commentImproper;
+        this.commentReplyable = that.commentReplyable;
+        this.commentCreatedAt = that.commentCreatedAt;
+        this.commentUserContentRating = that.commentUserContentRating;
+        this.commentUserContentStatus = that.commentUserContentStatus;
+        this.commentUserContentMehed = that.commentUserContentMehed;
+        this.commentUserContentWatchedAt = that.commentUserContentWatchedAt;
+    }
 
 }

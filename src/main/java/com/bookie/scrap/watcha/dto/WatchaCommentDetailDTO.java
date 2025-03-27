@@ -15,8 +15,6 @@ import java.sql.SQLException;
 @ToString
 @AllArgsConstructor
 public class WatchaCommentDetailDTO {
-    // PK
-    private String snowflakeId;
 
     // WatchaCommentDetail
     private String bookCode;
@@ -77,7 +75,7 @@ public class WatchaCommentDetailDTO {
     public static WatchaCommentEntity toEntity(WatchaCommentDetailDTO dto) {
         return WatchaCommentEntity.builder()
                 .bookCode(dto.getBookCode())
-                .commentUserCode(dto.getCommentUserCode())
+                .userCode(dto.getCommentUserCode())
                 .commentText(dto.getCommentText())
                 .commentLikesCount(dto.getCommentLikesCount())
                 .commentRepliesCount(dto.getCommentRepliesCount())
@@ -86,9 +84,9 @@ public class WatchaCommentDetailDTO {
                 .commentImproper(dto.getCommentImproper())
                 .commentReplyable(dto.getCommentReplyable())
                 .commentCreatedAt(dto.getCommentCreatedAt())
-                .commentUserName(dto.getCommentUserName())
-                .watchaPlayUser(dto.getWatchaPlayUser())
-                .officialUser(dto.getOfficialUser())
+//                .commentUserName(dto.getCommentUserName())
+//                .watchaPlayUser(dto.getWatchaPlayUser())
+//                .officialUser(dto.getOfficialUser())
                 .commentUserContentRating(dto.getCommentUserContentRating())
                 .commentUserContentStatus(dto.getCommentUserContentStatus())
                 .commentUserContentMehed(dto.getCommentUserContentMehed())
