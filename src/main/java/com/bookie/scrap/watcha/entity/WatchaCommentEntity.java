@@ -14,8 +14,8 @@ public class WatchaCommentEntity {
     @Column(name = "book_code", nullable = false)
     private String bookCode;
 
-    @Column(name = "comment_user_code", nullable = false)
-    private String commentUserCode;
+    @Column(name = "user_code", nullable = false)
+    private String userCode;
 
     @Lob
     @Column(name = "comment_text", columnDefinition = "MEDIUMTEXT")
@@ -42,14 +42,14 @@ public class WatchaCommentEntity {
     @Column(name = "comment_created_at")
     private String commentCreatedAt;
 
-    @Column(name = "comment_user_name")
-    private String commentUserName;
-
-    @Column(name = "watcha_play_user")
-    private String watchaPlayUser;
-
-    @Column(name = "official_user")
-    private String officialUser;
+//    @Column(name = "comment_user_name")
+//    private String commentUserName;
+//
+//    @Column(name = "watcha_play_user")
+//    private String watchaPlayUser;
+//
+//    @Column(name = "official_user")
+//    private String officialUser;
 
     @Column(name = "comment_user_content_rating")
     private String commentUserContentRating;
