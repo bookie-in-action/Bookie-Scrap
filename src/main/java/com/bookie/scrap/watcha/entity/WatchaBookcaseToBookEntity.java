@@ -2,8 +2,6 @@ package com.bookie.scrap.watcha.entity;
 
 
 import com.bookie.scrap.common.domain.BaseEntity;
-import com.bookie.scrap.common.domain.converter.ListStringConverter;
-import com.bookie.scrap.watcha.type.WatchaType;
 import jakarta.persistence.*;
 import lombok.*;
 

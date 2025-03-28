@@ -48,6 +48,7 @@ public class WatchaBookcaseMetaDto {
     public WatchaBookcaseMetaEntity toEntity() {
         return WatchaBookcaseMetaEntity.builder()
                 .bookCode(bookCode)
+                .userCode(user.getUserCode())
                 .bookcaseCode(bookcaseCode)
                 .bookcaseTitle(bookcaseTitle)
                 .bookcaseDescription(bookcaseDescription)
@@ -56,7 +57,7 @@ public class WatchaBookcaseMetaDto {
                 .bookcaseRepliesCnt(bookcaseRepliesCnt)
                 .bookcaseCreatedAt(createdAt)
                 .bookcaseUpdatedAt(updatedAt)
-                .userCode(user.getUserCode())
+                .user(user.toEntity())
                 .build();
     }
 }

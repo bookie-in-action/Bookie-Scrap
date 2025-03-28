@@ -44,10 +44,12 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
     @Column(name = "book_code")
     private String bookCode;
 
+    // user는 전체 entity가 변환 되어서 들어옴 -> 별도로 저장 필요 (bookcaseMetaRepo에서 처리)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_code", referencedColumnName = "user_code", insertable = false, updatable = false)
     private WatchaUserEntity user;
 
+    // book은 bookCode만 들어오기 때문에 해당 객체는 select 할 때만 사용 가능
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_code", referencedColumnName = "book_code", insertable = false, updatable = false)
     private WatchaBookMetaEntity bookMeta;
