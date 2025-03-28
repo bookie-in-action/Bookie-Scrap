@@ -58,7 +58,7 @@ public class EntityManagerFactoryProvider implements Initializable, Shutdownable
             configuration.addAnnotatedClass(WatchaBookToBookcaseMetaEntity.class);
             configuration.addAnnotatedClass(WatchaBookcaseToBookEntity.class);
             configuration.addAnnotatedClass(WatchaBookMetaEntity.class);
-            configuration.addAnnotatedClass(WatchaCommentEntity.class);
+//            configuration.addAnnotatedClass(WatchaCommentEntity.class);
             configuration.addAnnotatedClass(WatchaUserEntity.class);
 
             //컨버터 목록 직접 지정
