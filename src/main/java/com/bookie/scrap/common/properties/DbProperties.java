@@ -1,5 +1,6 @@
 package com.bookie.scrap.common.properties;
 
+import com.bookie.scrap.common.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,7 @@ public class DbProperties implements InitializableProperties {
     private final Map<Key, String> PROPERTY_MAP = new EnumMap<>(Key.class);
     private static final DbProperties INSTANCE = new DbProperties();
     private boolean initialized = false;
+    private final int paddingLength = 15;
 
     private DbProperties() {}
 
@@ -61,17 +63,23 @@ public class DbProperties implements InitializableProperties {
 
                 String fileLoadedValue = dbProperties.getProperty(prefix + key.suffix, key.defaultValue);
 
-                PROPERTY_MAP.put(key, fileLoadedValue);
+                if (StringUtil.hasText(fileLoadedValue)) {
+                    PROPERTY_MAP.put(key, fileLoadedValue);
+                }
 
                 // 로그 길이 맞추기
-                int paddingLength = 15;
                 String formattedKey = String.format("%-" + paddingLength + "s", key.name());
                 log.info("DB {}: {}", formattedKey, PROPERTY_MAP.get(key));
             }
 
             String redisPrefix = String.format("redis.%s", runningOption);
-            String redisValue = dbProperties.getProperty(redisPrefix + Key.REDIS_URL.suffix, "");
-            PROPERTY_MAP.put(Key.REDIS_URL, redisValue);
+            String redisValue = dbProperties.getProperty(redisPrefix + Key.REDIS_URL.suffix);
+            if (StringUtil.hasText(redisValue)) {
+                PROPERTY_MAP.put(Key.REDIS_URL, redisValue);
+            }
+
+            String formattedKey = String.format("%-" + paddingLength + "s", Key.REDIS_URL.name());
+            log.info("DB {}: {}", formattedKey, PROPERTY_MAP.get(Key.REDIS_URL));
 
             log.info("==============================================");
 
