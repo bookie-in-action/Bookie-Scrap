@@ -27,9 +27,9 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "status", nullable = false)
     @Convert(converter = StatusConverter.class)
-    protected Status status = Status.ACTIVE;
+    protected Status status;
 
     @PrePersist
     private void prePersist() {
@@ -39,6 +39,10 @@ public abstract class BaseEntity {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
             this.updatedAt = LocalDateTime.now();
+        }
+
+        if (this.status == null) {
+            this.status = Status.ACTIVE;
         }
     }
 

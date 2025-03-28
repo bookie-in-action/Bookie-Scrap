@@ -37,9 +37,11 @@ public class WatchaBookToBookcaseMetasResponseHandler {
                 List<WatchaBookcaseMetaDto> watchaBookcaseMetaDtoList = ObjectMapperUtil.parseListFromTree(resultNode, WatchaBookcaseMetaDto.class);
 
                 String bookCode = jsonNode.path("next_uri").asText().split("/")[3];
-                watchaBookcaseMetaDtoList.stream().forEach(dto -> dto.setBookCode(bookCode));
+                watchaBookcaseMetaDtoList.stream().forEach(dto -> {
+                    dto.setBookCode(bookCode);
+                });
 
-                log.debug("Parsed BookcaseMeta: {}", watchaBookcaseMetaDtoList);
+                log.trace("Parsed BookcaseMeta: {}", watchaBookcaseMetaDtoList.size());
 
                 return watchaBookcaseMetaDtoList;
 

@@ -9,4 +9,12 @@ public class StringUtil {
         return true;
     }
 
+    public static String trim(String text) {
+        if (text == null) {
+            return "";
+        }
+
+        return text.trim();
+    }
+
 }

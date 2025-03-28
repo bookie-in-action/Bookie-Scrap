@@ -88,18 +88,16 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
                     dbItem.updateEntity(newItem);
                     updated++;
                     log.info("update: {}", dbItem.getBookcaseCode());
-                } else {
-                    log.info("same: {} {}", dbItem.getBookcaseCode(), newItem.getBookcaseCode());
                 }
 
                 if (newIter.hasNext()) {
                     newItem = newIter.next();
+                } else {
+                    break;
                 }
 
                 if (dbIter.hasNext()) {
                     dbItem = dbIter.next();
-                } else {
-                    break;
                 }
 
 
