@@ -1,10 +1,12 @@
 package com.bookie.scrap.common.domain;
 
+import com.bookie.scrap.common.domain.converter.StatusConverter;
 import com.bookie.scrap.common.util.SnowflakeIdGenerator;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -25,7 +27,10 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "")
+    @Setter
+    @Column(name = "is_active", nullable = false)
+    @Convert(converter = StatusConverter.class)
+    private Status status = Status.ACTIVE;
 
     @PrePersist
     private void prePersist() {
