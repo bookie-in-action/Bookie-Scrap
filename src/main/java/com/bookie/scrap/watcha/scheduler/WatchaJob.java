@@ -12,6 +12,7 @@ import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
+import com.bookie.scrap.watcha.repository.WatchaBookcaseToBooksRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
@@ -34,19 +35,21 @@ public class WatchaJob implements Job {
     private static EntityManagerFactory emf;
 
     private final WatchaBookcaseToBooksRequestFactory bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
-    private final WatchaBookToBookcaseMetasRequestFactory bookTobookcaseMetaRequestFactory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
+    private final WatchaBookToBookcaseMetasRequestFactory bookToBookcaseMetaRequestFactory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
     private final WatchaBookMetaRequestFactory     bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
 //    private final WatchaCommentRequestFactory           commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
 
     private final WatchaBookMetaRepository     bookMetaRepository     = WatchaBookMetaRepository.getInstance();
-    private final WatchaBookToBookcaseMetasRepository bookToBookcaseMetaRepository = WatchaBookToBookcaseMetasRepository.getInstance();
-//    private final WatchaBookcaseMetaRepository bookcaseRepository = WatchaBookcaseRepository.getInstance();
+    private final WatchaBookToBookcaseMetasRepository bookToBookcaseMetasRepository = WatchaBookToBookcaseMetasRepository.getInstance();
+    private final WatchaBookcaseToBooksRepository bookcaseToBooksRepository = WatchaBookcaseToBooksRepository.getInstance();
 //    private final WatchaCommentRepository commentRepository = WatchaCommentRepository.getInstance();
 
     private final RedisSetManager completeBookCodes     = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:complete");
     private final RedisSetManager undoneBookCodes       = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:undone");
     private final RedisSetManager completeBookcaseCodes = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcase:complete");
     private final RedisSetManager undoneBookcaseCodes   = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcase:undone");
+
+    private boolean isFirst = true;
 
     static {
         emf = EntityManagerFactoryProvider.getInstance().getEntityManagerFactory();
@@ -55,8 +58,9 @@ public class WatchaJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
-        if (undoneBookCodes.size() == 0) {
+        if (isFirst && undoneBookCodes.size() == 0) {
             undoneBookCodes.addToSet("byLKj8M");
+            isFirst = false;
         }
 
         while (undoneBookCodes.size() > 0) {
@@ -65,15 +69,21 @@ public class WatchaJob implements Job {
 
         while (undoneBookcaseCodes.size() > 0) {
             processByBookcaseCode(undoneBookcaseCodes.get());
+        }
+
+        if (undoneBookCodes.size() > 0 || undoneBookcaseCodes.size() > 0) {
+            this.execute();
         }
 
         close();
     }
 
+
     public void execute() throws JobExecutionException {
 
-        if (undoneBookCodes.size() == 0) {
+        if (isFirst && undoneBookCodes.size() == 0) {
             undoneBookCodes.addToSet("byLKj8M");
+            isFirst = false;
         }
 
         while (undoneBookCodes.size() > 0) {
@@ -82,6 +92,10 @@ public class WatchaJob implements Job {
 
         while (undoneBookcaseCodes.size() > 0) {
             processByBookcaseCode(undoneBookcaseCodes.get());
+        }
+
+        if (undoneBookCodes.size() > 0 || undoneBookcaseCodes.size() > 0) {
+            this.execute();
         }
 
         close();
@@ -99,7 +113,7 @@ public class WatchaJob implements Job {
         List<WatchaBookcaseToBookDTO> bookCodeDtos = Collections.emptyList();
         do {
             bookCodeDtos = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
-            insertBookcaseInRedisAndDb(bookCodeDtos);
+            insertBooksInRedisAndDb(bookcaseCode, bookCodeDtos);
             bookPage.nextPage();
         } while (!bookCodeDtos.isEmpty());
     }
@@ -131,7 +145,7 @@ public class WatchaJob implements Job {
         PageInfo bookcasePage = new PageInfo(1, 20);
         List<WatchaBookcaseMetaDto> bookcaseMetaDtos = Collections.emptyList();
         do {
-            bookcaseMetaDtos = bookTobookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
+            bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
             insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
             bookcasePage.nextPage();
 
@@ -145,7 +159,7 @@ public class WatchaJob implements Job {
             em.getTransaction().begin();
 
             List<WatchaBookToBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
-            bookToBookcaseMetaRepository.insertOrUpdate(bookCode, bookcaseMetas, em);
+            bookToBookcaseMetasRepository.insertOrUpdate(bookCode, bookcaseMetas, em);
 
             List<String> bookcaseCodes = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::getBookcaseCode).collect(Collectors.toList());
 
@@ -155,12 +169,12 @@ public class WatchaJob implements Job {
         }
     }
 
-    private void insertBookcaseInRedisAndDb(List<WatchaBookcaseToBookDTO> bookCodeDtos) {
+    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookCodeDtos) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseToBookEntity> bookcase = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
-//            bookcaseRepository.insertOrUpdate(bookcase, em);
+            List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+            bookcaseToBooksRepository.insertOrUpdate(bookcaseCode, books, em);
 
             List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
