@@ -1,10 +1,13 @@
 package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
+import com.bookie.scrap.common.domain.Status;
 import com.bookie.scrap.common.domain.converter.EmojiAndSymbolConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Objects;
 
 @ToString
 @Getter @Setter
@@ -13,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public final class WatchaBookcaseMetaEntity extends BaseEntity {
 
+    // main pk
     @Column(name = "bookcase_code")
     private String bookcaseCode;
 
@@ -65,4 +69,24 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
         this.bookcaseCreatedAt = that.bookcaseCreatedAt;
         this.bookcaseUpdatedAt = that.bookcaseUpdatedAt;
     }
+
+    public void inActivate() {
+        super.status = Status.INACTIVE;
+    }
+
+    public boolean isSame(WatchaBookcaseMetaEntity that) {
+        return Objects.equals(bookcaseCode, that.bookcaseCode) &&
+                Objects.equals(bookcaseTitle, that.bookcaseTitle) &&
+                Objects.equals(bookcaseDescription, that.bookcaseDescription) &&
+                Objects.equals(bookCntInBookcase, that.bookCntInBookcase) &&
+                Objects.equals(bookcaseLikes, that.bookcaseLikes) &&
+                Objects.equals(bookcaseRepliesCnt, that.bookcaseRepliesCnt) &&
+                Objects.equals(bookcaseCreatedAt, that.bookcaseCreatedAt) &&
+                Objects.equals(bookcaseUpdatedAt, that.bookcaseUpdatedAt) &&
+                Objects.equals(userCode, that.userCode) &&
+                Objects.equals(bookCode, that.bookCode);
+    }
+
+
+
 }

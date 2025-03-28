@@ -11,11 +11,11 @@ import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
-import com.bookie.scrap.watcha.repository.WatchaBookcaseMetaRepository;
+import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetaRequestFactory;
-import com.bookie.scrap.watcha.request.WatchaBookcaseToBookRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaBookcaseToBooksRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +33,13 @@ public class WatchaJob implements Job {
 
     private static EntityManagerFactory emf;
 
-    private final WatchaBookcaseToBookRequestFactory bookcaseToBookRequestFactory     = WatchaBookcaseToBookRequestFactory.getInstance();
-    private final WatchaBookToBookcaseMetaRequestFactory bookTobookcaseMetaRequestFactory = WatchaBookToBookcaseMetaRequestFactory.getInstance();
+    private final WatchaBookcaseToBooksRequestFactory bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
+    private final WatchaBookToBookcaseMetasRequestFactory bookTobookcaseMetaRequestFactory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
     private final WatchaBookMetaRequestFactory     bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
 //    private final WatchaCommentRequestFactory           commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
 
     private final WatchaBookMetaRepository     bookMetaRepository     = WatchaBookMetaRepository.getInstance();
-    private final WatchaBookcaseMetaRepository bookcaseMetaRepository = WatchaBookcaseMetaRepository.getInstance();
+    private final WatchaBookToBookcaseMetasRepository bookToBookcaseMetaRepository = WatchaBookToBookcaseMetasRepository.getInstance();
 //    private final WatchaBookcaseMetaRepository bookcaseRepository = WatchaBookcaseRepository.getInstance();
 //    private final WatchaCommentRepository commentRepository = WatchaCommentRepository.getInstance();
 
@@ -132,7 +132,7 @@ public class WatchaJob implements Job {
         List<WatchaBookcaseMetaDto> bookcaseMetaDtos = Collections.emptyList();
         do {
             bookcaseMetaDtos = bookTobookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
-            insertBookcaseMetasInRedisAndDb(bookcaseMetaDtos);
+            insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
             bookcasePage.nextPage();
 
             processByBookcaseCode(undoneBookcaseCodes.get());
@@ -140,12 +140,12 @@ public class WatchaJob implements Job {
 
     }
 
-    private void insertBookcaseMetasInRedisAndDb(List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
+    private void insertBookcaseMetasInRedisAndDb(String bookCode, List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
             List<WatchaBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
-//            bookcaseMetaRepository.insertOrUpdate(bookcaseMetas, em);
+            bookToBookcaseMetaRepository.insertOrUpdate(bookCode, bookcaseMetas, em);
 
             List<String> bookcaseCodes = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::getBookcaseCode).collect(Collectors.toList());
 
