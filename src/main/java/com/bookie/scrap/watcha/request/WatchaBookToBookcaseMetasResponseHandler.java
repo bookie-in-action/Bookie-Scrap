@@ -17,11 +17,11 @@ import java.util.function.Function;
 public class WatchaBookToBookcaseMetasResponseHandler {
 
 
-    public static HttpClientResponseHandler<List<WatchaBookcaseMetaDto>> create() {
-        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
+    public static HttpClientResponseHandler<List<WatchaBookcaseMetaDto>> create(String bookCode) {
+        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic(bookCode));
     }
 
-    private static Function<HttpEntity, List<WatchaBookcaseMetaDto>> createHandlerLogic() {
+    private static Function<HttpEntity, List<WatchaBookcaseMetaDto>> createHandlerLogic(String bookCode) {
 
 
         return httpEntity -> {
@@ -30,13 +30,12 @@ public class WatchaBookToBookcaseMetasResponseHandler {
                 JsonNode jsonNode = ObjectMapperUtil.readTree(httpEntity.getContent()).path("result");
                 JsonNode resultNode = jsonNode.path("result");
 
-                if (resultNode.isEmpty()) {
+                if (jsonNode.isEmpty()) {
                     return Collections.emptyList();
                 }
 
                 List<WatchaBookcaseMetaDto> watchaBookcaseMetaDtoList = ObjectMapperUtil.parseListFromTree(resultNode, WatchaBookcaseMetaDto.class);
-
-                String bookCode = jsonNode.path("next_uri").asText().split("/")[3];
+                ;
                 watchaBookcaseMetaDtoList.stream().forEach(dto -> {
                     dto.setBookCode(bookCode);
                 });

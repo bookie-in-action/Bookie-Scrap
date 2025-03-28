@@ -16,11 +16,11 @@ import java.util.function.Function;
 @Slf4j
 public class WatchaBookcaseToBooksRequestHandler {
 
-    public static HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> create() {
-        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
+    public static HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> create(String bookcaseCode) {
+        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic(bookcaseCode));
     }
 
-    public static Function<HttpEntity, List<WatchaBookcaseToBookDTO>> createHandlerLogic() {
+    public static Function<HttpEntity, List<WatchaBookcaseToBookDTO>> createHandlerLogic(String bookcaseCode) {
 
         return httpEntity -> {
             try {
@@ -32,9 +32,7 @@ public class WatchaBookcaseToBooksRequestHandler {
                     return Collections.emptyList();
                 }
 
-                String bookcaseCode = jsonNode.get("next_uri").asText().split("/")[3];
                 JsonNode resultNode = jsonNode.get("result");
-
 
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");
