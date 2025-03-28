@@ -9,11 +9,12 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
-public class WatchaBookcaseReponseHandler {
+public class WatchaBookcaseToBooksRequestHandler {
 
     public static HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> create() {
         return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
@@ -25,10 +26,15 @@ public class WatchaBookcaseReponseHandler {
             try {
                 JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result");
 
+                List<WatchaBookcaseToBookDTO> bookcaseDetailList = new ArrayList<>();
+
+                if (jsonNode.isEmpty()) {
+                    return Collections.emptyList();
+                }
+
                 String bookcaseCode = jsonNode.get("next_uri").asText().split("/")[3];
                 JsonNode resultNode = jsonNode.get("result");
 
-                List<WatchaBookcaseToBookDTO> bookcaseDetailList = new ArrayList<>();
 
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");

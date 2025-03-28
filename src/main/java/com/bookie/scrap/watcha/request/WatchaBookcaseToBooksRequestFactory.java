@@ -16,7 +16,7 @@ public class WatchaBookcaseToBooksRequestFactory implements WatchaRequestFactory
 
     private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s/items?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> handler = WatchaBookcaseReponseHandler.create();
+    HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> handler = WatchaBookcaseToBooksRequestHandler.create();
 
     private final static WatchaBookcaseToBooksRequestFactory INSTANCE = new WatchaBookcaseToBooksRequestFactory();
 
