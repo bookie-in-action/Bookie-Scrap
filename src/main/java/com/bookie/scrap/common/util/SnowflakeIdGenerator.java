@@ -1,60 +1,129 @@
 package com.bookie.scrap.common.util;
 
+import com.bookie.scrap.common.domain.util.SystemTimeProvider;
+import com.bookie.scrap.common.domain.util.TimeProvider;
+import com.bookie.scrap.common.properties.BookieProperties;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+@Slf4j
 public class SnowflakeIdGenerator {
 
-    /*
-    * timestamp (41) + workerId (10) + sequence (12)
-    * */
+    /**
+    * timestamp (41) + serverId (10) + sequence (12)
+    */
 
-    private static final long EPOCH = 1704067200000L; // EPOCH 설정 (2024-01-01 00:00:00 UTC)
-    private static final long WORKER_ID_BITS = 10L; // 최대 1024개
+    private static final long EPOCH = LocalDateTime.of(2025, 3, 17, 0, 0, 0).toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long SERVER_ID_BITS = 10L;
     private static final long SEQUENCE_BITS = 12L;
 
-    private static final long MAX_WORKER_ID = (1L << WORKER_ID_BITS) - 1; // 1023
-    private static final long SEQUENCE_MASK = (1L << SEQUENCE_BITS) - 1; // 4095
+    private static final long MAX_SERVER_ID = (1L << SERVER_ID_BITS) - 1; // 10비트 (2^10 - 1)
+    private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1; // 12비트 (2^12 - 1)
 
-    private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
-    private static final long TIMESTAMP_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+    private static long serverId;
+    private static long sequence = 0;
+    private static long lastTimestamp = 0;
 
-    private final long workerId;
-    private long sequence = 0L;
-    private long lastTimestamp = -1L;
+    @Setter
+    private static TimeProvider timeProvider = new SystemTimeProvider();
 
-    public SnowflakeIdGenerator(long workerId) {
-        if (workerId < 0 || workerId > MAX_WORKER_ID) {
-            throw new IllegalArgumentException("workerId out of range: 0-" + MAX_WORKER_ID);
+    static {
+        int loadedServerId = Integer.parseInt(
+                BookieProperties.getInstance().getValue(BookieProperties.Key.SERVER_ID)
+        );
+
+        if (loadedServerId < 0 || loadedServerId > MAX_SERVER_ID) {
+            throw new IllegalArgumentException("serverId have to be in range: 0-" + MAX_SERVER_ID);
         }
-        this.workerId = workerId;
+        SnowflakeIdGenerator.serverId = loadedServerId;
     }
 
-    public synchronized long nextId() {
-        long timestamp = System.currentTimeMillis();
+    public static synchronized String getId() {
+        long currentTimeMillis = timeProvider.currentTimeMillis();
 
-        if (timestamp < lastTimestamp) {
-            throw new RuntimeException("Clock moved backwards. Refusing to generate ID");
-        }
-
-        if (timestamp == lastTimestamp) {
-            sequence = (sequence + 1) & SEQUENCE_MASK;
-            if (sequence == 0) {
-                timestamp = waitNextMillis(lastTimestamp);
-            }
-        } else {
+        if (currentTimeMillis < lastTimestamp) {
+            currentTimeMillis = waitUntilCurrentIsLargerThanLast(currentTimeMillis);
             sequence = 0;
         }
 
-        lastTimestamp = timestamp;
+        if (currentTimeMillis == lastTimestamp) { // 같은 밀리초에서 id 생성하는 경우
+            long nextSeq = ++sequence;
 
-        return ((timestamp - EPOCH) << TIMESTAMP_SHIFT) |
-                (workerId << WORKER_ID_SHIFT) |
-                sequence;
-    }
-
-    private long waitNextMillis(long lastTimestamp) {
-        long timestamp = System.currentTimeMillis();
-        while (timestamp <= lastTimestamp) {
-            timestamp = System.currentTimeMillis();
+            if (nextSeq > MAX_SEQUENCE) { // 같은 밀리초에서 sequence를 다 사용한 경우
+                currentTimeMillis = waitNextMillis(currentTimeMillis);
+                sequence = 0;
+            }
+        } else { // 새로운 밀리초 시작된 경우
+            sequence = 0;
         }
-        return timestamp;
+
+        long id;
+        lastTimestamp = currentTimeMillis;
+
+        id = ((currentTimeMillis - EPOCH) << SEQUENCE_BITS + SERVER_ID_BITS) |
+                (serverId << SEQUENCE_BITS) |
+                sequence;
+
+        return Long.toString(id);
     }
+
+    private static long waitNextMillis(long currentTimeMillis) {
+        int spinCount = 0;
+        long nextTimestampMillis = timeProvider.currentTimeMillis();
+
+        if (nextTimestampMillis > currentTimeMillis) {
+            return nextTimestampMillis;
+        }
+
+        do {
+            if (spinCount < 100) { // 100번까지는 빠르게 Spin-Wait
+                Thread.onSpinWait();
+            } else {
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            spinCount++;
+            nextTimestampMillis = timeProvider.currentTimeMillis();
+        } while (nextTimestampMillis <= currentTimeMillis);
+
+        return nextTimestampMillis;
+    }
+
+    private static long waitUntilCurrentIsLargerThanLast(long currentTimeMillis) {
+        int spinCount = 0;
+
+        log.debug("lastTimeStamp: {}, currentTimeMillis: {}", lastTimestamp, currentTimeMillis);
+
+        long sleepTime = lastTimestamp - currentTimeMillis - 1;
+        if (sleepTime > 0) {
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        do {
+            if (spinCount < 100) { // 100번까지는 빠르게 Spin-Wait
+                Thread.onSpinWait();
+            } else {
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            spinCount++;
+            currentTimeMillis = timeProvider.currentTimeMillis();
+        } while (lastTimestamp >= currentTimeMillis);
+
+        return currentTimeMillis;
+    }
+
 }
