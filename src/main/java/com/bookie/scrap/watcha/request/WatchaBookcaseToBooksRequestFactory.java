@@ -12,15 +12,15 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import java.util.List;
 
 @Slf4j
-public class WatchaBookcaseToBookRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseToBookDTO>> {
+public class WatchaBookcaseToBooksRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseToBookDTO>> {
 
     private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s/items?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
     HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> handler = WatchaBookcaseReponseHandler.create();
 
-    private final static WatchaBookcaseToBookRequestFactory INSTANCE = new WatchaBookcaseToBookRequestFactory();
+    private final static WatchaBookcaseToBooksRequestFactory INSTANCE = new WatchaBookcaseToBooksRequestFactory();
 
-    public static WatchaBookcaseToBookRequestFactory getInstance() {
+    public static WatchaBookcaseToBooksRequestFactory getInstance() {
         return INSTANCE;
     }
 

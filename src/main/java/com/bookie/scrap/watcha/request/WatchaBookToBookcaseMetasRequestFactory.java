@@ -5,7 +5,6 @@ import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.http.HttpMethod;
 import com.bookie.scrap.common.util.ThreadUtil;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
@@ -14,18 +13,18 @@ import java.util.List;
 
 
 @Slf4j
-public class WatchaBookToBookcaseMetaRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseMetaDto>> {
+public class WatchaBookToBookcaseMetasRequestFactory implements WatchaRequestFactory<List<WatchaBookcaseMetaDto>> {
 
     private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s/decks?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    private final HttpClientResponseHandler<List<WatchaBookcaseMetaDto>> handler = WatchaBookcaseMetaResponseHandler.create();
+    private final HttpClientResponseHandler<List<WatchaBookcaseMetaDto>> handler = WatchaBookToBookcaseMetasResponseHandler.create();
 
-    private final static WatchaBookToBookcaseMetaRequestFactory INSTANCE = new WatchaBookToBookcaseMetaRequestFactory();
+    private final static WatchaBookToBookcaseMetasRequestFactory INSTANCE = new WatchaBookToBookcaseMetasRequestFactory();
 
-    private WatchaBookToBookcaseMetaRequestFactory() {
+    private WatchaBookToBookcaseMetasRequestFactory() {
     }
 
-    public static WatchaBookToBookcaseMetaRequestFactory getInstance() {
+    public static WatchaBookToBookcaseMetasRequestFactory getInstance() {
         return INSTANCE;
     }
 

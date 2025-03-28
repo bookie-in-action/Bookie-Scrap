@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
-class WatchaBookcaseToBookRequestFactoryTest {
+class WatchaBookcaseToBooksRequestFactoryTest {
 
 
     private static WatchaRequestFactory<List<WatchaBookcaseToBookDTO>> watchaBookcaseRequestFactory;
@@ -28,7 +28,7 @@ class WatchaBookcaseToBookRequestFactoryTest {
     public static void init() {
         InitManager initManager = new InitManager();
         initManager.devInit();
-        watchaBookcaseRequestFactory = WatchaBookcaseToBookRequestFactory.getInstance();
+        watchaBookcaseRequestFactory = WatchaBookcaseToBooksRequestFactory.getInstance();
     }
 
     @Test

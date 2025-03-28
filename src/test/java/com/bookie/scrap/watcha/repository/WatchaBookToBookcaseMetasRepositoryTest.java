@@ -9,7 +9,7 @@ import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
-import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetaRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 @Slf4j
-class WatchaBookcaseMetaRepositoryTest {
+class WatchaBookToBookcaseMetasRepositoryTest {
 
-    private static Repository<WatchaBookcaseMetaEntity> bookcaseMetaRepository = WatchaBookcaseMetaRepository.getInstance();
+    private static Repository<WatchaBookcaseMetaEntity> bookcaseMetaRepository = WatchaBookToBookcaseMetasRepository.getInstance();
     private static EntityManagerFactory emf;
 
     @BeforeAll
@@ -44,7 +44,7 @@ class WatchaBookcaseMetaRepositoryTest {
     public void selectWithCodeTest() {
         try (EntityManager em = emf.createEntityManager()) {
 
-            List<WatchaBookcaseMetaEntity> results = WatchaBookcaseMetaRepository.getInstance().selectWithCode("gcdk0WAdV9", em);
+            List<WatchaBookcaseMetaEntity> results = WatchaBookToBookcaseMetasRepository.getInstance().selectWithCode("gcdk0WAdV9", em);
             Assertions.assertEquals(1, results.size());
             Assertions.assertEquals("민음사TV", results.get(0).getBookcaseTitle());
         }
@@ -61,7 +61,7 @@ class WatchaBookcaseMetaRepositoryTest {
             String bookCode = "byLKj8M";
 
 
-            List<WatchaBookcaseMetaDto> result = WatchaBookToBookcaseMetaRequestFactory.getInstance().createRequest(bookCode, requestParam).execute();
+            List<WatchaBookcaseMetaDto> result = WatchaBookToBookcaseMetasRequestFactory.getInstance().createRequest(bookCode, requestParam).execute();
 
             Request<WatchaBookMetaDto> request = WatchaBookMetaRequestFactory.getInstance().createRequest(bookCode);
             WatchaBookMetaDto bookMetaDto = request.execute();
