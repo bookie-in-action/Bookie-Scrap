@@ -22,10 +22,10 @@ public class WatchaCommentEntity {
     private String commentText;
 
     @Column(name = "comment_likes_count")
-    private String commentLikesCount;
+    private Integer commentLikesCount;
 
     @Column(name = "comment_replies_count")
-    private String commentRepliesCount;
+    private Integer commentRepliesCount;
 
     @Column(name = "comment_watched_at")
     private String commentWatchedAt;
