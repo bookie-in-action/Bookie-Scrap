@@ -29,7 +29,7 @@ public abstract class BaseEntity {
 
     @Column(name = "status", nullable = false)
     @Convert(converter = StatusConverter.class)
-    protected Status status;
+    private Status status;
 
     @PrePersist
     private void prePersist() {
@@ -49,6 +49,10 @@ public abstract class BaseEntity {
     @PreUpdate
     private void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void inActivate() {
+        this.status = Status.INACTIVE;
     }
 
 }

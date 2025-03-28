@@ -69,10 +69,6 @@ public final class WatchaBookToBookcaseMetaEntity extends BaseEntity {
         this.bookcaseUpdatedAt = that.bookcaseUpdatedAt;
     }
 
-    public void inActivate() {
-        super.status = Status.INACTIVE;
-    }
-
     public boolean isSame(WatchaBookToBookcaseMetaEntity that) {
         return Objects.equals(bookcaseCode, that.bookcaseCode) &&
                 Objects.equals(bookcaseTitle, that.bookcaseTitle) &&
