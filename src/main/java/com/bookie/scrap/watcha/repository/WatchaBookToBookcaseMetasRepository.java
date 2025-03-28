@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,26 +40,41 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
      */
     public void insertOrUpdate(String bookCode, List<WatchaBookToBookcaseMetaEntity> targetEntity, EntityManager em) {
 
-        String jpql = "SELECT e FROM WatchaBookToBookcaseMetaEntity e WHERE e.bookCode = :bookCode";
+        targetEntity = new ArrayList<>(
+                targetEntity.stream()
+                .collect(Collectors.toMap(
+                        WatchaBookToBookcaseMetaEntity::getBookcaseCode,
+                        Function.identity(),
+                        (existing, replacement) -> existing
+                ))
+                .values()
+        );
 
-        List<WatchaBookToBookcaseMetaEntity> dbEntities = em.createQuery(jpql, WatchaBookToBookcaseMetaEntity.class)
-                .setParameter("bookCode", bookCode)
+        List<String> bookcaseCodes = targetEntity.stream()
+                .map(WatchaBookToBookcaseMetaEntity::getBookcaseCode)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<WatchaBookToBookcaseMetaEntity> dbEntities = em.createQuery(
+                        "SELECT e FROM WatchaBookToBookcaseMetaEntity e WHERE e.bookcaseCode IN :codes",
+                        WatchaBookToBookcaseMetaEntity.class)
+                .setParameter("codes", bookcaseCodes)
                 .getResultList();
 
 
-        Map<String, WatchaBookToBookcaseMetaEntity> dbEntityMap = new HashMap<>();
+        Map<String, WatchaBookToBookcaseMetaEntity> dbEntityMap = dbEntities.stream()
+                .collect(Collectors.toMap(WatchaBookToBookcaseMetaEntity::getBookcaseCode, Function.identity()));
+
+
         Map<String, Boolean> dbEntityVisited = new HashMap<>();
-        dbEntities.forEach(dbEntity -> {
-            dbEntityMap.put(dbEntity.getBookcaseCode(), dbEntity);
-            dbEntityVisited.put(dbEntity.getBookcaseCode(), false);
-        });
+        dbEntities.forEach(dbEntity -> dbEntityVisited.put(dbEntity.getBookcaseCode(), false));
 
         for (WatchaBookToBookcaseMetaEntity newEntity : targetEntity) {
 
             if (!dbEntityMap.containsKey(newEntity.getBookcaseCode())) {
                 log.info("Insert BookcaseMeta:{}", newEntity.getBookcaseCode());
                 WatchaUserRepository.getInstance().insertOrUpdate(newEntity.getUser(), em);
-                em.merge(newEntity);
+                em.persist(newEntity);
             } else {
 
                 WatchaBookToBookcaseMetaEntity dbEntity = dbEntityMap.get(newEntity.getBookcaseCode());
@@ -67,7 +83,7 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
                     dbEntity.updateEntity(newEntity);
                 }
 
-                dbEntityVisited.put(newEntity.getBookCode(), true);
+                dbEntityVisited.put(newEntity.getBookcaseCode(), true);
             }
         }
 
