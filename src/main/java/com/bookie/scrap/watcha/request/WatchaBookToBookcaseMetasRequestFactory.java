@@ -30,8 +30,6 @@ public class WatchaBookToBookcaseMetasRequestFactory implements WatchaRequestFac
     @Override
     public Request<List<WatchaBookcaseMetaDto>> createRequest(final String bookCode, final PageInfo pageInfo) {
 
-        ThreadUtil.sleep();
-
         Request<List<WatchaBookcaseMetaDto>> watchaRequest = new WatchaRequest<>();
         String endPoint = String.format(HTTP_URL_PATTERN, bookCode);
         String endPointWithParam = pageInfo.buildUrlWithPageInfo(endPoint);

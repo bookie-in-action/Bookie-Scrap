@@ -24,6 +24,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,13 +110,15 @@ public class WatchaJob implements Job {
 
         log.info("=> processByBookcaseCode bookcaseCode: {} process start", bookcaseCode);
         log.info("1. Insert Books In Bookcase");
-        PageInfo bookPage = new PageInfo(1, 20);
-        List<WatchaBookcaseToBookDTO> books = Collections.emptyList();
+        PageInfo bookPage = new PageInfo(1, 200);
+        List<WatchaBookcaseToBookDTO> books = new ArrayList<>();
         do {
             books = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
             insertBooksInRedisAndDb(bookcaseCode, books);
             bookPage.nextPage();
         } while (!books.isEmpty());
+
+
     }
 
     private void processByBookCode(String bookCode) {
@@ -151,24 +154,31 @@ public class WatchaJob implements Job {
         }
 
         // 코멘트 저장
-        PageInfo commentInfo = new PageInfo(1, 12);
+        PageInfo commentInfo = new PageInfo(1, 200);
 
 
         // bookcode -> bookcase 리스트 저장
         log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
-        PageInfo bookcasePage = new PageInfo(1, 20);
-        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = Collections.emptyList();
+        PageInfo bookcasePage = new PageInfo(1, 200);
+        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = new ArrayList<>();
         do {
             bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
             insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
-            bookcasePage.nextPage();
 
-            processByBookcaseCode(undoneBookcaseCodes.get());
+            bookcasePage.nextPage();
         } while (!bookcaseMetaDtos.isEmpty());
+
+
+        bookcaseMetaDtos.forEach(dto -> processByBookcaseCode(dto.getBookcaseCode()));
 
     }
 
     private void insertBookcaseMetasInRedisAndDb(String bookCode, List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
+
+        if (bookcaseMetaDtos.isEmpty()) {
+            return;
+        }
+
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -193,15 +203,21 @@ public class WatchaJob implements Job {
         }
     }
 
-    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookCodeDtos) {
+    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookDtos) {
+
+        if (bookDtos.isEmpty()) {
+            return;
+        }
+
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+            List<WatchaBookcaseToBookEntity> books = bookDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+
             bookcaseToBooksRepository.insertOrUpdate(bookcaseCode, books, em);
 
-            List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
+            List<String> bookCodes = bookDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
             em.getTransaction().commit();
         } catch (Exception e) {

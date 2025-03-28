@@ -30,7 +30,6 @@ public class WatchaBookcaseToBooksRequestFactory implements WatchaRequestFactory
 
     @Override
     public Request<List<WatchaBookcaseToBookDTO>> createRequest(String bookcaseCode, PageInfo pageInfo) {
-        ThreadUtil.sleep();
         Request<List<WatchaBookcaseToBookDTO>> watchaRequest = new WatchaRequest<>();
 
         String endPoint = String.format(HTTP_URL_PATTERN, bookcaseCode);
