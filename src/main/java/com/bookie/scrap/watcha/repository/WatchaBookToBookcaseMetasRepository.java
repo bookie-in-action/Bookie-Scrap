@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.repository;
 
 
 import com.bookie.scrap.common.domain.Repository;
-import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBookcaseMetaEntity> {
+public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBookToBookcaseMetaEntity> {
 
     private static final WatchaBookToBookcaseMetasRepository INSTANCE = new WatchaBookToBookcaseMetasRepository();
 
@@ -22,35 +22,44 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
     }
 
     @Override
-    public List<WatchaBookcaseMetaEntity> selectWithCode(String bookcaseCode, EntityManager em) {
+    public List<WatchaBookToBookcaseMetaEntity> selectWithCode(String bookcaseCode, EntityManager em) {
 
-        String jpql = "SELECT w FROM WatchaBookcaseMetaEntity w WHERE w.bookcaseCode = :bookcaseCode";
+        String jpql = "SELECT w FROM WatchaBookToBookcaseMetaEntity w WHERE w.bookcaseCode = :bookcaseCode";
 
-        List<WatchaBookcaseMetaEntity> results = em.createQuery(jpql, WatchaBookcaseMetaEntity.class)
+        List<WatchaBookToBookcaseMetaEntity> results = em.createQuery(jpql, WatchaBookToBookcaseMetaEntity.class)
                 .setParameter("bookcaseCode", bookcaseCode)
                 .getResultList();
 
         return results;
     }
 
-    public void insertOrUpdate(String bookCode, List<WatchaBookcaseMetaEntity> targetEntity, EntityManager em) {
+    /**
+     * 메서드에 WatchaUserRepository 사용하여 user insertOrUpdate 하는 프로세스 존재
+     * @param bookCode
+     * @param targetEntity
+     * @param em
+     */
+    public void insertOrUpdate(String bookCode, List<WatchaBookToBookcaseMetaEntity> targetEntity, EntityManager em) {
+        int updated = 0;
+        int inActivated = 0;
+        int inserted = 0;
 
-        String jpql = "SELECT e FROM WatchaBookcaseMetaEntity e WHERE e.bookCode = :bookCode";
+        String jpql = "SELECT e FROM WatchaBookToBookcaseMetaEntity e WHERE e.bookCode = :bookCode";
 
-        List<WatchaBookcaseMetaEntity> dbEntities = em.createQuery(jpql, WatchaBookcaseMetaEntity.class)
+        List<WatchaBookToBookcaseMetaEntity> dbEntities = em.createQuery(jpql, WatchaBookToBookcaseMetaEntity.class)
                 .setParameter("bookCode", bookCode)
                 .getResultList();
 
-        Set<String> dbBookcaseCode = dbEntities.stream().map(WatchaBookcaseMetaEntity::getBookcaseCode).collect(Collectors.toSet());
+        Set<String> dbBookcaseCode = dbEntities.stream().map(WatchaBookToBookcaseMetaEntity::getBookcaseCode).collect(Collectors.toSet());
 
-        dbEntities.sort(Comparator.comparing(WatchaBookcaseMetaEntity::getBookcaseCode));
-        targetEntity.sort(Comparator.comparing(WatchaBookcaseMetaEntity::getBookcaseCode));
+        dbEntities.sort(Comparator.comparing(WatchaBookToBookcaseMetaEntity::getBookcaseCode));
+        targetEntity.sort(Comparator.comparing(WatchaBookToBookcaseMetaEntity::getBookcaseCode));
 
-        Iterator<WatchaBookcaseMetaEntity> dbIter = dbEntities.iterator();
-        Iterator<WatchaBookcaseMetaEntity> newIter = targetEntity.iterator();
+        Iterator<WatchaBookToBookcaseMetaEntity> dbIter = dbEntities.iterator();
+        Iterator<WatchaBookToBookcaseMetaEntity> newIter = targetEntity.iterator();
 
-        WatchaBookcaseMetaEntity dbItem = null;
-        WatchaBookcaseMetaEntity newItem = null;
+        WatchaBookToBookcaseMetaEntity dbItem = null;
+        WatchaBookToBookcaseMetaEntity newItem = null;
 
         if (dbIter.hasNext()) {
             dbItem = dbIter.next();
@@ -77,45 +86,49 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
 
                 if (dbItem != null && !dbItem.isSame(newItem)) {
                     dbItem.updateEntity(newItem);
+                    updated++;
                     log.info("update: {}", dbItem.getBookcaseCode());
+                } else {
+                    log.info("same: {} {}", dbItem.getBookcaseCode(), newItem.getBookcaseCode());
+                }
+
+                if (newIter.hasNext()) {
+                    newItem = newIter.next();
                 }
 
                 if (dbIter.hasNext()) {
                     dbItem = dbIter.next();
+                } else {
+                    break;
                 }
+
+
+            } else {
+                // db에 없던 item이면 -> insert
+                WatchaUserRepository.getInstance().insertOrUpdate(newItem.getUser(), em);
+                em.persist(newItem);
+
+                inserted++;
+                log.info("insert: {}", newItem.getBookcaseCode());
+
                 if (newIter.hasNext()) {
                     newItem = newIter.next();
                 } else {
                     break;
                 }
-
-            } else {
-                // db에 없던 item이면 -> insert
-                em.persist(newItem);
-                WatchaUserRepository.getInstance().insertOrUpdate(newItem.getUser(), em);
-
-                log.info("insert: {}", newItem.getBookcaseCode());
-
-                if (!newIter.hasNext()) {
-                    break;
-                }
-                newItem = newIter.next();
             }
 
         }
 
         // 삭제된 item이면 -> status inactivate
-        if (dbItem != null) {
-            dbItem.inActivate();
-            log.info("inactivate: {}", dbItem.getBookcaseCode());
-        }
-
         while (dbIter.hasNext()) {
             dbItem = dbIter.next();
             dbItem.inActivate();
+            inActivated++;
             log.info("inactivate: {}", dbItem.getBookcaseCode());
         }
 
+        log.info("inserted:{}, inactivated:{}, updated:{}", inserted, inActivated, updated);
     }
 
 }

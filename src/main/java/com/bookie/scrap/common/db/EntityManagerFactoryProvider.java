@@ -55,10 +55,10 @@ public class EntityManagerFactoryProvider implements Initializable, Shutdownable
             configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, dbProperties.getValue(Key.HBM2DDL_AUTO));
 
             // 엔티티 클래스 목록을 직접 지정
-            configuration.addAnnotatedClass(WatchaBookcaseEntity.class);
-            configuration.addAnnotatedClass(WatchaCommentEntity.class);
+            configuration.addAnnotatedClass(WatchaBookToBookcaseMetaEntity.class);
+            configuration.addAnnotatedClass(WatchaBookcaseToBookEntity.class);
             configuration.addAnnotatedClass(WatchaBookMetaEntity.class);
-            configuration.addAnnotatedClass(WatchaBookcaseMetaEntity.class);
+            configuration.addAnnotatedClass(WatchaCommentEntity.class);
             configuration.addAnnotatedClass(WatchaUserEntity.class);
 
             //컨버터 목록 직접 지정

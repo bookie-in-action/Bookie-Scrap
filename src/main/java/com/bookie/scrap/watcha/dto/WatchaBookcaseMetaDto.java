@@ -1,7 +1,8 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
-import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
+import com.bookie.scrap.common.util.EmojiUtil;
+import com.bookie.scrap.common.util.StringUtil;
+import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +12,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WatchaBookcaseMetaDto {
@@ -45,19 +45,21 @@ public class WatchaBookcaseMetaDto {
     @Setter @JsonIgnore
     private String bookCode;
 
-    public WatchaBookcaseMetaEntity toEntity() {
-        return WatchaBookcaseMetaEntity.builder()
-                .bookCode(bookCode)
-                .userCode(user.getUserCode())
-                .bookcaseCode(bookcaseCode)
-                .bookcaseTitle(bookcaseTitle)
-                .bookcaseDescription(bookcaseDescription)
+    public WatchaBookToBookcaseMetaEntity toEntity() {
+        return WatchaBookToBookcaseMetaEntity.builder()
+                .bookCode(StringUtil.trim(bookCode))
+                .userCode(StringUtil.trim(user.getUserCode()))
+                .bookcaseCode(StringUtil.trim(bookcaseCode))
+                .bookcaseTitle(StringUtil.trim(EmojiUtil.eliminateEmoji(bookcaseTitle)))
+                .bookcaseDescription(StringUtil.trim(EmojiUtil.eliminateEmoji(bookcaseDescription)))
                 .bookCntInBookcase(bookCntInBookcase)
                 .bookcaseLikes(bookcaseLikes)
                 .bookcaseRepliesCnt(bookcaseRepliesCnt)
-                .bookcaseCreatedAt(createdAt)
-                .bookcaseUpdatedAt(updatedAt)
+                .bookcaseCreatedAt(createdAt.replace("+09:00", ""))
+                .bookcaseUpdatedAt(updatedAt.replace("+09:00", ""))
                 .user(user.toEntity())
                 .build();
     }
+
+
 }

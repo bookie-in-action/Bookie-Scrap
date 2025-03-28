@@ -2,19 +2,18 @@ package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
 import com.bookie.scrap.common.domain.Status;
-import com.bookie.scrap.common.domain.converter.EmojiAndSymbolConverter;
+import com.bookie.scrap.common.util.StringUtil;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
-@ToString
 @Getter @Setter
 @Entity @SuperBuilder
 @Table(name = "BS_WATCHA_BOOKCASE_META")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public final class WatchaBookcaseMetaEntity extends BaseEntity {
+public final class WatchaBookToBookcaseMetaEntity extends BaseEntity {
 
     // main pk
     @Column(name = "bookcase_code")
@@ -58,7 +57,7 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
     @JoinColumn(name = "book_code", referencedColumnName = "book_code", insertable = false, updatable = false)
     private WatchaBookMetaEntity bookMeta;
 
-    public void updateEntity(WatchaBookcaseMetaEntity that) {
+    public void updateEntity(WatchaBookToBookcaseMetaEntity that) {
         this.userCode = that.userCode;
         this.bookCode = that.bookCode;
         this.bookMeta = that.bookMeta;
@@ -74,7 +73,7 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
         super.status = Status.INACTIVE;
     }
 
-    public boolean isSame(WatchaBookcaseMetaEntity that) {
+    public boolean isSame(WatchaBookToBookcaseMetaEntity that) {
         return Objects.equals(bookcaseCode, that.bookcaseCode) &&
                 Objects.equals(bookcaseTitle, that.bookcaseTitle) &&
                 Objects.equals(bookcaseDescription, that.bookcaseDescription) &&
@@ -83,10 +82,22 @@ public final class WatchaBookcaseMetaEntity extends BaseEntity {
                 Objects.equals(bookcaseRepliesCnt, that.bookcaseRepliesCnt) &&
                 Objects.equals(bookcaseCreatedAt, that.bookcaseCreatedAt) &&
                 Objects.equals(bookcaseUpdatedAt, that.bookcaseUpdatedAt) &&
-                Objects.equals(userCode, that.userCode) &&
-                Objects.equals(bookCode, that.bookCode);
+                Objects.equals(userCode, that.userCode);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "WatchaBookToBookcaseMetaEntity{" +
+                "bookcaseCode='" + bookcaseCode + '\'' +
+                ", userCode='" + userCode + '\'' +
+                ", bookCode='" + bookCode + '\'' +
+                ", bookcaseTitle='" + bookcaseTitle + '\'' +
+                ", bookcaseDescription='" + bookcaseDescription + '\'' +
+                ", bookCntInBookcase=" + bookCntInBookcase +
+                ", bookcaseLikes=" + bookcaseLikes +
+                ", bookcaseRepliesCnt=" + bookcaseRepliesCnt +
+                ", bookcaseCreatedAt='" + bookcaseCreatedAt + '\'' +
+                ", bookcaseUpdatedAt='" + bookcaseUpdatedAt + '\'' +
+                '}';
+    }
 }

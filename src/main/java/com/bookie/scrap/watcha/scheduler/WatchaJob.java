@@ -8,7 +8,7 @@ import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
 
-import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
+import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
@@ -144,7 +144,7 @@ public class WatchaJob implements Job {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
+            List<WatchaBookToBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
             bookToBookcaseMetaRepository.insertOrUpdate(bookCode, bookcaseMetas, em);
 
             List<String> bookcaseCodes = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::getBookcaseCode).collect(Collectors.toList());
