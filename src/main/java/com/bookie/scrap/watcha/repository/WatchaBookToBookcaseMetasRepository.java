@@ -87,7 +87,7 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
                 if (dbItem != null && !dbItem.isSame(newItem)) {
                     dbItem.updateEntity(newItem);
                     updated++;
-                    log.info("update: {}", dbItem.getBookcaseCode());
+                    log.info("Update BookcaseMeta BookCode: {}, BookcaseCode: {}", bookCode, dbItem.getBookcaseCode());
                 }
 
                 if (newIter.hasNext()) {
@@ -107,7 +107,7 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
                 em.persist(newItem);
 
                 inserted++;
-                log.info("insert: {}", newItem.getBookcaseCode());
+                log.info("Insert BookcaseMeta BookCode: {}, BookcaseCode: {}", bookCode, newItem.getBookcaseCode());
 
                 if (newIter.hasNext()) {
                     newItem = newIter.next();
@@ -123,7 +123,8 @@ public class WatchaBookToBookcaseMetasRepository implements Repository<WatchaBoo
             dbItem = dbIter.next();
             dbItem.inActivate();
             inActivated++;
-            log.info("inactivate: {}", dbItem.getBookcaseCode());
+            log.info("Inactivate BookcaseMeta BookCode: {}, BookcaseCode: {}", bookCode, dbItem.getBookcaseCode());
+
         }
 
         log.info("inserted:{}, inactivated:{}, updated:{}", inserted, inActivated, updated);

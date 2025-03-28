@@ -220,20 +220,20 @@ public class HttpRequestExecutor {
                                      AbstractHttpEntity entity,
                                      HttpClientContext clientContext) {
 
-        log.debug("==================== {} HTTP REQUEST ====================", implClassName);
+        log.trace("==================== {} HTTP REQUEST ====================", implClassName);
         try {
-            log.debug("[Request Info]");
-            log.debug("   HTTP Method: " + httpMethod.getMethod());
-            log.debug("   Request URL: " + httpHost.getHostName() + httpMethod.getUri());
+            log.trace("[Request Info]");
+            log.trace("   HTTP Method: " + httpMethod.getMethod());
+            log.trace("   Request URL: " + httpHost.getHostName() + httpMethod.getUri());
         } catch (URISyntaxException e) {
-            throw new RuntimeException("error while making request debug log: ", e);
+            throw new RuntimeException("error while making request trace log: ", e);
         }
 
         // 요청 헤더 출력
-        log.debug("[Request Headers]");
+        log.trace("[Request Headers]");
         if(httpMethod.getHeaders().length != 0) {
             Arrays.stream(httpMethod.getHeaders())
-                    .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
+                    .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
         }
 
         if (clientContext != null) {
@@ -241,7 +241,7 @@ public class HttpRequestExecutor {
             if (!cookieStore.getCookies().isEmpty()) {
                 cookieStore.getCookies().stream()
                         .map(cookie -> new BasicHeader("Set-Cookie", cookie.toString()))
-                        .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
+                        .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
             }
         }
 
@@ -250,22 +250,22 @@ public class HttpRequestExecutor {
 //        objectMapper.enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 //
 //        if (entity != null) {
-//            log.debug("[Request Body]");
+//            log.trace();("[Request Body]");
 //            try {
 //                String requestBody = EntityUtils.toString(entity);
 //
 //                try {
 //                    JsonNode jsonNode = objectMapper.readTree(requestBody);
-//                    log.debug("\n" + jsonNode.toPrettyString());
+//                    log.trace();("\n" + jsonNode.toPrettyString());
 //                } catch (JsonParseException e) {
-//                    log.debug("   " + requestBody);
+//                    log.trace();("   " + requestBody);
 //                }
 //            } catch (Exception e) {
 //                log.error("   Failed to log request body: " + e.getMessage());
 //            }
 //        }
 
-        log.debug("================================ END ================================\n\n");
+        log.trace("================================ END ================================\n\n");
 
     }
 
@@ -275,22 +275,22 @@ public class HttpRequestExecutor {
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
         String executeClass = stackTraceElement.toString().split("\\.")[5];
 
-        log.debug("==================== {} HTTP REQUEST ====================", executeClass);
+        log.trace("==================== {} HTTP REQUEST ====================", executeClass);
         try {
-            log.debug("[Request Info]");
-            log.debug("   HTTP Method: " + httpMethod.getMethod());
-            log.debug("   Request URL: " + httpMethod.getUri());
+            log.trace("[Request Info]");
+            log.trace("   HTTP Method: " + httpMethod.getMethod());
+            log.trace("   Request URL: " + httpMethod.getUri());
         } catch (URISyntaxException e) {
-            throw new RuntimeException("error while making request debug log: ", e);
+            throw new RuntimeException("error while making request trace log: ", e);
         }
 
-        log.debug("[Request Headers]");
+        log.trace("[Request Headers]");
         if(httpMethod.getHeaders().length != 0) {
             Arrays.stream(httpMethod.getHeaders())
-                    .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
+                    .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
         }
 
-        log.debug("================================ END ================================\n\n");
+        log.trace("================================ END ================================\n\n");
 
     }
 
@@ -298,37 +298,37 @@ public class HttpRequestExecutor {
                                  ClassicHttpRequest mainRequest,
                                  HttpClientContext clientContext) {
 
-        log.debug("==================== {} HTTP REQUEST ====================", implClassName);
+        log.trace("==================== {} HTTP REQUEST ====================", implClassName);
 
         // HTTP 메서드와 URL 출력
         try {
-            log.debug("[Request Info]");
-            log.debug("   HTTP Method: {}", mainRequest.getMethod());
-            log.debug("   Request URL: {}", mainRequest.getUri());
+            log.trace("[Request Info]");
+            log.trace("   HTTP Method: {}", mainRequest.getMethod());
+            log.trace("   Request URL: {}", mainRequest.getUri());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
         // 요청 헤더 출력
-        log.debug("[Request Headers]");
+        log.trace("[Request Headers]");
         if (mainRequest.getHeaders().length != 0) {
             Arrays.stream(mainRequest.getHeaders())
-                    .forEach(header -> log.debug("   {}: {}", header.getName(), header.getValue()));
+                    .forEach(header -> log.trace("   {}: {}", header.getName(), header.getValue()));
         }
 
         // 쿠키 출력
         if (clientContext != null) {
             CookieStore cookieStore = (CookieStore) clientContext.getAttribute(HttpClientContext.COOKIE_STORE);
             if (cookieStore != null && !cookieStore.getCookies().isEmpty()) {
-                log.debug("[Request Cookies]");
+                log.trace("[Request Cookies]");
                 cookieStore.getCookies().forEach(cookie ->
-                        log.debug("   Set-Cookie: {}", cookie.toString())
+                        log.trace("   Set-Cookie: {}", cookie.toString())
                 );
             }
         }
 
         // 요청 바디 출력
-//        log.debug("[Request Body]");
+//        log.trace("[Request Body]");
 //        try {
 //            if (mainRequest instanceof HttpEntityEnclosingRequest) {
 //                HttpEntity entity = ((HttpEntityEnclosingRequest) mainRequest).getEntity();
@@ -339,21 +339,21 @@ public class HttpRequestExecutor {
 //
 //                    try {
 //                        JsonNode jsonNode = objectMapper.readTree(requestBody);
-//                        log.debug("\n{}", jsonNode.toPrettyString());
+//                        log.trace("\n{}", jsonNode.toPrettyString());
 //                    } catch (JsonParseException e) {
-//                        log.debug("   {}", requestBody);
+//                        log.trace("   {}", requestBody);
 //                    }
 //                } else {
-//                    log.debug("   No body present");
+//                    log.trace("   No body present");
 //                }
 //            } else {
-//                log.debug("   Request does not support a body");
+//                log.trace("   Request does not support a body");
 //            }
 //        } catch (Exception e) {
 //            log.error("   Failed to log request body: {}", e.getMessage());
 //        }
 
-        log.debug("================================ END ================================\n\n");
+        log.trace("================================ END ================================\n\n");
     }
 
 }

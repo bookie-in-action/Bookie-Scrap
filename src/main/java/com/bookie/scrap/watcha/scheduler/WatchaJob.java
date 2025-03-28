@@ -107,15 +107,15 @@ public class WatchaJob implements Job {
             return;
         }
 
-        log.debug("bookcaseCode: {} process start", bookcaseCode);
-
+        log.info("=> processByBookcaseCode bookcaseCode: {} process start", bookcaseCode);
+        log.info("1. Insert Books In Bookcase");
         PageInfo bookPage = new PageInfo(1, 20);
-        List<WatchaBookcaseToBookDTO> bookCodeDtos = Collections.emptyList();
+        List<WatchaBookcaseToBookDTO> books = Collections.emptyList();
         do {
-            bookCodeDtos = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
-            insertBooksInRedisAndDb(bookcaseCode, bookCodeDtos);
+            books = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
+            insertBooksInRedisAndDb(bookcaseCode, books);
             bookPage.nextPage();
-        } while (!bookCodeDtos.isEmpty());
+        } while (!books.isEmpty());
     }
 
     private void processByBookCode(String bookCode) {
@@ -124,17 +124,30 @@ public class WatchaJob implements Job {
             return;
         }
 
-        log.debug("bookcode: {} process start", bookCode);
+        log.info("=> processByBookCode bookCode: {} process start", bookCode);
 
+        EntityManager em = emf.createEntityManager();
         // book meta 저장
-        try (EntityManager em = emf.createEntityManager()) {
+        log.info("1. Insert BookMeta");
+        try {
             em.getTransaction().begin();
 
             WatchaBookMetaDto bookMetaDto = bookMetaRequestFactory.createRequest(bookCode).execute();
             bookMetaRepository.insertOrUpdate(bookMetaDto.toEntity(), em);
             completeBookCodes.addToSet(bookCode);
             undoneBookCodes.deleteItem(bookCode);
+
             em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
 
         // 코멘트 저장
@@ -142,6 +155,7 @@ public class WatchaJob implements Job {
 
 
         // bookcode -> bookcase 리스트 저장
+        log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
         PageInfo bookcasePage = new PageInfo(1, 20);
         List<WatchaBookcaseMetaDto> bookcaseMetaDtos = Collections.emptyList();
         do {
@@ -155,7 +169,8 @@ public class WatchaJob implements Job {
     }
 
     private void insertBookcaseMetasInRedisAndDb(String bookCode, List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
-        try (EntityManager em = emf.createEntityManager()) {
+        EntityManager em = emf.createEntityManager();
+        try {
             em.getTransaction().begin();
 
             List<WatchaBookToBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
@@ -166,11 +181,21 @@ public class WatchaJob implements Job {
             undoneBookcaseCodes.addToSet(bookcaseCodes);
             completeBookcaseCodes.deleteItem(bookcaseCodes);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
     }
 
     private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookCodeDtos) {
-        try (EntityManager em = emf.createEntityManager()) {
+        EntityManager em = emf.createEntityManager();
+        try {
             em.getTransaction().begin();
 
             List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
@@ -179,7 +204,17 @@ public class WatchaJob implements Job {
             List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
+
     }
 
     /**

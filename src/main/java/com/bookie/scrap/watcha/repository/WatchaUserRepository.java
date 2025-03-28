@@ -38,11 +38,11 @@ public class WatchaUserRepository implements Repository<WatchaUserEntity> {
 
         if (existingEntities.isEmpty()) {
             em.persist(targetEntity);
-            log.info("insert: {}", targetEntity.getUserCode());
+            log.info("Insert User UserCode: {}", targetEntity.getUserCode());
         } else if (existingEntities.size() == 1) {
             WatchaUserEntity existingEntity = existingEntities.get(0);
             existingEntity.updateEntity(targetEntity);
-            log.info("update: {}", existingEntity);
+            log.info("Update User UserCode: {}", existingEntity.getUserCode());
         } else {
             throw new NonUniqueResultException("select result is multiple: " + existingEntities.size());
         }
