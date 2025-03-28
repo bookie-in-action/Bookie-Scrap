@@ -2,8 +2,6 @@ package com.bookie.scrap.watcha.entity;
 
 
 import com.bookie.scrap.common.domain.BaseEntity;
-import com.bookie.scrap.common.domain.converter.ListStringConverter;
-import com.bookie.scrap.watcha.type.WatchaType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
 @Builder
-public class WatchaBookcaseEntity extends BaseEntity {
+public class WatchaBookcaseToBookEntity extends BaseEntity {
 
     @Column(name = "book_code")
     private String bookCode;

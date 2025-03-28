@@ -1,7 +1,7 @@
 package com.bookie.scrap.common.util;
 
-import com.bookie.scrap.common.domain.util.SystemTimeProvider;
-import com.bookie.scrap.common.domain.util.TimeProvider;
+import com.bookie.scrap.common.domain.snowflake.SystemTimeProvider;
+import com.bookie.scrap.common.domain.snowflake.TimeProvider;
 import com.bookie.scrap.common.properties.BookieProperties;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

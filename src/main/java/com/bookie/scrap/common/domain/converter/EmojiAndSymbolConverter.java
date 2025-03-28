@@ -1,4 +1,5 @@
 package com.bookie.scrap.common.domain.converter;
+import com.bookie.scrap.common.util.EmojiUtil;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -9,8 +10,7 @@ public class EmojiAndSymbolConverter implements AttributeConverter<String, Strin
     public String convertToDatabaseColumn(String attribute) {
         if (attribute == null) return null;
 
-        String regex = "[^\\p{L}\\p{N}\\p{P}\\p{Z}]";
-        return attribute.replaceAll(regex, "");
+        return EmojiUtil.eliminateEmoji(attribute);
     }
 
     @Override

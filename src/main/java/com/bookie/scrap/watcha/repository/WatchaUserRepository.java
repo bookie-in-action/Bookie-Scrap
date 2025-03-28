@@ -1,11 +1,8 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.common.domain.Repository;
-import com.bookie.scrap.watcha.entity.WatchaBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NonUniqueResultException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +28,6 @@ public class WatchaUserRepository implements Repository<WatchaUserEntity> {
             return results;
     }
 
-    @Override
     public void insertOrUpdate(WatchaUserEntity targetEntity, EntityManager em) {
 
         String jpql = "SELECT e FROM WatchaUserEntity e WHERE e.userCode = :userCode";
@@ -42,7 +38,7 @@ public class WatchaUserRepository implements Repository<WatchaUserEntity> {
 
         if (existingEntities.isEmpty()) {
             em.persist(targetEntity);
-            log.info("insert: {}", targetEntity);
+            log.info("insert: {}", targetEntity.getUserCode());
         } else if (existingEntities.size() == 1) {
             WatchaUserEntity existingEntity = existingEntities.get(0);
             existingEntity.updateEntity(targetEntity);

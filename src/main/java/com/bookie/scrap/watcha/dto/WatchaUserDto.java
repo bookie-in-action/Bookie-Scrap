@@ -2,7 +2,7 @@ package com.bookie.scrap.watcha.dto;
 
 
 import com.bookie.scrap.watcha.entity.WatchaUserEntity;
-import com.bookie.scrap.watcha.type.WatchaType;
+import com.bookie.scrap.watcha.type.WatchaUserPhoto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class WatchaUserDto {
     private String userName;
 
     @JsonProperty("photo")
-    private WatchaType.UserPhoto userPhoto;
+    private WatchaUserPhoto userPhoto;
 
     @JsonProperty("watcha_play_user")
     private String isWatchaPlayUser;

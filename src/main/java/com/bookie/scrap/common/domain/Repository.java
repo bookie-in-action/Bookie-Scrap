@@ -8,6 +8,4 @@ public interface Repository<T> {
 
     List<T> selectWithCode(String code, EntityManager em);
 
-    void insertOrUpdate(T dto, EntityManager em);
-
 }

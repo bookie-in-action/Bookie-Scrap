@@ -1,7 +1,7 @@
 package com.bookie.scrap.common.util;
 
-import com.bookie.scrap.common.domain.util.FakeTimeProvider;
-import com.bookie.scrap.common.domain.util.SystemTimeProvider;
+import com.bookie.scrap.common.domain.snowflake.FakeTimeProvider;
+import com.bookie.scrap.common.domain.snowflake.SystemTimeProvider;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;

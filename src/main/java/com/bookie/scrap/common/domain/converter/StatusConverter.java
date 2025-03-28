@@ -1,0 +1,25 @@
+package com.bookie.scrap.common.domain.converter;
+
+import com.bookie.scrap.common.domain.Status;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
+@Converter(autoApply = false)
+public class StatusConverter implements AttributeConverter<Status, Integer> {
+
+    @Override
+    public Integer convertToDatabaseColumn(Status status) {
+        if (status == null) {
+            return null;
+        }
+        return status.getCode();
+    }
+
+    @Override
+    public Status convertToEntityAttribute(Integer dbData) {
+        if (dbData == null) {
+            return null;
+        }
+        return Status.fromCode(dbData);
+    }
+}

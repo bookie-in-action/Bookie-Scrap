@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.domain.util;
+package com.bookie.scrap.common.domain.snowflake;
 
 public class SystemTimeProvider implements TimeProvider{
     @Override
