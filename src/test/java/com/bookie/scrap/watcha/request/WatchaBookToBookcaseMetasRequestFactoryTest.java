@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
-class WatchaBookcaseMetaRequestFactoryTest {
+class WatchaBookToBookcaseMetasRequestFactoryTest {
 
     @BeforeAll
     static void before() {
@@ -22,7 +22,7 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
     @Test
     void createRequestUriTest() throws URISyntaxException {
-        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaBookToBookcaseMetasRequestFactory factory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 12, "", "");
         Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest("qwer", requestParam);
 
@@ -34,7 +34,7 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
     @Test
     void pageNationNextPageTest() {
-        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaBookToBookcaseMetasRequestFactory factory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 12, "", "");
         String bookCode = "byLKj8M";
 //        Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
@@ -52,7 +52,7 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
     @Test
     void pageNationTest() {
-        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaBookToBookcaseMetasRequestFactory factory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 1, "", "");
         String bookCode = "byLKj8M";
         Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
@@ -64,7 +64,7 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
     @Test
     void requestExactTest() {
-        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaBookToBookcaseMetasRequestFactory factory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 1, "", "");
         String bookCode = "byLKj8M";
         Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);
@@ -78,7 +78,7 @@ class WatchaBookcaseMetaRequestFactoryTest {
 
     @Test
     void endOfPageTest() {
-        WatchaBookcaseMetaRequestFactory factory = WatchaBookcaseMetaRequestFactory.getInstance();
+        WatchaBookToBookcaseMetasRequestFactory factory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
         WatchaRequestParam requestParam = new WatchaRequestParam(100, 20, "", "");
         String bookCode = "byLKj8M";
         Request<List<WatchaBookcaseMetaDto>> request = factory.createRequest(bookCode, requestParam);

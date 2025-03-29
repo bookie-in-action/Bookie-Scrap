@@ -14,7 +14,9 @@ public class DbProperties implements InitializableProperties {
     public enum Key {
         DRIVER_NAME(".driver", ""), JDBC_URL(".url", ""), USER(".user", ""),PASSWORD(".password", ""),
         MAX_POOL(".poolsize", "10"),
-        SHOW_SQL(".showsql", "false"), FORMAT_SQL(".formatsql", "false"), HBM2DDL_AUTO(".ddl_auto", "none");
+        SHOW_SQL(".showsql", "false"), FORMAT_SQL(".formatsql", "false"), HBM2DDL_AUTO(".ddl_auto", "none"),
+
+        REDIS_URL(".url", "");
 
         private final String suffix;
         private final String defaultValue;
@@ -52,6 +54,11 @@ public class DbProperties implements InitializableProperties {
 
             log.info("============ [DB PROPERTIES: {}] ============", runningOption.toUpperCase());
             for(Key key : Key.values()) {
+
+                if (key.equals(Key.REDIS_URL)) {
+                    continue;
+                }
+
                 String fileLoadedValue = dbProperties.getProperty(prefix + key.suffix, key.defaultValue);
 
                 PROPERTY_MAP.put(key, fileLoadedValue);
@@ -61,6 +68,11 @@ public class DbProperties implements InitializableProperties {
                 String formattedKey = String.format("%-" + paddingLength + "s", key.name());
                 log.info("DB {}: {}", formattedKey, PROPERTY_MAP.get(key));
             }
+
+            String redisPrefix = String.format("redis.%s", runningOption);
+            String redisValue = dbProperties.getProperty(redisPrefix + Key.REDIS_URL.suffix, "");
+            PROPERTY_MAP.put(Key.REDIS_URL, redisValue);
+
             log.info("==============================================");
 
             // 초기화 상태 플래그 업데이트

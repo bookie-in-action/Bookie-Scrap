@@ -4,7 +4,7 @@ import com.bookie.scrap.common.http.HttpRequestExecutor;
 import com.bookie.scrap.common.util.HttpResponseUtil;
 import com.bookie.scrap.common.util.ObjectMapperUtil;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.type.WatchaType;
+import com.bookie.scrap.watcha.type.WatchaExternalService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
@@ -66,22 +66,22 @@ public class WatchaBookMetaReponseHandler {
     }
 
     // 외부 URL 매핑 로직
-    private static Map<WatchaType.EXTERNAL_SERVICE, String> mapExternalUrlsToTypes(List<String> redirectUrls) {
+    private static Map<WatchaExternalService, String> mapExternalUrlsToTypes(List<String> redirectUrls) {
 
         Matcher matcher;
-        Map<WatchaType.EXTERNAL_SERVICE, String> urlMap = new HashMap<>();
+        Map<WatchaExternalService, String> urlMap = new HashMap<>();
 
         if (redirectUrls != null) {
             for (String href : redirectUrls) {
                 if (href.contains("aladin")) {
                     matcher = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)").matcher(href);
                     if (matcher.find()) {
-                        urlMap.put(WatchaType.EXTERNAL_SERVICE.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
+                        urlMap.put(WatchaExternalService.ALADIN, "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=" + matcher.group(1));
                     }
                 }
 
                 else if (href.contains("yes24")){
-                    urlMap.put(WatchaType.EXTERNAL_SERVICE.YES24, href);
+                    urlMap.put(WatchaExternalService.YES24, href);
                 }
 
                 else if (href.contains("kyobobook")) {
@@ -89,7 +89,7 @@ public class WatchaBookMetaReponseHandler {
                     matcher = Pattern.compile("(?<=https://)(.*?)(?=&utm_source)").matcher(href);
                     if (matcher.find()) {
                         String kyoUrl = WatchaBookMetaReponseHandler.fetchAladinRedirectUrl("https://" + matcher.group(1));
-                        urlMap.put(WatchaType.EXTERNAL_SERVICE.KYOBO, kyoUrl);
+                        urlMap.put(WatchaExternalService.KYOBO, kyoUrl);
                     }
                 }
 

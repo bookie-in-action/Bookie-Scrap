@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
-import com.bookie.scrap.watcha.type.WatchaType;
+import com.bookie.scrap.watcha.type.WatchaUserPhoto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -25,7 +25,7 @@ public final class WatchaUserEntity extends BaseEntity {
             @AttributeOverride(name = "large", column = @Column(name = "user_photo_large")),
             @AttributeOverride(name = "small", column = @Column(name = "user_photo_small"))
     })
-    private WatchaType.UserPhoto userPhoto;
+    private WatchaUserPhoto userPhoto;
 
     @Column(name = "is_watcha_play_user")
     private String isWatchaPlayUser;

@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.util.ObjectMapperUtil;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpEntity;
@@ -15,23 +15,27 @@ import java.util.function.Function;
 @Slf4j
 public class WatchaBookcaseReponseHandler {
 
-    public static HttpClientResponseHandler<List<WatchaBookcaseDTO>> create() {
+    public static HttpClientResponseHandler<List<WatchaBookcaseToBookDTO>> create() {
         return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
     }
 
-    public static Function<HttpEntity, List<WatchaBookcaseDTO>> createHandlerLogic() {
+    public static Function<HttpEntity, List<WatchaBookcaseToBookDTO>> createHandlerLogic() {
 
         return httpEntity -> {
             try {
-                JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("result");
+                JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result");
 
-                List<WatchaBookcaseDTO> bookcaseDetailList = new ArrayList<>();
+                String bookcaseCode = jsonNode.get("next_uri").asText().split("/")[3];
+                JsonNode resultNode = jsonNode.get("result");
+
+                List<WatchaBookcaseToBookDTO> bookcaseDetailList = new ArrayList<>();
 
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");
 
                     if(!contentNode.isNull()){
-                        WatchaBookcaseDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseDTO.class);
+                        WatchaBookcaseToBookDTO watchaBookcase = ObjectMapperUtil.treeToValue(contentNode, WatchaBookcaseToBookDTO.class);
+                        watchaBookcase.setBookcaseCode(bookcaseCode);
                         bookcaseDetailList.add(watchaBookcase);
                     }
                 }
