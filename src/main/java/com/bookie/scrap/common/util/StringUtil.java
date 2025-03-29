@@ -17,4 +17,8 @@ public class StringUtil {
         return text.trim();
     }
 
+    public static String nonNull(String text) {
+        return text != null ? text : "";
+    }
+
 }

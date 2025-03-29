@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
+import com.bookie.scrap.common.util.StringUtil;
 import com.bookie.scrap.watcha.domain.deserializer.WatchaParseDateTimeDeserializer;
 import com.bookie.scrap.watcha.entity.WatchaCommentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -57,7 +58,8 @@ public class WatchaCommentDetailDto {
     @JsonProperty("user_content_action")
     private userCommentActionDto userCommentActionDto;
 
-    @Getter @ToString
+    @Getter
+    @ToString
     private static class userCommentActionDto {
 
         @JsonProperty("rating")
@@ -73,20 +75,20 @@ public class WatchaCommentDetailDto {
 
     public WatchaCommentEntity toEntity() {
         return WatchaCommentEntity.builder()
-                .commentCode(this.commentCode)
-                .bookCode(this.bookCode)
-                .userCode(this.userCode)
-                .commentText(this.commentText)
-                .commentLikesCount(this.commentLikesCount)
-                .commentRepliesCount(this.commentRepliesCount)
-                .commentWatchedAt(this.commentWatchedAt)
-                .commentCreatedAt(this.commentCreatedAt)
-                .commentSpoiler(this.isCommentSpoiler)
-                .commentImproper(this.isCommentImproper)
-                .commentReplyable(this.isCommentReplyable)
-                .commentUserContentRating(this.userCommentActionDto.rating)
-                .commentUserContentStatus(this.userCommentActionDto.status)
-                .commentUserContentMehed(this.userCommentActionDto.mehed)
+                .commentCode(StringUtil.nonNull(commentCode))
+                .bookCode(StringUtil.nonNull(bookCode))
+                .userCode(StringUtil.nonNull(userCode))
+                .commentText(StringUtil.nonNull(commentText))
+                .commentLikesCount(commentLikesCount)
+                .commentRepliesCount(commentRepliesCount)
+                .commentWatchedAt(StringUtil.nonNull(commentWatchedAt))
+                .commentCreatedAt(StringUtil.nonNull(commentCreatedAt))
+                .commentSpoiler(StringUtil.nonNull(isCommentSpoiler))
+                .commentImproper(StringUtil.nonNull(isCommentImproper))
+                .commentReplyable(StringUtil.nonNull(isCommentReplyable))
+                .commentUserContentRating(StringUtil.nonNull(userCommentActionDto != null ? userCommentActionDto.rating : null))
+                .commentUserContentStatus(StringUtil.nonNull(userCommentActionDto != null ? userCommentActionDto.status : null))
+                .commentUserContentMehed(StringUtil.nonNull(userCommentActionDto != null ? userCommentActionDto.mehed : null))
                 .build();
     }
 
