@@ -24,11 +24,9 @@ public class WatchaCommentReponseHandler {
 
         return httpEntity -> {
             try {
-                //JsonNode jsonNode = ObjectMapperUtil.readTree()
-                JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).path("result");
+                JsonNode jsonNode = ObjectMapperUtil.readTree(httpEntity.getContent()).path("result");
                 JsonNode resultNode = jsonNode.path("result");
                 log.debug("Response jsonNode -> {}", resultNode.toString() );
-                ///JsonNode resultNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result").get("result");
 
                 List<WatchaCommentDetailDTO> commentDetailList = new ArrayList<>();
 
@@ -39,12 +37,9 @@ public class WatchaCommentReponseHandler {
                     }
                 }
 
-//                List<WatchaCommentDetailDTO> watchaCommentDetailDTOList = ObjectMapperUtil.parseListFromTree(resultNode, WatchaCommentDetailDTO.class);
-//                log.debug("Response watchaCommentDetailDTOList -> {}", watchaCommentDetailDTOList.toString() );
                 log.debug("Response watchaCommentDetailDTOList -> {}", commentDetailList );
 
                 return commentDetailList;
-//                return Collections.emptyList(); // 또는 List.of();
             } catch (Exception e){
                 log.error("Error Execute", e);
                 throw new RuntimeException(e);
