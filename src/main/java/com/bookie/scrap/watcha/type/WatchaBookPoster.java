@@ -10,7 +10,7 @@ import lombok.ToString;
 @Embeddable
 @Getter @Setter
 @NoArgsConstructor
-public class WatchaPoster {
+public class WatchaBookPoster {
         private String hd;
         private String xlarge;
         private String large;

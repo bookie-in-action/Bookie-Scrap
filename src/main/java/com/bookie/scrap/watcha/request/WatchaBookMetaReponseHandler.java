@@ -71,7 +71,11 @@ public class WatchaBookMetaReponseHandler {
         Matcher matcher;
         Map<WatchaExternalService, String> urlMap = new HashMap<>();
 
-        if (redirectUrls != null) {
+        urlMap.put(WatchaExternalService.ALADIN, "");
+        urlMap.put(WatchaExternalService.YES24, "");
+        urlMap.put(WatchaExternalService.KYOBO, "");
+
+        if (redirectUrls != null && !redirectUrls.isEmpty()) {
             for (String href : redirectUrls) {
                 if (href.contains("aladin")) {
                     matcher = Pattern.compile("(?<=ItemId=)(.*?)(?=&partner)").matcher(href);
