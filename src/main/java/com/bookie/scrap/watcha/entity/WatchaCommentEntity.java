@@ -46,14 +46,6 @@ public class WatchaCommentEntity extends BaseEntity {
     @Column(name = "comment_created_at")
     private String commentCreatedAt;
 
-//    @Column(name = "comment_user_name")
-//    private String commentUserName;
-//
-//    @Column(name = "watcha_play_user")
-//    private String watchaPlayUser;
-//
-//    @Column(name = "official_user")
-//    private String officialUser;
 
     @Column(name = "comment_user_content_rating")
     private String commentUserContentRating;
@@ -64,8 +56,6 @@ public class WatchaCommentEntity extends BaseEntity {
     @Column(name = "comment_user_content_mehed")
     private String commentUserContentMehed;
 
-    @Column(name = "comment_user_content_watched_at")
-    private String commentUserContentWatchedAt;
 
     public void update(WatchaCommentEntity that) {
         this.commentText = that.commentText;
@@ -79,7 +69,25 @@ public class WatchaCommentEntity extends BaseEntity {
         this.commentUserContentRating = that.commentUserContentRating;
         this.commentUserContentStatus = that.commentUserContentStatus;
         this.commentUserContentMehed = that.commentUserContentMehed;
-        this.commentUserContentWatchedAt = that.commentUserContentWatchedAt;
     }
 
+    @Override
+    public String toString() {
+        return "WatchaCommentEntity{" +
+                "commentCode='" + commentCode + '\'' +
+                ", bookCode='" + bookCode + '\'' +
+                ", userCode='" + userCode + '\'' +
+                ", commentText='" + commentText + '\'' +
+                ", commentLikesCount=" + commentLikesCount +
+                ", commentRepliesCount=" + commentRepliesCount +
+                ", commentWatchedAt='" + commentWatchedAt + '\'' +
+                ", commentSpoiler='" + commentSpoiler + '\'' +
+                ", commentImproper='" + commentImproper + '\'' +
+                ", commentReplyable='" + commentReplyable + '\'' +
+                ", commentCreatedAt='" + commentCreatedAt + '\'' +
+                ", commentUserContentRating='" + commentUserContentRating + '\'' +
+                ", commentUserContentStatus='" + commentUserContentStatus + '\'' +
+                ", commentUserContentMehed='" + commentUserContentMehed + '\'' +
+                '}';
+    }
 }
