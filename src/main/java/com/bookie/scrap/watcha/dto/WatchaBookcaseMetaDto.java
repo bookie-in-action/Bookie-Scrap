@@ -2,10 +2,12 @@ package com.bookie.scrap.watcha.dto;
 
 import com.bookie.scrap.common.util.EmojiUtil;
 import com.bookie.scrap.common.util.StringUtil;
+import com.bookie.scrap.watcha.domain.deserializer.WatchaParseDateTimeDeserializer;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,9 +37,11 @@ public class WatchaBookcaseMetaDto {
     private Integer bookcaseRepliesCnt;
 
     @JsonProperty("created_at")
+    @JsonDeserialize(using = WatchaParseDateTimeDeserializer.class)
     private String createdAt;
 
     @JsonProperty("updated_at")
+    @JsonDeserialize(using = WatchaParseDateTimeDeserializer.class)
     private String updatedAt;
 
     private WatchaUserDto user;
@@ -55,8 +59,8 @@ public class WatchaBookcaseMetaDto {
                 .bookCntInBookcase(bookCntInBookcase)
                 .bookcaseLikes(bookcaseLikes)
                 .bookcaseRepliesCnt(bookcaseRepliesCnt)
-                .bookcaseCreatedAt(createdAt.replace("+09:00", ""))
-                .bookcaseUpdatedAt(updatedAt.replace("+09:00", ""))
+                .bookcaseCreatedAt(createdAt)
+                .bookcaseUpdatedAt(updatedAt)
                 .user(user.toEntity())
                 .build();
     }

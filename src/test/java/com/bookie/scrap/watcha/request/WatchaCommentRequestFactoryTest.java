@@ -23,11 +23,12 @@ public class WatchaCommentRequestFactoryTest {
     void testWatchaCommentApiRequest() {
         WatchaCommentRequestFactory factory = WatchaCommentRequestFactory.getInstance();
 
-        WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 9, "all", "popular");
+        WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 9, "", "");
         String bookCode = "byLKj8M";
 
         Request<List<WatchaCommentDetailDto>> watchaRequest = factory.createRequest(bookCode, watchaRequestParam);
         List<WatchaCommentDetailDto> commentList = watchaRequest.execute();
-        log.info("Result Data : {}", commentList);
+        log.info("Result Data : {}", commentList.get(4));
+        log.info("Result Data : {}", commentList.get(4).toEntity());
     }
 }
