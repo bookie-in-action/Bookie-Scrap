@@ -13,7 +13,6 @@ import org.apache.hc.core5.http.NoHttpResponseException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.AbstractHttpEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
-import com.bookie.scrap.common.domain.BaseRequest;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -34,59 +33,6 @@ public class HttpRequestExecutor {
 
         try {
             return executeWithRetry(httpRequest, responseHandler);
-        } catch (HttpResponseException e) {
-            handleHttpResponseException(e);
-            throw new IllegalStateException("This line is unreachable, but added for completeness.");
-        } catch (SSLHandshakeException e) {
-            log.error("SSL handshake failed: " + e.getMessage());
-            throw new IllegalStateException("SSL error: " + e.getMessage(), e);
-        } catch (IOException e) {
-            log.error("I/O error: " + e.getMessage());
-            throw new IllegalStateException("Unexpected I/O error: " + e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Unexpected error: " + e.getMessage());
-            throw new IllegalStateException("An unexpected error occurred: " + e.getMessage(), e);
-        }
-
-    }
-
-    public static <T> T execute(BaseRequest<T> requestConfig) {
-
-        ClassicHttpRequest httpMethod = requestConfig.getHttpMethod();
-        AbstractHttpEntity entity = requestConfig.getEntity();
-
-        if (entity != null) {
-            httpMethod.setEntity(entity);
-        }
-
-        HttpHost httpHost = requestConfig.getHttpHost();
-        HttpClientContext clientContext = requestConfig.getClientContext();
-
-        HttpClientResponseHandler<T> responseHandler = requestConfig.getResponseHandler();
-
-        if (httpHost == null) {
-            String errorMsg = String.format("[%s] httpHost is null", requestConfig.getImplClassName());
-            throw new IllegalArgumentException(errorMsg);
-        }
-        if (httpMethod == null) {
-            String errorMsg = String.format("[%s] httpMethod is null", requestConfig.getImplClassName());
-            throw new IllegalArgumentException(errorMsg);
-        }
-        if (responseHandler == null) {
-            String errorMsg = String.format("[%s] response hander is null", requestConfig.getImplClassName());
-            throw new IllegalArgumentException(errorMsg);
-        }
-
-        printLog(
-                requestConfig.getImplClassName(),
-                httpHost,
-                httpMethod,
-                entity,
-                clientContext
-        );
-
-        try {
-            return executeWithRetry(httpHost, httpMethod, clientContext, responseHandler);
         } catch (HttpResponseException e) {
             handleHttpResponseException(e);
             throw new IllegalStateException("This line is unreachable, but added for completeness.");
