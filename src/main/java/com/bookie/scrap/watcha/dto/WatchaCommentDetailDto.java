@@ -14,9 +14,7 @@ import java.sql.SQLException;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaCommentDetailDTO {
-    // PK
-    private String snowflakeId;
+public class WatchaCommentDetailDto {
 
     // WatchaCommentDetail
     @JsonProperty("code")
@@ -49,22 +47,16 @@ public class WatchaCommentDetailDTO {
     @JsonProperty("created_at")
     private String commentCreatedAt;
 
-    @JsonProperty("user")
-    private WatchaCommentUserDTO watchaCommentUserDTO;
+//    @JsonProperty("user")
+//    private WatchaCommentUserDTO watchaCommentUserDTO;
 
     @JsonProperty("user_content_action")
-    private WatchaCommentUserContentActionDTO watchaCommentUserContentActionDTO;
+    private WatchaCommentUserContentActionDto watchaCommentUserContentActionDTO;
 
     // ResultSet을 받아 DTO 객체 반환
-    public static WatchaCommentDetailDTO fromResultSet(ResultSet resultSet) throws SQLException {
-        WatchaCommentUserDTO userDTO = new WatchaCommentUserDTO().builder()
-                .code(resultSet.getString("comment_user_code"))
-                .name(resultSet.getString("comment_user_name"))
-                .watchaPlayUser(resultSet.getString("watcha_play_user"))
-                .officialUser(resultSet.getString("official_user"))
-                .build();
+    public static WatchaCommentDetailDto fromResultSet(ResultSet resultSet) throws SQLException {
 
-        WatchaCommentUserContentActionDTO userContentActionDTO = new WatchaCommentUserContentActionDTO().builder()
+        WatchaCommentUserContentActionDto userContentActionDTO = new WatchaCommentUserContentActionDto().builder()
                 .rating(resultSet.getString("comment_user_content_rating"))
                 .status(resultSet.getString("comment_user_content_status"))
                 .mehed(resultSet.getString("comment_user_content_mehed"))
@@ -73,9 +65,8 @@ public class WatchaCommentDetailDTO {
                 .contentCode(resultSet.getString("book_code"))
                 .build();
 
-        return WatchaCommentDetailDTO.builder()
+        return WatchaCommentDetailDto.builder()
                 .bookCode(resultSet.getString("book_code"))
-                .watchaCommentUserDTO(userDTO)
                 .commentText(resultSet.getString("comment_text"))
                 .commentLikesCount(resultSet.getInt("comment_likes_count"))
                 .commentRepliesCount(resultSet.getInt("comment_replies_count"))
@@ -89,10 +80,10 @@ public class WatchaCommentDetailDTO {
     }
     
     // Entity 로 변환
-    public static WatchaCommentEntity toEntity(WatchaCommentDetailDTO dto) {
+    public static WatchaCommentEntity toEntity(WatchaCommentDetailDto dto) {
         return WatchaCommentEntity.builder()
                 .bookCode(dto.getBookCode())
-                .commentUserCode(dto.getWatchaCommentUserDTO().getCode())
+//                .commentUserCode(dto.getWatchaCommentUserDTO().getCode())
                 .commentText(dto.getCommentText())
                 .commentLikesCount(dto.getCommentLikesCount())
                 .commentRepliesCount(dto.getCommentRepliesCount())
@@ -101,9 +92,9 @@ public class WatchaCommentDetailDTO {
                 .commentImproper(dto.getCommentImproper())
                 .commentReplyable(dto.getCommentReplyable())
                 .commentCreatedAt(dto.getCommentCreatedAt())
-                .commentUserName(dto.getWatchaCommentUserDTO().getName())
-                .watchaPlayUser(dto.getWatchaCommentUserDTO().getWatchaPlayUser())
-                .officialUser(dto.getWatchaCommentUserDTO().getOfficialUser())
+//                .commentUserName(dto.getWatchaCommentUserDTO().getName())
+//                .watchaPlayUser(dto.getWatchaCommentUserDTO().getWatchaPlayUser())
+//                .officialUser(dto.getWatchaCommentUserDTO().getOfficialUser())
                 .commentUserContentRating(dto.getWatchaCommentUserContentActionDTO().getRating())
                 .commentUserContentStatus(dto.getWatchaCommentUserContentActionDTO().getStatus())
                 .commentUserContentMehed(dto.getWatchaCommentUserContentActionDTO().getMehed())

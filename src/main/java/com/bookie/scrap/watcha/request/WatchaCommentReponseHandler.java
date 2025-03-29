@@ -1,26 +1,24 @@
 package com.bookie.scrap.watcha.request;
 
 import com.bookie.scrap.common.util.ObjectMapperUtil;
-import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
+import com.bookie.scrap.watcha.dto.WatchaCommentDetailDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
 public class WatchaCommentReponseHandler {
 
-    public static HttpClientResponseHandler<List<WatchaCommentDetailDTO>> create() {
+    public static HttpClientResponseHandler<List<WatchaCommentDetailDto>> create() {
         return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
     }
 
-    public static Function<HttpEntity, List<WatchaCommentDetailDTO>> createHandlerLogic() {
+    public static Function<HttpEntity, List<WatchaCommentDetailDto>> createHandlerLogic() {
 
         return httpEntity -> {
             try {
@@ -28,11 +26,11 @@ public class WatchaCommentReponseHandler {
                 JsonNode resultNode = jsonNode.path("result");
                 log.debug("Response jsonNode -> {}", resultNode.toString() );
 
-                List<WatchaCommentDetailDTO> commentDetailList = new ArrayList<>();
+                List<WatchaCommentDetailDto> commentDetailList = new ArrayList<>();
 
                 if(!resultNode.isNull()){
                     for(JsonNode node : resultNode) {
-                        WatchaCommentDetailDTO watchaCommentDetail = ObjectMapperUtil.treeToValue(node, WatchaCommentDetailDTO.class);
+                        WatchaCommentDetailDto watchaCommentDetail = ObjectMapperUtil.treeToValue(node, WatchaCommentDetailDto.class);
                         commentDetailList.add (watchaCommentDetail);
                     }
                 }

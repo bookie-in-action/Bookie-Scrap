@@ -5,18 +5,18 @@ import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.http.HttpMethod;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
+import com.bookie.scrap.watcha.dto.WatchaCommentDetailDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import java.util.List;
 
 @Slf4j
-public class WatchaCommentRequestFactory implements WatchaRequestFactory<List<WatchaCommentDetailDTO>> {
+public class WatchaCommentRequestFactory implements WatchaRequestFactory<List<WatchaCommentDetailDto>> {
 
     private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s/comments?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    HttpClientResponseHandler<List<WatchaCommentDetailDTO>> handler = WatchaCommentReponseHandler.create();
+    HttpClientResponseHandler<List<WatchaCommentDetailDto>> handler = WatchaCommentReponseHandler.create();
 
     private final static WatchaCommentRequestFactory INSTANCE = new WatchaCommentRequestFactory();
 
@@ -27,19 +27,19 @@ public class WatchaCommentRequestFactory implements WatchaRequestFactory<List<Wa
     }
 
     @Override
-    public Request<List<WatchaCommentDetailDTO>> createRequest(String value) {
+    public Request<List<WatchaCommentDetailDto>> createRequest(String value) {
         return null;
     }
 
     @Override
-    public Request<List<WatchaCommentDetailDTO>> createRequest(final String bookCode, final PageInfo pageInfo) {
+    public Request<List<WatchaCommentDetailDto>> createRequest(final String bookCode, final PageInfo pageInfo) {
 
         WatchaRequestParam watchaParam = asWatchaParam(pageInfo);
 
         String endPoint = String.format(HTTP_URL_PATTERN, bookCode);
         String endPointWithParam = watchaParam.buildUrlWithParamInfo(endPoint);
 
-        Request<List<WatchaCommentDetailDTO>> watchaRequest = new WatchaRequest<>();
+        Request<List<WatchaCommentDetailDto>> watchaRequest = new WatchaRequest<>();
         watchaRequest.setMainRequest(HTTP_METHOD, endPointWithParam);
         watchaRequest.setResponseHandler(handler);
 

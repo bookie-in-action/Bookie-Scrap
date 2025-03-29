@@ -1,10 +1,8 @@
 package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
-import com.bookie.scrap.watcha.dto.WatchaCommentDetailDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.checker.units.qual.A;
 
 @Entity
 @Builder
@@ -70,8 +68,6 @@ public class WatchaCommentEntity extends BaseEntity {
     private String commentUserContentWatchedAt;
 
     public void update(WatchaCommentEntity that) {
-        this.userCode = that.userCode;
-        this.bookCode = that.bookCode;
         this.commentText = that.commentText;
         this.commentLikesCount = that.commentLikesCount;
         this.commentRepliesCount = that.commentRepliesCount;

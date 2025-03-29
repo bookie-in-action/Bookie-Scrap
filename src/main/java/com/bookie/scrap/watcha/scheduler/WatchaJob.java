@@ -6,7 +6,7 @@ import com.bookie.scrap.common.db.redis.RedisConnectionProducer;
 import com.bookie.scrap.common.db.redis.RedisSetManager;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
@@ -110,7 +110,7 @@ public class WatchaJob implements Job {
         log.debug("bookcaseCode: {} process start", bookcaseCode);
 
         PageInfo bookPage = new PageInfo(1, 20);
-        List<WatchaBookcaseToBookDTO> bookCodeDtos = Collections.emptyList();
+        List<WatchaBookcaseToBookDto> bookCodeDtos = Collections.emptyList();
         do {
             bookCodeDtos = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
             insertBooksInRedisAndDb(bookcaseCode, bookCodeDtos);
@@ -169,14 +169,14 @@ public class WatchaJob implements Job {
         }
     }
 
-    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookCodeDtos) {
+    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDto> bookCodeDtos) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+            List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDto::toEntity).collect(Collectors.toList());
             bookcaseToBooksRepository.insertOrUpdate(bookcaseCode, books, em);
 
-            List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
+            List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDto::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
             em.getTransaction().commit();
         }

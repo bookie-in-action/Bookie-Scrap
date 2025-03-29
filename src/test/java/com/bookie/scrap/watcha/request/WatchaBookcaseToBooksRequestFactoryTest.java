@@ -4,7 +4,7 @@ import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +22,7 @@ import java.util.List;
 class WatchaBookcaseToBooksRequestFactoryTest {
 
 
-    private static WatchaRequestFactory<List<WatchaBookcaseToBookDTO>> watchaBookcaseRequestFactory;
+    private static WatchaRequestFactory<List<WatchaBookcaseToBookDto>> watchaBookcaseRequestFactory;
 
     @BeforeAll
     public static void init() {
@@ -35,8 +35,8 @@ class WatchaBookcaseToBooksRequestFactoryTest {
     void createRequest() {
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseToBookDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
-        List<WatchaBookcaseToBookDTO> bookcaseList = watchaRequest.execute();
+        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
         log.info("Result Data : {}", bookcaseList);
     }
 
@@ -44,13 +44,13 @@ class WatchaBookcaseToBooksRequestFactoryTest {
     void transToEntity() {
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseToBookDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
-        List<WatchaBookcaseToBookDTO> bookcaseList = watchaRequest.execute();
+        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
         // log.info("Result Data : {}", bookcaseList);
 
-        for(WatchaBookcaseToBookDTO dto : bookcaseList){
+        for(WatchaBookcaseToBookDto dto : bookcaseList){
             // WatchaCommentEntity entity = WatchaCommentEntity.fromDTO(bookcaseList.get(i));
-            WatchaBookcaseToBookEntity entity = WatchaBookcaseToBookDTO.toEntity(dto);
+            WatchaBookcaseToBookEntity entity = WatchaBookcaseToBookDto.toEntity(dto);
             log.info("to Entity : {}", entity.toString());
         }
     }
@@ -69,8 +69,8 @@ class WatchaBookcaseToBooksRequestFactoryTest {
 
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
 
-        Request<List<WatchaBookcaseToBookDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
-        List<WatchaBookcaseToBookDTO> bookcaseList = watchaRequest.execute();
+        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
         log.info("bookCaseList : {}", bookcaseList);
 
         Assertions.assertEquals(expectedJson, bookcaseList.toString());
@@ -80,8 +80,8 @@ class WatchaBookcaseToBooksRequestFactoryTest {
     void endPageTest() {
         WatchaRequestParam watchaRequestParam = new WatchaRequestParam(99, 12, "", "");
 
-        Request<List<WatchaBookcaseToBookDTO>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
-        List<WatchaBookcaseToBookDTO> bookcaseList = watchaRequest.execute();
+        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
 
         Assertions.assertTrue(bookcaseList.isEmpty());
     }

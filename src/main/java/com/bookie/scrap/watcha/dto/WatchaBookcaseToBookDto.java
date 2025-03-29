@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookcaseToBookDTO {
+public class WatchaBookcaseToBookDto {
 
     @JsonProperty("code")
     private String bookCode;
@@ -65,7 +65,7 @@ public class WatchaBookcaseToBookDTO {
 //    }
 
     // Entity 로 변환
-    public static WatchaBookcaseToBookEntity toEntity(WatchaBookcaseToBookDTO dto) {
+    public static WatchaBookcaseToBookEntity toEntity(WatchaBookcaseToBookDto dto) {
         return WatchaBookcaseToBookEntity.builder()
                 .bookCode(dto.getBookCode())
                 .bookcaseCode(dto.bookcaseCode)

@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class WatchaCommentUserContentActionDTO {
+public class WatchaCommentUserContentActionDto {
 
     @JsonProperty("rating")
     private String rating;
