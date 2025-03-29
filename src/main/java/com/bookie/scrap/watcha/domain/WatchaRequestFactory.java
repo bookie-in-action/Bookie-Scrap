@@ -10,6 +10,7 @@ public interface WatchaRequestFactory<T> extends RequestFactory<T> {
         if (pageInfo instanceof WatchaRequestParam) {
             return (WatchaRequestParam) pageInfo;
         }
+
         throw new IllegalArgumentException("Expected WatchaRequestParam, but got: " + pageInfo.getClass().getSimpleName());
     }
 

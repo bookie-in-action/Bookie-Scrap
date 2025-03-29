@@ -3,11 +3,8 @@ package com.bookie.scrap.watcha.repository;
 import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.common.lifecycle.InitManager;
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
-import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
-import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import com.bookie.scrap.watcha.request.WatchaBookcaseToBooksRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -18,8 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class WatchaBookcaseToBooksRepositoryTest {
@@ -46,8 +41,8 @@ class WatchaBookcaseToBooksRepositoryTest {
                 String bookcaseCode = "gcdk0WAdV9";
 
 
-                List<WatchaBookcaseToBookDTO> result = WatchaBookcaseToBooksRequestFactory.getInstance().createRequest(bookcaseCode, requestParam).execute();
-                List<WatchaBookcaseToBookEntity> resultEntities = result.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+                List<WatchaBookcaseToBookDto> result = WatchaBookcaseToBooksRequestFactory.getInstance().createRequest(bookcaseCode, requestParam).execute();
+                List<WatchaBookcaseToBookEntity> resultEntities = result.stream().map(WatchaBookcaseToBookDto::toEntity).collect(Collectors.toList());
                 repo.insertOrUpdate(bookcaseCode, resultEntities, em);
 
                 em.getTransaction().commit();

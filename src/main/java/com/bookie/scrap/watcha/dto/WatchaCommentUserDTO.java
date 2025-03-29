@@ -3,25 +3,20 @@ package com.bookie.scrap.watcha.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-@Getter
-@Setter
-@Builder
+@Deprecated
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 public class WatchaCommentUserDTO {
 
-
     @JsonProperty("code")
-    private String code;
+    private String userCode;
 
     @JsonProperty("name")
-    private String name;
+    private String userName;
 
     @JsonProperty("watcha_play_user")
-    private String watchaPlayUser;
+    private String isWatchaPlayUser;
 
     @JsonProperty("official_user")
-    private String officialUser;
+    private String isOfficialUser;
 
 }
