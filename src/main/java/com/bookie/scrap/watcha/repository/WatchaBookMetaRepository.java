@@ -1,18 +1,15 @@
 package com.bookie.scrap.watcha.repository;
 
 
-import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NonUniqueResultException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @Slf4j
-public class WatchaBookMetaRepository implements Repository<WatchaBookMetaEntity> {
+public class WatchaBookMetaRepository{
 
     private static final WatchaBookMetaRepository INSTANCE = new WatchaBookMetaRepository();
 
@@ -20,7 +17,6 @@ public class WatchaBookMetaRepository implements Repository<WatchaBookMetaEntity
         return INSTANCE;
     }
 
-    @Override
     public List<WatchaBookMetaEntity> selectWithCode(String bookCode, EntityManager em) {
 
         String jpql = "SELECT w FROM WatchaBookMetaEntity w WHERE w.bookCode = :bookCode";

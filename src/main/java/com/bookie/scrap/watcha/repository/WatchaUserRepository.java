@@ -1,6 +1,5 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NonUniqueResultException;
@@ -9,14 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 @Slf4j
-public class WatchaUserRepository implements Repository<WatchaUserEntity> {
+public class WatchaUserRepository  {
 
     private static final WatchaUserRepository INSTANCE = new WatchaUserRepository();
     public static WatchaUserRepository getInstance() {
         return INSTANCE;
     }
 
-    @Override
     public List<WatchaUserEntity> selectWithCode(String userCode, EntityManager em) {
 
             String jpql = "SELECT e FROM WatchaUserEntity e WHERE e.userCode = :userCode";

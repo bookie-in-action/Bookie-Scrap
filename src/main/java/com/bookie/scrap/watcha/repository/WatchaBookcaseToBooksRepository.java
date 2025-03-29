@@ -1,7 +1,6 @@
 package com.bookie.scrap.watcha.repository;
 
 
-import com.bookie.scrap.common.domain.Repository;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import jakarta.persistence.EntityManager;
@@ -11,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class WatchaBookcaseToBooksRepository implements Repository<WatchaBookcaseToBookEntity> {
+public class WatchaBookcaseToBooksRepository {
 
     private static final WatchaBookcaseToBooksRepository INSTANCE = new WatchaBookcaseToBooksRepository();
 
@@ -19,7 +18,6 @@ public class WatchaBookcaseToBooksRepository implements Repository<WatchaBookcas
         return INSTANCE;
     }
 
-    @Override
     public List<WatchaBookcaseToBookEntity> selectWithCode(String bookcaseCode, EntityManager em) {
 
         String jpql = "SELECT w FROM WatchaBookcaseToBookEntity w WHERE w.bookcaseCode = :bookcaseCode";
