@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.dto;
 
 
+import com.bookie.scrap.common.util.StringUtil;
 import com.bookie.scrap.watcha.entity.WatchaUserEntity;
 import com.bookie.scrap.watcha.type.WatchaUserPhoto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,12 +48,12 @@ public class WatchaUserDto {
 
     public WatchaUserEntity toEntity() {
         return WatchaUserEntity.builder()
-                .userCode(userCode)
-                .userName(userName)
+                .userCode(StringUtil.nonNull(userCode))
+                .userName(StringUtil.nonNull(userName))
                 .userPhoto(userPhoto)
-                .isWatchaPlayUser(isWatchaPlayUser)
-                .isOfficialUser(isOfficialUser)
-                .userDescription(userDescription)
+                .isWatchaPlayUser(StringUtil.nonNull(isWatchaPlayUser))
+                .isOfficialUser(StringUtil.nonNull(isOfficialUser))
+                .userDescription(StringUtil.nonNull(userDescription))
                 .commentsCnt(commentsCnt)
                 .ratingsCnt(ratingsCnt)
                 .wishesCnt(wishesCnt)

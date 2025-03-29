@@ -1,5 +1,5 @@
 package com.bookie.scrap.common.domain.converter;
-import com.bookie.scrap.common.util.EmojiUtil;
+import com.bookie.scrap.common.util.StringUtil;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -10,7 +10,7 @@ public class EmojiAndSymbolConverter implements AttributeConverter<String, Strin
     public String convertToDatabaseColumn(String attribute) {
         if (attribute == null) return null;
 
-        return EmojiUtil.eliminateEmoji(attribute);
+        return StringUtil.eliminateEmoji(attribute);
     }
 
     @Override
