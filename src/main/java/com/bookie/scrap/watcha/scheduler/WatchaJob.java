@@ -6,8 +6,8 @@ import com.bookie.scrap.common.db.redis.RedisConnectionProducer;
 import com.bookie.scrap.common.db.redis.RedisSetManager;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDTO;
 
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
@@ -111,7 +111,7 @@ public class WatchaJob implements Job {
         log.info("=> processByBookcaseCode bookcaseCode: {} process start", bookcaseCode);
         log.info("1. Insert Books In Bookcase");
         PageInfo bookPage = new PageInfo(1, 200);
-        List<WatchaBookcaseToBookDTO> books = new ArrayList<>();
+        List<WatchaBookcaseToBookDto> books = new ArrayList<>();
         do {
             books = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
             insertBooksInRedisAndDb(bookcaseCode, books);
@@ -203,7 +203,7 @@ public class WatchaJob implements Job {
         }
     }
 
-    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDTO> bookDtos) {
+    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDto> bookDtos) {
 
         if (bookDtos.isEmpty()) {
             return;
@@ -213,11 +213,11 @@ public class WatchaJob implements Job {
         try {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseToBookEntity> books = bookDtos.stream().map(WatchaBookcaseToBookDTO::toEntity).collect(Collectors.toList());
+            List<WatchaBookcaseToBookEntity> books = bookDtos.stream().map(WatchaBookcaseToBookDto::toEntity).collect(Collectors.toList());
 
             bookcaseToBooksRepository.insertOrUpdate(bookcaseCode, books, em);
 
-            List<String> bookCodes = bookDtos.stream().map(WatchaBookcaseToBookDTO::getBookCode).collect(Collectors.toList());
+            List<String> bookCodes = bookDtos.stream().map(WatchaBookcaseToBookDto::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
             em.getTransaction().commit();
         } catch (Exception e) {
