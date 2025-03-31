@@ -5,6 +5,7 @@ import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.common.db.redis.RedisConnectionProducer;
 import com.bookie.scrap.common.db.redis.RedisSetManager;
 import com.bookie.scrap.common.domain.PageInfo;
+import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
 
 import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
@@ -137,12 +138,14 @@ public class WatchaJob implements Job {
         insertBookMetaInRedisAndDb(bookCode);
 
         // 코멘트 저장
-        PageInfo commentPage = new PageInfo(1, 200);
+        PageInfo commentPage = new WatchaRequestParam(1, 200, "", "");
         log.info("2. Insert book comment:{}", bookCode);
         List<WatchaCommentDto> commentDtos = new ArrayList<>();
         do {
             commentDtos = commentRequestFactory.createRequest(bookCode, commentPage).execute();
             insertCommentInDb(commentDtos);
+
+            commentPage.nextPage();
         } while (!commentDtos.isEmpty());
 
 
