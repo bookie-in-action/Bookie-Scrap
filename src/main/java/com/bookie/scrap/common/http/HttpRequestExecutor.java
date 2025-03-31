@@ -2,6 +2,7 @@ package com.bookie.scrap.common.http;
 
 import com.bookie.scrap.common.domain.Request;
 import com.bookie.scrap.common.properties.BookieProperties;
+import com.bookie.scrap.common.util.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.cookie.CookieStore;
@@ -27,7 +28,10 @@ public class HttpRequestExecutor {
             BookieProperties.getInstance().getValue(BookieProperties.Key.RETRY_COUNT)
     );
 
+    @Deprecated
     public static <T> T execute(ClassicHttpRequest httpRequest, HttpClientResponseHandler<T> responseHandler) {
+
+        ThreadUtil.sleep(1000L);
 
         printLog(httpRequest);
 
@@ -50,6 +54,8 @@ public class HttpRequestExecutor {
     }
 
     public static <T> T execute(Request<T> request) {
+
+        ThreadUtil.sleep(1000L);
 
         ClassicHttpRequest mainRequest = request.getMainRequest();
         HttpClientContext clientContext = request.getClientContext();
@@ -88,7 +94,10 @@ public class HttpRequestExecutor {
 
     }
 
+    @Deprecated
     private static <T> T executeWithRetry(ClassicHttpRequest httpRequest, HttpClientResponseHandler<T> responseHandler) throws Exception {
+
+        ThreadUtil.sleep(1000L);
 
         for (int i = 0; i < MAX_RETRIES; i++) {
             CloseableHttpClient client = HttpClientProvider.getHttpClient();
@@ -111,6 +120,10 @@ public class HttpRequestExecutor {
     private static <T> T executeWithRetry(ClassicHttpRequest httpRequest,
                                           HttpClientContext classicHttpRequest,
                                           HttpClientResponseHandler<T> responseHandler) throws Exception {
+
+        ThreadUtil.sleep(1000L);
+
+
         for (int i = 0; i < MAX_RETRIES; i++) {
             CloseableHttpClient client = HttpClientProvider.getHttpClient();
             try {
@@ -126,7 +139,10 @@ public class HttpRequestExecutor {
         throw new IllegalStateException("Unexpected state reached in retry logic.");
     }
 
+    @Deprecated
     private static <T> T executeWithRetry(HttpHost httpHost, ClassicHttpRequest httpMethod, HttpClientContext clientContext, HttpClientResponseHandler<T> responseHandler) throws Exception {
+
+        Thread.sleep(1000);
 
         for (int i = 0; i < MAX_RETRIES; i++) {
             CloseableHttpClient client = HttpClientProvider.getHttpClient();
@@ -168,18 +184,18 @@ public class HttpRequestExecutor {
 
         log.trace("==================== {} HTTP REQUEST ====================", implClassName);
         try {
-            log.trace("[Request Info]");
-            log.trace("   HTTP Method: " + httpMethod.getMethod());
-            log.trace("   Request URL: " + httpHost.getHostName() + httpMethod.getUri());
+            log.debug("[Request Info]");
+            log.debug("   HTTP Method: " + httpMethod.getMethod());
+            log.debug("   Request URL: " + httpHost.getHostName() + httpMethod.getUri());
         } catch (URISyntaxException e) {
-            throw new RuntimeException("error while making request trace log: ", e);
+            throw new RuntimeException("error while making request debug(); log: ", e);
         }
 
         // 요청 헤더 출력
-        log.trace("[Request Headers]");
+        log.debug("[Request Headers]");
         if(httpMethod.getHeaders().length != 0) {
             Arrays.stream(httpMethod.getHeaders())
-                    .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
+                    .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
         }
 
         if (clientContext != null) {
@@ -187,31 +203,32 @@ public class HttpRequestExecutor {
             if (!cookieStore.getCookies().isEmpty()) {
                 cookieStore.getCookies().stream()
                         .map(cookie -> new BasicHeader("Set-Cookie", cookie.toString()))
-                        .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
+                        .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
             }
         }
 
-//
+
+        //TODO: 요청 바디 출력
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        objectMapper.enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 //
 //        if (entity != null) {
-//            log.trace();("[Request Body]");
+//            log.debug();();("[Request Body]");
 //            try {
 //                String requestBody = EntityUtils.toString(entity);
 //
 //                try {
 //                    JsonNode jsonNode = objectMapper.readTree(requestBody);
-//                    log.trace();("\n" + jsonNode.toPrettyString());
+//                    log.debug();();("\n" + jsonNode.toPrettyString());
 //                } catch (JsonParseException e) {
-//                    log.trace();("   " + requestBody);
+//                    log.debug();();("   " + requestBody);
 //                }
 //            } catch (Exception e) {
 //                log.error("   Failed to log request body: " + e.getMessage());
 //            }
 //        }
 
-        log.trace("================================ END ================================\n\n");
+        log.debug("================================ END ================================\n\n");
 
     }
 
@@ -221,22 +238,22 @@ public class HttpRequestExecutor {
         StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
         String executeClass = stackTraceElement.toString().split("\\.")[5];
 
-        log.trace("==================== {} HTTP REQUEST ====================", executeClass);
+        log.debug("==================== {} HTTP REQUEST ====================", executeClass);
         try {
-            log.trace("[Request Info]");
-            log.trace("   HTTP Method: " + httpMethod.getMethod());
-            log.trace("   Request URL: " + httpMethod.getUri());
+            log.debug("[Request Info]");
+            log.debug("   HTTP Method: " + httpMethod.getMethod());
+            log.debug("   Request URL: " + httpMethod.getUri());
         } catch (URISyntaxException e) {
-            throw new RuntimeException("error while making request trace log: ", e);
+            throw new RuntimeException("error while making request debug(); log: ", e);
         }
 
-        log.trace("[Request Headers]");
+        log.debug("[Request Headers]");
         if(httpMethod.getHeaders().length != 0) {
             Arrays.stream(httpMethod.getHeaders())
-                    .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
+                    .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
         }
 
-        log.trace("================================ END ================================\n\n");
+        log.debug("================================ END ================================\n\n");
 
     }
 
@@ -244,37 +261,37 @@ public class HttpRequestExecutor {
                                  ClassicHttpRequest mainRequest,
                                  HttpClientContext clientContext) {
 
-        log.trace("==================== {} HTTP REQUEST ====================", implClassName);
+        log.debug("==================== {} HTTP REQUEST ====================", implClassName);
 
         // HTTP 메서드와 URL 출력
         try {
-            log.trace("[Request Info]");
-            log.trace("   HTTP Method: {}", mainRequest.getMethod());
-            log.trace("   Request URL: {}", mainRequest.getUri());
+            log.debug("[Request Info]");
+            log.debug("   HTTP Method: {}", mainRequest.getMethod());
+            log.debug("   Request URL: {}", mainRequest.getUri());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
         // 요청 헤더 출력
-        log.trace("[Request Headers]");
+        log.debug("[Request Headers]");
         if (mainRequest.getHeaders().length != 0) {
             Arrays.stream(mainRequest.getHeaders())
-                    .forEach(header -> log.trace("   {}: {}", header.getName(), header.getValue()));
+                    .forEach(header -> log.debug("   {}: {}", header.getName(), header.getValue()));
         }
 
         // 쿠키 출력
         if (clientContext != null) {
             CookieStore cookieStore = (CookieStore) clientContext.getAttribute(HttpClientContext.COOKIE_STORE);
             if (cookieStore != null && !cookieStore.getCookies().isEmpty()) {
-                log.trace("[Request Cookies]");
+                log.debug("[Request Cookies]");
                 cookieStore.getCookies().forEach(cookie ->
-                        log.trace("   Set-Cookie: {}", cookie.toString())
+                        log.debug("   Set-Cookie: {}", cookie.toString())
                 );
             }
         }
 
-        // 요청 바디 출력
-//        log.trace("[Request Body]");
+        // TODO: 요청 바디 출력
+//        log.debug();("[Request Body]");
 //        try {
 //            if (mainRequest instanceof HttpEntityEnclosingRequest) {
 //                HttpEntity entity = ((HttpEntityEnclosingRequest) mainRequest).getEntity();
@@ -285,21 +302,21 @@ public class HttpRequestExecutor {
 //
 //                    try {
 //                        JsonNode jsonNode = objectMapper.readTree(requestBody);
-//                        log.trace("\n{}", jsonNode.toPrettyString());
+//                        log.debug();("\n{}", jsonNode.toPrettyString());
 //                    } catch (JsonParseException e) {
-//                        log.trace("   {}", requestBody);
+//                        log.debug();("   {}", requestBody);
 //                    }
 //                } else {
-//                    log.trace("   No body present");
+//                    log.debug();("   No body present");
 //                }
 //            } else {
-//                log.trace("   Request does not support a body");
+//                log.debug();("   Request does not support a body");
 //            }
 //        } catch (Exception e) {
 //            log.error("   Failed to log request body: {}", e.getMessage());
 //        }
 
-        log.trace("================================ END ================================\n\n");
+        log.debug("================================ END ================================\n\n");
     }
 
 }
