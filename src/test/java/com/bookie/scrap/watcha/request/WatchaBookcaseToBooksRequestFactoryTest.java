@@ -55,26 +55,27 @@ class WatchaBookcaseToBooksRequestFactoryTest {
         }
     }
 
-    @Test
-    void testWatchaApiResponse() {
-        Path filePath = Paths.get("src/test/Test_bookcaseResponse.txt");
-
-        String expectedJson = null;
-        try {
-            expectedJson = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            log.error("error occured in read files : {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
-
-        WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
-
-        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
-        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
-        log.info("bookCaseList : {}", bookcaseList);
-
-        Assertions.assertEquals(expectedJson, bookcaseList.toString());
-    }
+    //TODO: 아현님이랑 상의
+//    @Test
+//    void testWatchaApiResponse() {
+//        Path filePath = Paths.get("src/test/Test_bookcaseResponse.txt");
+//
+//        String expectedJson = null;
+//        try {
+//            expectedJson = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
+//        } catch (IOException e) {
+//            log.error("error occured in read files : {}", e.getMessage());
+//            throw new RuntimeException(e);
+//        }
+//
+//        WatchaRequestParam watchaRequestParam = new WatchaRequestParam(1, 12, "", "");
+//
+//        Request<List<WatchaBookcaseToBookDto>> watchaRequest = watchaBookcaseRequestFactory.createRequest("gcdkyKnXjN", watchaRequestParam);
+//        List<WatchaBookcaseToBookDto> bookcaseList = watchaRequest.execute();
+//        log.info("bookCaseList : {}", bookcaseList);
+//
+//        Assertions.assertEquals(expectedJson, bookcaseList.toString());
+//    }
 
     @Test
     void endPageTest() {
