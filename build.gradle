@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 group = 'com.bookie.scrap'
 version = '0.0.1-SNAPSHOT'
@@ -9,45 +10,30 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-// 매니페스트 비워두기
-tasks.jar {
+shadowJar {
+    archiveBaseName.set('bookie-scrap-fat')
+    archiveClassifier.set('') // -all 제거
+    archiveVersion.set('0.0.1')
+    destinationDirectory.set(file("fat-jar"))
+
     manifest {
-        attributes.clear()
-    }
-}
-
-//tasks.register("copyJarToCustomDir", Copy) {
-//    dependsOn(tasks.jar) // jar 만드는 테스크 이후 실행
-//    from(layout.buildDirectory.dir("libs")) // JAR 파일이 생성되는 기본 위치
-//    into(layout.projectDirectory.dir("server/lib")) // 프로젝트 루트 기준 server 폴더
-//}
-
-tasks.register("copyAllToLib", Copy) {
-    dependsOn("build") // jar + compile 완료 후 실행
-
-    from(configurations.runtimeClasspath) // 외부 JAR들
-    from(layout.buildDirectory.dir("libs")) // 메인 JAR
-
-    into(layout.projectDirectory.dir("server/lib")) // 최종 복사 위치
-}
-
-tasks.named("build") {
-    finalizedBy("copyAllToLib") // 빌드 완료 후 복사 실행
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.bookie.scrap.startup.Main'
-        )
+        attributes 'Main-Class': 'com.bookie.scrap.common.lifecycle.Main'
     }
 
     exclude('**/logback.xml')
     exclude('**/*.properties')
+}
+
+jar {
+    enabled = false
+}
+
+tasks.named("build") {
+    dependsOn(shadowJar)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
 
 repositories {
