@@ -261,6 +261,7 @@ public class WatchaJob implements Job {
 
             List<String> bookCodes = bookDtos.stream().map(WatchaBookcaseToBookDto::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
+
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {

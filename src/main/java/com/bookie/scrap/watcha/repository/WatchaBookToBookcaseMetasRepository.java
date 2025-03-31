@@ -38,6 +38,8 @@ public class WatchaBookToBookcaseMetasRepository{
      */
     public void insertOrUpdate(String bookCode, List<WatchaBookToBookcaseMetaEntity> targetEntity, EntityManager em) {
 
+        log.info("WatchaBookToBookcaseMetasRepository Bookcase:{}", bookCode);
+
         targetEntity = new ArrayList<>(
                 targetEntity.stream()
                 .collect(Collectors.toMap(
@@ -67,17 +69,19 @@ public class WatchaBookToBookcaseMetasRepository{
         Map<String, Boolean> dbEntityVisited = new HashMap<>();
         dbEntities.forEach(dbEntity -> dbEntityVisited.put(dbEntity.getBookcaseCode(), false));
 
+        List<String> insertedBookcaseCodes = new ArrayList<>();
+        List<String> updatedBookcaseCodes = new ArrayList<>();
         for (WatchaBookToBookcaseMetaEntity newEntity : targetEntity) {
 
             if (!dbEntityMap.containsKey(newEntity.getBookcaseCode())) {
-                log.info("Insert BookcaseMeta:{}", newEntity.getBookcaseCode());
+                insertedBookcaseCodes.add(newEntity.getBookcaseCode());
                 WatchaUserRepository.getInstance().insertOrUpdate(newEntity.getUser(), em);
                 em.persist(newEntity);
             } else {
 
                 WatchaBookToBookcaseMetaEntity dbEntity = dbEntityMap.get(newEntity.getBookcaseCode());
                 if (!dbEntity.isSame(newEntity)) {
-                    log.info("Update BookcaseMeta:{}", newEntity.getBookcaseCode());
+                    updatedBookcaseCodes.add(newEntity.getBookcaseCode());
                     dbEntity.updateEntity(newEntity);
                 }
 
@@ -85,12 +89,17 @@ public class WatchaBookToBookcaseMetasRepository{
             }
         }
 
-        for (Map.Entry<String, Boolean> visited : dbEntityVisited.entrySet()) {
-            if (visited.getValue().equals(false)) {
-                WatchaBookToBookcaseMetaEntity dbEntity = dbEntityMap.get(visited.getKey());
-                log.info("Inactivate BookcaseMeta:{}", dbEntity.getBookcaseCode());
-            }
-        }
+        log.info("Insert BookcaseMeta:{}", String.join(", ", insertedBookcaseCodes));
+        log.info("Update BookcaseMeta:{}", String.join(", ", updatedBookcaseCodes));
+
+        //TODO: inactivate 처리
+//        for (Map.Entry<String, Boolean> visited : dbEntityVisited.entrySet()) {
+//            if (visited.getValue().equals(false)) {
+//                WatchaBookToBookcaseMetaEntity dbEntity = dbEntityMap.get(visited.getKey());
+//                dbEntity.inActivate();
+//                log.info("Inactivate BookcaseMeta:{}", dbEntity.getBookcaseCode());
+//            }
+//        }
 
     }
 
