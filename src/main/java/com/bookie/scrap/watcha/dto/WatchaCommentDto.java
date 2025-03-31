@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaCommentDetailDto {
+public class WatchaCommentDto {
 
     // WatchaCommentDetail
     @JsonProperty("code")

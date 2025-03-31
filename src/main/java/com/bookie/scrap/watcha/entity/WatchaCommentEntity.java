@@ -46,7 +46,6 @@ public class WatchaCommentEntity extends BaseEntity {
     @Column(name = "comment_created_at")
     private String commentCreatedAt;
 
-
     @Column(name = "comment_user_content_rating")
     private String commentUserContentRating;
 

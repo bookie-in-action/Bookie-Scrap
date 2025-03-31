@@ -8,15 +8,18 @@ import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
 
 import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
+import com.bookie.scrap.watcha.dto.WatchaCommentDto;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookcaseToBooksRepository;
+import com.bookie.scrap.watcha.repository.WatchaCommentRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import com.bookie.scrap.watcha.request.WatchaBookcaseToBooksRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaCommentRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +28,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,15 +37,15 @@ public class WatchaJob implements Job {
 
     private static EntityManagerFactory emf;
 
-    private final WatchaBookcaseToBooksRequestFactory bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
+    private final WatchaBookcaseToBooksRequestFactory     bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
     private final WatchaBookToBookcaseMetasRequestFactory bookToBookcaseMetaRequestFactory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
-    private final WatchaBookMetaRequestFactory     bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
-//    private final WatchaCommentRequestFactory           commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
+    private final WatchaBookMetaRequestFactory            bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
+    private final WatchaCommentRequestFactory             commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
 
-    private final WatchaBookMetaRepository     bookMetaRepository     = WatchaBookMetaRepository.getInstance();
+    private final WatchaBookMetaRepository            bookMetaRepository     = WatchaBookMetaRepository.getInstance();
     private final WatchaBookToBookcaseMetasRepository bookToBookcaseMetasRepository = WatchaBookToBookcaseMetasRepository.getInstance();
-    private final WatchaBookcaseToBooksRepository bookcaseToBooksRepository = WatchaBookcaseToBooksRepository.getInstance();
-//    private final WatchaCommentRepository commentRepository = WatchaCommentRepository.getInstance();
+    private final WatchaBookcaseToBooksRepository     bookcaseToBooksRepository = WatchaBookcaseToBooksRepository.getInstance();
+    private final WatchaCommentRepository             commentRepository = WatchaCommentRepository.getInstance();
 
     private final RedisSetManager completeBookCodes     = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:complete");
     private final RedisSetManager undoneBookCodes       = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:undone");
@@ -154,7 +156,9 @@ public class WatchaJob implements Job {
         }
 
         // 코멘트 저장
-        PageInfo commentInfo = new PageInfo(1, 200);
+        PageInfo commentPage = new PageInfo(1, 200);
+        log.info("2. Insert book comment:{}", bookCode);
+//        List<WatchaCommentDto> bookcaseMetaDtos = new ArrayList<>();
 
 
         // bookcode -> bookcase 리스트 저장
