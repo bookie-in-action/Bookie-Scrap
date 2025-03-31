@@ -27,7 +27,6 @@ public class WatchaBookMetaRequestFactory implements WatchaRequestFactory<Watcha
 
     @Override
     public Request<WatchaBookMetaDto> createRequest(final String value) {
-        ThreadUtil.sleep();
 
         Request<WatchaBookMetaDto> watchaRequest = new WatchaRequest<>();
         String endPoint = String.format(HTTP_URL_PATTERN, value);

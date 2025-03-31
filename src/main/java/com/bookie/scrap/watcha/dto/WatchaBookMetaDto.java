@@ -1,8 +1,9 @@
 package com.bookie.scrap.watcha.dto;
 
+import com.bookie.scrap.common.util.StringUtil;
 import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
 import com.bookie.scrap.watcha.type.WatchaExternalService;
-import com.bookie.scrap.watcha.type.WatchaPoster;
+import com.bookie.scrap.watcha.type.WatchaBookPoster;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,6 +29,7 @@ public class WatchaBookMetaDto {
 
     @JsonProperty("title")
     private String mainTitle;
+
     private String subtitle;
 
     @JsonProperty("content")
@@ -37,12 +39,14 @@ public class WatchaBookMetaDto {
     private Integer publishYear;
 
     @JsonProperty("poster")
-    private WatchaPoster poster;
+    private WatchaBookPoster bookPoster;
 
     @JsonProperty("author_names")
-    private List<String> authors;
+    private List<String> bookAuthors;
+
     private List<String> nations;
-    private List<String> genres;
+
+    private List<String> bookGenres;
 
     @JsonProperty("description")
     private String bookDescription;
@@ -91,22 +95,18 @@ public class WatchaBookMetaDto {
     public WatchaBookMetaEntity toEntity() {
         return WatchaBookMetaEntity.builder()
                 .bookCode(this.bookCode)
-                .bookDescription(this.bookDescription)
-                .bookTitle(this.mainTitle)
-                .bookSubtitle(this.subtitle)
-                .bookIndex(this.bookIndex)
+                .bookDescription(StringUtil.nonNull(this.bookDescription))
+                .bookTitle(StringUtil.nonNull(this.mainTitle))
+                .bookSubtitle(StringUtil.nonNull(this.subtitle))
+                .bookIndex(StringUtil.nonNull(this.bookIndex))
                 .publishYear(this.publishYear)
-                .posterHd(this.poster.getHd())
-                .posterXlarge(this.poster.getXlarge())
-                .posterLarge(this.poster.getLarge())
-                .posterMedium(this.poster.getMedium())
-                .posterSmall(this.poster.getSmall())
-                .authors(this.authors)
+                .bookPoster(this.bookPoster)
+                .authors(this.bookAuthors)
                 .nations(this.nations)
-                .genres(this.genres)
-                .bookDescription(this.bookDescription)
-                .publisherDescription(this.publisherDescription)
-                .authorDescription(this.authorDescription)
+                .genres(this.bookGenres)
+                .bookDescription(StringUtil.nonNull(this.bookDescription))
+                .publisherDescription(StringUtil.nonNull(this.publisherDescription))
+                .authorDescription(StringUtil.nonNull(this.authorDescription))
                 .averageRating(this.averageRating)
                 .ratingsCount(this.ratingsCount)
                 .wishesCount(this.wishesCount)

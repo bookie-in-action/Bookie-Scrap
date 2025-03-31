@@ -2,15 +2,16 @@ package com.bookie.scrap.watcha.entity;
 
 import com.bookie.scrap.common.domain.BaseEntity;
 import com.bookie.scrap.common.domain.converter.ListStringConverter;
+import com.bookie.scrap.watcha.type.WatchaBookPoster;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @ToString
 @Getter @Setter
-@Entity @SuperBuilder
+@Entity @Builder
+@AllArgsConstructor
 @Table(name = "BS_WATCHA_BOOK")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public final class WatchaBookMetaEntity extends BaseEntity {
@@ -51,30 +52,25 @@ public final class WatchaBookMetaEntity extends BaseEntity {
     @Column(name = "wishes_count", columnDefinition = "INT UNSIGNED")
     private Long wishesCount;
 
-    @Column(name = "poster_hd")
-    private String posterHd;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "hd", column = @Column(name = "poster_hd")),
+            @AttributeOverride(name = "xlarge", column = @Column(name = "poster_xlarge")),
+            @AttributeOverride(name = "large", column = @Column(name = "poster_large")),
+            @AttributeOverride(name = "medium", column = @Column(name = "poster_medium")),
+            @AttributeOverride(name = "small", column = @Column(name = "poster_small"))
+    })
+    private WatchaBookPoster bookPoster;
 
-    @Column(name = "poster_xlarge")
-    private String posterXlarge;
-
-    @Column(name = "poster_medium")
-    private String posterMedium;
-
-    @Column(name = "poster_large")
-    private String posterLarge;
-
-    @Column(name = "poster_small")
-    private String posterSmall;
-
-    @Column(name = "authors", columnDefinition = "JSON")
+    @Column(name = "authors")
     @Convert(converter = ListStringConverter.class)
     private List<String> authors;
 
-    @Column(name = "nations", columnDefinition = "JSON")
+    @Column(name = "nations")
     @Convert(converter = ListStringConverter.class)
     private List<String> nations;
 
-    @Column(name = "genres", columnDefinition = "JSON")
+    @Column(name = "genres")
     @Convert(converter = ListStringConverter.class)
     private List<String> genres;
 
@@ -87,7 +83,7 @@ public final class WatchaBookMetaEntity extends BaseEntity {
     @Column(name = "kyobo_url")
     private String kyoboUrl;
 
-    public WatchaBookMetaEntity updateEntity(WatchaBookMetaEntity that) {
+    public void updateEntity(WatchaBookMetaEntity that) {
         this.bookSubtitle = that.bookSubtitle;
         this.bookIndex = that.bookIndex;
         this.publishYear = that.publishYear;
@@ -97,19 +93,13 @@ public final class WatchaBookMetaEntity extends BaseEntity {
         this.averageRating = that.averageRating;
         this.ratingsCount = that.ratingsCount;
         this.wishesCount = that.wishesCount;
-        this.posterHd = that.posterHd;
-        this.posterXlarge = that.posterXlarge;
-        this.posterMedium = that.posterMedium;
-        this.posterLarge = that.posterLarge;
-        this.posterSmall = that.posterSmall;
+        this.bookPoster = that.bookPoster;
         this.authors = that.authors;
         this.nations = that.nations;
         this.genres = that.genres;
         this.aladinUrl = that.aladinUrl;
         this.yes24Url = that.yes24Url;
         this.kyoboUrl = that.kyoboUrl;
-
-        return this;
     }
 
 }

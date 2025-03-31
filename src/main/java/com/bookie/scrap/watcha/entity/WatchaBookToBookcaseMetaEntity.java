@@ -60,7 +60,6 @@ public final class WatchaBookToBookcaseMetaEntity extends BaseEntity {
     public void updateEntity(WatchaBookToBookcaseMetaEntity that) {
         this.userCode = that.userCode;
         this.bookCode = that.bookCode;
-        this.bookMeta = that.bookMeta;
         this.bookcaseTitle = that.bookcaseTitle;
         this.bookcaseDescription = that.bookcaseDescription;
         this.bookcaseLikes = that.bookcaseLikes;

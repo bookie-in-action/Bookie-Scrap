@@ -5,18 +5,23 @@ import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
 import com.bookie.scrap.common.db.redis.RedisConnectionProducer;
 import com.bookie.scrap.common.db.redis.RedisSetManager;
 import com.bookie.scrap.common.domain.PageInfo;
+import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 
+import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
+import com.bookie.scrap.watcha.dto.WatchaCommentDto;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
+import com.bookie.scrap.watcha.entity.WatchaCommentEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookcaseToBooksRepository;
+import com.bookie.scrap.watcha.repository.WatchaCommentRepository;
 import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
 import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import com.bookie.scrap.watcha.request.WatchaBookcaseToBooksRequestFactory;
+import com.bookie.scrap.watcha.request.WatchaCommentRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +29,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,15 +39,15 @@ public class WatchaJob implements Job {
 
     private static EntityManagerFactory emf;
 
-    private final WatchaBookcaseToBooksRequestFactory bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
+    private final WatchaBookcaseToBooksRequestFactory     bookcaseToBookRequestFactory     = WatchaBookcaseToBooksRequestFactory.getInstance();
     private final WatchaBookToBookcaseMetasRequestFactory bookToBookcaseMetaRequestFactory = WatchaBookToBookcaseMetasRequestFactory.getInstance();
-    private final WatchaBookMetaRequestFactory     bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
-//    private final WatchaCommentRequestFactory           commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
+    private final WatchaBookMetaRequestFactory            bookMetaRequestFactory     = WatchaBookMetaRequestFactory.getInstance();
+    private final WatchaCommentRequestFactory             commentRequestFactory     = WatchaCommentRequestFactory.getInstance();
 
-    private final WatchaBookMetaRepository     bookMetaRepository     = WatchaBookMetaRepository.getInstance();
+    private final WatchaBookMetaRepository            bookMetaRepository     = WatchaBookMetaRepository.getInstance();
     private final WatchaBookToBookcaseMetasRepository bookToBookcaseMetasRepository = WatchaBookToBookcaseMetasRepository.getInstance();
-    private final WatchaBookcaseToBooksRepository bookcaseToBooksRepository = WatchaBookcaseToBooksRepository.getInstance();
-//    private final WatchaCommentRepository commentRepository = WatchaCommentRepository.getInstance();
+    private final WatchaBookcaseToBooksRepository     bookcaseToBooksRepository = WatchaBookcaseToBooksRepository.getInstance();
+    private final WatchaCommentRepository             commentRepository = WatchaCommentRepository.getInstance();
 
     private final RedisSetManager completeBookCodes     = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:complete");
     private final RedisSetManager undoneBookCodes       = new RedisSetManager(RedisConnectionProducer.getConn(), "bookcode:undone");
@@ -107,15 +112,17 @@ public class WatchaJob implements Job {
             return;
         }
 
-        log.debug("bookcaseCode: {} process start", bookcaseCode);
-
-        PageInfo bookPage = new PageInfo(1, 20);
-        List<WatchaBookcaseToBookDto> bookCodeDtos = Collections.emptyList();
+        log.info("=> processByBookcaseCode bookcaseCode: {} process start", bookcaseCode);
+        log.info("1. Insert Books In Bookcase");
+        PageInfo bookPage = new PageInfo(1, 200);
+        List<WatchaBookcaseToBookDto> books = new ArrayList<>();
         do {
-            bookCodeDtos = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
-            insertBooksInRedisAndDb(bookcaseCode, bookCodeDtos);
+            books = bookcaseToBookRequestFactory.createRequest(bookcaseCode, bookPage).execute();
+            insertBooksInRedisAndDb(bookcaseCode, books);
             bookPage.nextPage();
-        } while (!bookCodeDtos.isEmpty());
+        } while (!books.isEmpty());
+
+
     }
 
     private void processByBookCode(String bookCode) {
@@ -124,38 +131,98 @@ public class WatchaJob implements Job {
             return;
         }
 
-        log.debug("bookcode: {} process start", bookCode);
+        log.info("=> processByBookCode bookCode: {} process start", bookCode);
 
         // book meta 저장
-        try (EntityManager em = emf.createEntityManager()) {
+        log.info("1. Insert BookMeta");
+        insertBookMetaInRedisAndDb(bookCode);
+
+        // 코멘트 저장
+        PageInfo commentPage = new WatchaRequestParam(1, 200, "", "");
+        log.info("2. Insert book comment:{}", bookCode);
+        List<WatchaCommentDto> commentDtos = new ArrayList<>();
+        do {
+            commentDtos = commentRequestFactory.createRequest(bookCode, commentPage).execute();
+            insertCommentInDb(commentDtos);
+
+            commentPage.nextPage();
+        } while (!commentDtos.isEmpty());
+
+
+        // bookcode -> bookcase 리스트 저장
+        log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
+        PageInfo bookcasePage = new PageInfo(1, 200);
+        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = new ArrayList<>();
+        List<WatchaBookcaseMetaDto> sumBookcaseMetaDtos = new ArrayList<>();
+        do {
+            bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
+            insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
+            sumBookcaseMetaDtos.addAll(bookcaseMetaDtos);
+
+            bookcasePage.nextPage();
+        } while (!bookcaseMetaDtos.isEmpty());
+
+
+        sumBookcaseMetaDtos.forEach(dto -> processByBookcaseCode(dto.getBookcaseCode()));
+
+    }
+
+    private void insertCommentInDb(List<WatchaCommentDto> commentDtos) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            List<WatchaCommentEntity> newCommentEntities = commentDtos.stream().map(WatchaCommentDto::toEntity).collect(Collectors.toList());
+            commentRepository.insertOnlyNewComments(newCommentEntities, em);
+
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
+        }
+    }
+
+    private void insertBookMetaInRedisAndDb(String bookCode) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
             em.getTransaction().begin();
 
             WatchaBookMetaDto bookMetaDto = bookMetaRequestFactory.createRequest(bookCode).execute();
             bookMetaRepository.insertOrUpdate(bookMetaDto.toEntity(), em);
             completeBookCodes.addToSet(bookCode);
             undoneBookCodes.deleteItem(bookCode);
+
             em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
-
-        // 코멘트 저장
-        PageInfo commentInfo = new PageInfo(1, 12);
-
-
-        // bookcode -> bookcase 리스트 저장
-        PageInfo bookcasePage = new PageInfo(1, 20);
-        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = Collections.emptyList();
-        do {
-            bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
-            insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
-            bookcasePage.nextPage();
-
-            processByBookcaseCode(undoneBookcaseCodes.get());
-        } while (!bookcaseMetaDtos.isEmpty());
-
     }
 
     private void insertBookcaseMetasInRedisAndDb(String bookCode, List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
-        try (EntityManager em = emf.createEntityManager()) {
+
+        if (bookcaseMetaDtos.isEmpty()) {
+            return;
+        }
+
+        EntityManager em = emf.createEntityManager();
+        try {
             em.getTransaction().begin();
 
             List<WatchaBookToBookcaseMetaEntity> bookcaseMetas = bookcaseMetaDtos.stream().map(WatchaBookcaseMetaDto::toEntity).collect(Collectors.toList());
@@ -166,20 +233,47 @@ public class WatchaJob implements Job {
             undoneBookcaseCodes.addToSet(bookcaseCodes);
             completeBookcaseCodes.deleteItem(bookcaseCodes);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
     }
 
-    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDto> bookCodeDtos) {
-        try (EntityManager em = emf.createEntityManager()) {
+    private void insertBooksInRedisAndDb(String bookcaseCode, List<WatchaBookcaseToBookDto> bookDtos) {
+
+        if (bookDtos.isEmpty()) {
+            return;
+        }
+
+        EntityManager em = emf.createEntityManager();
+        try {
             em.getTransaction().begin();
 
-            List<WatchaBookcaseToBookEntity> books = bookCodeDtos.stream().map(WatchaBookcaseToBookDto::toEntity).collect(Collectors.toList());
+            List<WatchaBookcaseToBookEntity> books = bookDtos.stream().map(WatchaBookcaseToBookDto::toEntity).collect(Collectors.toList());
+
             bookcaseToBooksRepository.insertOrUpdate(bookcaseCode, books, em);
 
-            List<String> bookCodes = bookCodeDtos.stream().map(WatchaBookcaseToBookDto::getBookCode).collect(Collectors.toList());
+            List<String> bookCodes = bookDtos.stream().map(WatchaBookcaseToBookDto::getBookCode).collect(Collectors.toList());
             undoneBookCodes.addToSet(bookCodes);
+
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
         }
+
     }
 
     /**

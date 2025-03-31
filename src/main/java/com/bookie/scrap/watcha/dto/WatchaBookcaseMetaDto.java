@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.common.util.EmojiUtil;
+import com.bookie.scrap.common.domain.deserializer.EliminateEmoji;
 import com.bookie.scrap.common.util.StringUtil;
 import com.bookie.scrap.watcha.domain.deserializer.WatchaParseDateTimeDeserializer;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
@@ -22,9 +21,11 @@ public class WatchaBookcaseMetaDto {
     private String bookcaseCode;
 
     @JsonProperty("title")
+    @JsonDeserialize(using = EliminateEmoji.class)
     private String bookcaseTitle;
 
     @JsonProperty("description")
+    @JsonDeserialize(using = EliminateEmoji.class)
     private String bookcaseDescription;
 
     @JsonProperty("contents_count")
@@ -38,11 +39,11 @@ public class WatchaBookcaseMetaDto {
 
     @JsonProperty("created_at")
     @JsonDeserialize(using = WatchaParseDateTimeDeserializer.class)
-    private String createdAt;
+    private String bookcaseCreatedAt;
 
     @JsonProperty("updated_at")
     @JsonDeserialize(using = WatchaParseDateTimeDeserializer.class)
-    private String updatedAt;
+    private String bookcaseUpdatedAt;
 
     private WatchaUserDto user;
 
@@ -51,16 +52,16 @@ public class WatchaBookcaseMetaDto {
 
     public WatchaBookToBookcaseMetaEntity toEntity() {
         return WatchaBookToBookcaseMetaEntity.builder()
-                .bookCode(StringUtil.trim(bookCode))
-                .userCode(StringUtil.trim(user.getUserCode()))
-                .bookcaseCode(StringUtil.trim(bookcaseCode))
-                .bookcaseTitle(StringUtil.trim(EmojiUtil.eliminateEmoji(bookcaseTitle)))
-                .bookcaseDescription(StringUtil.trim(EmojiUtil.eliminateEmoji(bookcaseDescription)))
+                .bookCode(StringUtil.nonNull(bookCode))
+                .userCode(StringUtil.nonNull(user.getUserCode()))
+                .bookcaseCode(StringUtil.nonNull(bookcaseCode))
+                .bookcaseTitle(StringUtil.nonNull(bookcaseTitle))
+                .bookcaseDescription(StringUtil.nonNull(bookcaseDescription))
                 .bookCntInBookcase(bookCntInBookcase)
                 .bookcaseLikes(bookcaseLikes)
                 .bookcaseRepliesCnt(bookcaseRepliesCnt)
-                .bookcaseCreatedAt(createdAt)
-                .bookcaseUpdatedAt(updatedAt)
+                .bookcaseCreatedAt(bookcaseCreatedAt)
+                .bookcaseUpdatedAt(bookcaseUpdatedAt)
                 .user(user.toEntity())
                 .build();
     }

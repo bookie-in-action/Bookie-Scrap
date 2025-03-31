@@ -9,26 +9,30 @@ import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
-public class WatchaBookcaseReponseHandler {
+public class WatchaBookcaseToBooksRequestHandler {
 
-    public static HttpClientResponseHandler<List<WatchaBookcaseToBookDto>> create() {
-        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic());
+    public static HttpClientResponseHandler<List<WatchaBookcaseToBookDto>> create(String bookcaseCode) {
+        return WatchaHandlerTemplate.createTemplateWithEntity(createHandlerLogic(bookcaseCode));
     }
 
-    public static Function<HttpEntity, List<WatchaBookcaseToBookDto>> createHandlerLogic() {
+    public static Function<HttpEntity, List<WatchaBookcaseToBookDto>> createHandlerLogic(String bookcaseCode) {
 
         return httpEntity -> {
             try {
                 JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString((httpEntity))).get("result");
 
-                String bookcaseCode = jsonNode.get("next_uri").asText().split("/")[3];
-                JsonNode resultNode = jsonNode.get("result");
-
                 List<WatchaBookcaseToBookDto> bookcaseDetailList = new ArrayList<>();
+
+                if (jsonNode.isEmpty()) {
+                    return Collections.emptyList();
+                }
+
+                JsonNode resultNode = jsonNode.get("result");
 
                 for(JsonNode node : resultNode) {
                     JsonNode contentNode = node.get("content");

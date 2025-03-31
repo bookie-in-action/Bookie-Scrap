@@ -39,11 +39,11 @@ public class WatchaBookMetaRepository{
 
         if (existingEntities.isEmpty()) {
             em.persist(targetEntity);
-            log.info("insert: {}", targetEntity);
+            log.info("Insert BookMeta BookCode: {}", targetEntity.getBookCode());
         } else if (existingEntities.size() == 1) {
             WatchaBookMetaEntity existingEntity = existingEntities.get(0);
             existingEntity.updateEntity(targetEntity);
-            log.info("update: {}", existingEntity);
+            log.info("Update BookMeta BookCode: {}", existingEntity.getBookCode());
         } else {
             throw new NonUniqueResultException("select result is multiple: " + existingEntities.size());
         }

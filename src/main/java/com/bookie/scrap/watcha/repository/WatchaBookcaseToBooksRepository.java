@@ -1,15 +1,13 @@
 package com.bookie.scrap.watcha.repository;
 
 
+import com.bookie.scrap.common.domain.Status;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,64 +32,47 @@ public class WatchaBookcaseToBooksRepository {
 
     public void insertOrUpdate(String bookcaseCode, List<WatchaBookcaseToBookEntity> targetEntity, EntityManager em) {
 
-        int updated = 0;
-        int inActivated = 0;
-        int inserted = 0;
+        log.info("WatchaBookcaseToBooksRepository Bookcase:{}", bookcaseCode);
 
-        String jpql = "SELECT e FROM WatchaBookcaseToBookEntity e WHERE e.bookcaseCode = :bookcaseCode";
+        String jpql = "SELECT e FROM WatchaBookcaseToBookEntity e WHERE e.bookcaseCode = :bookcaseCode and e.status = :status";
 
         List<WatchaBookcaseToBookEntity> dbEntities = em.createQuery(jpql, WatchaBookcaseToBookEntity.class)
                 .setParameter("bookcaseCode", bookcaseCode)
+                .setParameter("status", Status.ACTIVE)
                 .getResultList();
 
-        Set<String> dbBookCodes = dbEntities.stream().map(WatchaBookcaseToBookEntity::getBookCode).collect(Collectors.toSet());
+        Map<String, WatchaBookcaseToBookEntity> dbEntityMap = new HashMap<>();
+        Map<String, Boolean> hasEntitiesInDb = new HashMap<>();
 
-        dbEntities.sort(Comparator.comparing(WatchaBookcaseToBookEntity::getBookCode));
-        targetEntity.sort(Comparator.comparing(WatchaBookcaseToBookEntity::getBookCode));
+        dbEntities.forEach(dbEntity -> {
+            dbEntityMap.put(dbEntity.getBookCode(), dbEntity);
+            hasEntitiesInDb.put(dbEntity.getBookCode(), false);
+        });
 
-        Iterator<WatchaBookcaseToBookEntity> dbIter = dbEntities.iterator();
-        Iterator<WatchaBookcaseToBookEntity> newIter = targetEntity.iterator();
+        List<String> insertedBookCodes = new ArrayList<>();
 
-        WatchaBookcaseToBookEntity dbItem = null;
-        WatchaBookcaseToBookEntity newItem = null;
-
-        if (dbIter.hasNext()) {
-            dbItem = dbIter.next();
-        }
-        if (newIter.hasNext()) {
-            newItem = newIter.next();
-        }
-
-        while (true) {
-            if (newItem == null) {
-                break;
+        for (WatchaBookcaseToBookEntity newEntity : targetEntity) {
+            if (!dbEntityMap.containsKey(newEntity.getBookCode())) {
+                em.persist(newEntity); // db에 bookCode가 없는 경우
+                insertedBookCodes.add(newEntity.getBookCode());
+            } else {
+                hasEntitiesInDb.put(newEntity.getBookCode(), true); // 이미 db에 있는 경우
             }
-
-            // db에 없던 item이면 -> insert
-            if (!dbBookCodes.contains(newItem.getBookCode())) {
-                em.persist(newItem);
-
-                inserted++;
-                log.info("insert: {}", newItem.getBookCode());
-
-                if (newIter.hasNext()) {
-                    newItem = newIter.next();
-                } else {
-                    break;
-                }
-            }
-
         }
 
-        // 삭제된 item이면 -> status inactivate
-        while (dbIter.hasNext()) {
-            dbItem = dbIter.next();
-            dbItem.inActivate();
-            inActivated++;
-            log.info("inactivate: {}", dbItem.getBookCode());
-        }
+        log.info("Insert Book:{}", String.join(", ", insertedBookCodes));
 
-        log.info("inserted:{}, inactivated:{}, updated:{}", inserted, inActivated, updated);
+
+        //TODO: inactivate 사용하려면 페이지네이션 한 books를 전부 들어와서 이 메서드에서 한 번에 작업해야함
+//        List<String> deletedBookCodes = new ArrayList<>();
+//        for (Map.Entry<String, Boolean> visited : hasEntitiesInDb.entrySet()) {
+//            if (visited.getValue().equals(false)) { // bookcase에서 지워진 책인 경우
+//                WatchaBookcaseToBookEntity dbEntity = dbEntityMap.get(visited.getKey());
+//                dbEntity.inActivate();
+//                deletedBookCodes.add(dbEntity.getBookCode());
+//            }
+//        }
+//        log.info("Inactivate Book:{}", String.join(", ", deletedBookCodes));
+
     }
-
 }

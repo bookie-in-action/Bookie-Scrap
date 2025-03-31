@@ -17,7 +17,6 @@ public class WatchaBookToBookcaseMetasRequestFactory implements WatchaRequestFac
 
     private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s/decks?";
     private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    private final HttpClientResponseHandler<List<WatchaBookcaseMetaDto>> handler = WatchaBookToBookcaseMetasResponseHandler.create();
 
     private final static WatchaBookToBookcaseMetasRequestFactory INSTANCE = new WatchaBookToBookcaseMetasRequestFactory();
 
@@ -31,14 +30,12 @@ public class WatchaBookToBookcaseMetasRequestFactory implements WatchaRequestFac
     @Override
     public Request<List<WatchaBookcaseMetaDto>> createRequest(final String bookCode, final PageInfo pageInfo) {
 
-        ThreadUtil.sleep();
-
         Request<List<WatchaBookcaseMetaDto>> watchaRequest = new WatchaRequest<>();
         String endPoint = String.format(HTTP_URL_PATTERN, bookCode);
         String endPointWithParam = pageInfo.buildUrlWithPageInfo(endPoint);
 
         watchaRequest.setMainRequest(HTTP_METHOD, endPointWithParam);
-        watchaRequest.setResponseHandler(handler);
+        watchaRequest.setResponseHandler(WatchaBookToBookcaseMetasResponseHandler.create(bookCode));
 
         log.debug("Created WatchaRequest bookcode: {}, endpoint: {}, method: {}", bookCode, endPointWithParam, HTTP_METHOD);
 
@@ -53,7 +50,7 @@ public class WatchaBookToBookcaseMetasRequestFactory implements WatchaRequestFac
         String endPoint = String.format(HTTP_URL_PATTERN, bookCode);
 
         watchaRequest.setMainRequest(HTTP_METHOD, endPoint);
-        watchaRequest.setResponseHandler(handler);
+        watchaRequest.setResponseHandler(WatchaBookToBookcaseMetasResponseHandler.create(bookCode));
 
         log.debug("Created WatchaRequest bookcode: {}, endpoint: {}, method: {}", bookCode, endPoint, HTTP_METHOD);
 

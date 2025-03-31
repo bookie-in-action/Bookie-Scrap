@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Getter
 @ToString
 @Embeddable
-@Getter
-@Setter
 @NoArgsConstructor
 public class WatchaUserPhoto {
     private String original;
