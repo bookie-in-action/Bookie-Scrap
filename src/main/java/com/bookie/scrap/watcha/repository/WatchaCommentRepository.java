@@ -32,7 +32,7 @@ public class WatchaCommentRepository {
 
     }
 
-    public void insertOrUpdate(List<WatchaCommentEntity> existingEntities, EntityManager em) {
+    public void insertOnlyNewComments(List<WatchaCommentEntity> existingEntities, EntityManager em) {
 
         Map<String, WatchaCommentEntity> newCommentEntityMap = existingEntities.stream()
                 .collect(Collectors.toMap(

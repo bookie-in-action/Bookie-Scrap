@@ -11,6 +11,7 @@ import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
 import com.bookie.scrap.watcha.dto.WatchaCommentDto;
 import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
 import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
+import com.bookie.scrap.watcha.entity.WatchaCommentEntity;
 import com.bookie.scrap.watcha.repository.WatchaBookMetaRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookToBookcaseMetasRepository;
 import com.bookie.scrap.watcha.repository.WatchaBookcaseToBooksRepository;
@@ -131,9 +132,64 @@ public class WatchaJob implements Job {
 
         log.info("=> processByBookCode bookCode: {} process start", bookCode);
 
-        EntityManager em = emf.createEntityManager();
         // book meta 저장
         log.info("1. Insert BookMeta");
+        insertBookMetaInRedisAndDb(bookCode);
+
+        // 코멘트 저장
+        PageInfo commentPage = new PageInfo(1, 200);
+        log.info("2. Insert book comment:{}", bookCode);
+        List<WatchaCommentDto> commentDtos = new ArrayList<>();
+        do {
+            commentDtos = commentRequestFactory.createRequest(bookCode, commentPage).execute();
+            insertCommentInDb(commentDtos);
+        } while (!commentDtos.isEmpty());
+
+
+        // bookcode -> bookcase 리스트 저장
+        log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
+        PageInfo bookcasePage = new PageInfo(1, 200);
+        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = new ArrayList<>();
+        List<WatchaBookcaseMetaDto> sumBookcaseMetaDtos = new ArrayList<>();
+        do {
+            bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
+            insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
+            sumBookcaseMetaDtos.addAll(bookcaseMetaDtos);
+
+            bookcasePage.nextPage();
+        } while (!bookcaseMetaDtos.isEmpty());
+
+
+        sumBookcaseMetaDtos.forEach(dto -> processByBookcaseCode(dto.getBookcaseCode()));
+
+    }
+
+    private void insertCommentInDb(List<WatchaCommentDto> commentDtos) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            List<WatchaCommentEntity> newCommentEntities = commentDtos.stream().map(WatchaCommentDto::toEntity).collect(Collectors.toList());
+            commentRepository.insertOnlyNewComments(newCommentEntities, em);
+
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                log.warn("Transaction is active, rolling back...", e);
+                em.getTransaction().rollback();
+            } else {
+                log.warn("Transaction is not active, skipping rollback", e);
+            }
+        } finally {
+            em.close();
+        }
+    }
+
+    private void insertBookMetaInRedisAndDb(String bookCode) {
+        EntityManager em = emf.createEntityManager();
+
         try {
             em.getTransaction().begin();
 
@@ -154,27 +210,6 @@ public class WatchaJob implements Job {
         } finally {
             em.close();
         }
-
-        // 코멘트 저장
-        PageInfo commentPage = new PageInfo(1, 200);
-        log.info("2. Insert book comment:{}", bookCode);
-//        List<WatchaCommentDto> bookcaseMetaDtos = new ArrayList<>();
-
-
-        // bookcode -> bookcase 리스트 저장
-        log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
-        PageInfo bookcasePage = new PageInfo(1, 200);
-        List<WatchaBookcaseMetaDto> bookcaseMetaDtos = new ArrayList<>();
-        do {
-            bookcaseMetaDtos = bookToBookcaseMetaRequestFactory.createRequest(bookCode, bookcasePage).execute();
-            insertBookcaseMetasInRedisAndDb(bookCode, bookcaseMetaDtos);
-
-            bookcasePage.nextPage();
-        } while (!bookcaseMetaDtos.isEmpty());
-
-
-        bookcaseMetaDtos.forEach(dto -> processByBookcaseCode(dto.getBookcaseCode()));
-
     }
 
     private void insertBookcaseMetasInRedisAndDb(String bookCode, List<WatchaBookcaseMetaDto> bookcaseMetaDtos) {
