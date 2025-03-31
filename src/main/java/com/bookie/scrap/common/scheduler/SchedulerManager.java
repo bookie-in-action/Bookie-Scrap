@@ -10,8 +10,9 @@ import org.quartz.impl.DirectSchedulerFactory;
 import org.quartz.simpl.RAMJobStore;
 import org.quartz.simpl.SimpleThreadPool;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class SchedulerManager implements Initializable, Shutdownable {
@@ -41,33 +42,47 @@ public class SchedulerManager implements Initializable, Shutdownable {
 
         String schedulerPk = schedulerSettings.get(Key.PK);
 
-        DirectSchedulerFactory.getInstance().createScheduler(
-                schedulerPk,
-                "AUTO",
-                new SimpleThreadPool(1, Thread.NORM_PRIORITY),
-                new RAMJobStore()
-        );
+        Collection<Scheduler> schedulers = DirectSchedulerFactory.getInstance().getAllSchedulers();
 
-        Scheduler scheduler = DirectSchedulerFactory.getInstance().getScheduler(schedulerPk);
+        Set<String> schedulerNames = new HashSet<>();
+        if (!schedulers.isEmpty()) {
+            for (Scheduler scheduler : schedulers) {
+                schedulerNames.add(scheduler.getSchedulerName());
+            }
+        }
 
-        Class<? extends Job> jobClass = Class.forName(schedulerSettings.get(Key.JOB_CLASS)).asSubclass(Job.class);
-        JobDetail job = JobBuilder.newJob(jobClass)
-                .withIdentity(schedulerPk)
-                .build();
+        if (!schedulerNames.contains(schedulerPk)){
 
-        String schedulerExpression = schedulerSettings.get(Key.EXPRESSION);
-        SchedulerMode mode = SchedulerMode.findByPk(schedulerSettings.get(Key.MODE));
+            DirectSchedulerFactory.getInstance().createScheduler(
+                    schedulerPk,
+                    "AUTO",
+                    new SimpleThreadPool(1, Thread.NORM_PRIORITY),
+                    new RAMJobStore()
+            );
 
-        ScheduleBuilder<? extends Trigger> scheduleBuilder = mode.getScheduleBuilder(schedulerExpression);
+            Scheduler scheduler = DirectSchedulerFactory.getInstance().getScheduler(schedulerPk);
 
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(schedulerPk)
-                .withSchedule(scheduleBuilder)
-                .build();
+            Class<? extends Job> jobClass = Class.forName(schedulerSettings.get(Key.JOB_CLASS)).asSubclass(Job.class);
+            JobDetail job = JobBuilder.newJob(jobClass)
+                    .withIdentity(schedulerPk)
+                    .build();
 
-        scheduler.scheduleJob(job, trigger);
+            String schedulerExpression = schedulerSettings.get(Key.EXPRESSION);
+            SchedulerMode mode = SchedulerMode.findByPk(schedulerSettings.get(Key.MODE));
 
-        return scheduler;
+            ScheduleBuilder<? extends Trigger> scheduleBuilder = mode.getScheduleBuilder(schedulerExpression);
+
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(schedulerPk)
+                    .withSchedule(scheduleBuilder)
+                    .build();
+
+            scheduler.scheduleJob(job, trigger);
+
+            return scheduler;
+        } else {
+            return DirectSchedulerFactory.getInstance().getScheduler(schedulerPk);
+        }
     }
 
     public void startSchedulers() throws SchedulerException {

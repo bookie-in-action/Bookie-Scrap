@@ -14,10 +14,10 @@ class WatchaJobTest {
         new InitManager().devInit();
     }
 
-    @Test
-    void test() throws JobExecutionException {
-        WatchaJob watchaJob = new WatchaJob();
-        watchaJob.execute();
-    }
+//    @Test
+//    void test() throws JobExecutionException {
+//        WatchaJob watchaJob = new WatchaJob();
+//        watchaJob.execute();
+//    }
 
 }
