@@ -2,7 +2,7 @@
 name: "✅Feature request"
 about: Feature 요청 사항을 입력해주세요
 title: "[✅Feat]"
-labels: enhancement
+labels: feature
 assignees: ''
 
 ---
