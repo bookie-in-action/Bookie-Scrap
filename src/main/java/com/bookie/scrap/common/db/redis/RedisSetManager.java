@@ -27,11 +27,11 @@ public class RedisSetManager implements AutoCloseable{
         return commands.sadd(key, values.toArray(String[]::new));
     }
 
-    public Long deleteItem(String value) {
+    public Long deleteFromSet(String value) {
         return commands.srem(key, value);
     }
 
-    public Long deleteItem(List<String> values) {
+    public Long deleteFromSet(List<String> values) {
         return commands.srem(key, values.toArray(String[]::new));
     }
 

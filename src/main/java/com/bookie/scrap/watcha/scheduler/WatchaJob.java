@@ -127,11 +127,11 @@ public class WatchaJob implements Job {
                 undoneBookCodes.addToSet(insertedBookCodes);
 
                 completeBookcaseCodes.addToSet(bookcaseCode);
-                undoneBookcaseCodes.deleteItem(bookcaseCode);
+                undoneBookcaseCodes.deleteFromSet(bookcaseCode);
             } catch (Exception e) {
                 log.warn("BookList(Bookcase) Database insertion failed. Redis update skipped for bookcaseCode: {}", bookcaseCode, e);
                 failBookcaseCodes.addToSet(bookcaseCode);
-                undoneBookcaseCodes.deleteItem(bookcaseCode);
+                undoneBookcaseCodes.deleteFromSet(bookcaseCode);
             }
             bookPage.nextPage();
         } while (!books.isEmpty());
@@ -164,12 +164,12 @@ public class WatchaJob implements Job {
         } catch (Exception e) {
             log.warn("BookMeta/Comment Database insertion failed. Redis update skipped for bookCode: {}", bookCode, e);
             failBookCodes.addToSet(bookCode);
-            undoneBookCodes.deleteItem(bookCode);
+            undoneBookCodes.deleteFromSet(bookCode);
             return;
         }
 
         completeBookCodes.addToSet(bookCode);
-        undoneBookCodes.deleteItem(bookCode);
+        undoneBookCodes.deleteFromSet(bookCode);
 
         // bookcode -> bookcase 리스트 저장
         log.info("3. Insert BookcaseMetas that contain book:{}", bookCode);
