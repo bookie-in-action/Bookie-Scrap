@@ -17,7 +17,9 @@ public class BookieProperties implements InitializableProperties {
     @RequiredArgsConstructor
     public enum Key {
         RETRY_COUNT("retry.count", "3"),
-        SERVER_ID("server.id", "");
+        SERVER_ID("server.id", "0"),
+        THREAD_SLEEP("thread.sleep", "500")
+        ;
 
         private final String value;
         private final String defaultValue;
@@ -90,11 +92,4 @@ public class BookieProperties implements InitializableProperties {
                 .orElseThrow(() -> new IllegalArgumentException("Key [" + key + "] not found in properties"));
     }
 
-    public String getValue(Key key, String defaultValue) {
-        if (!initialized) {
-            throw new IllegalStateException("BookieProperties is not initialized. Please call init() first.");
-        }
-
-        return propertyMap.getOrDefault(key, defaultValue);
-    }
 }
