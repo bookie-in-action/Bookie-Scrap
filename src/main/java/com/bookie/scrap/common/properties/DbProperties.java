@@ -26,7 +26,6 @@ public class DbProperties implements InitializableProperties {
     private final Map<Key, String> PROPERTY_MAP = new EnumMap<>(Key.class);
     private static final DbProperties INSTANCE = new DbProperties();
     private boolean initialized = false;
-    private final int paddingLength = 15;
 
     private DbProperties() {}
 
@@ -55,6 +54,8 @@ public class DbProperties implements InitializableProperties {
             String prefix = String.format("db.%s", runningOption);
 
             log.info("============ [DB PROPERTIES: {}] ============", runningOption.toUpperCase());
+            int paddingLength = 15;
+
             for(Key key : Key.values()) {
 
                 if (key.equals(Key.REDIS_URL)) {
