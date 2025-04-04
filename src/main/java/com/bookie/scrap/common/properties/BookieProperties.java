@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static com.bookie.scrap.common.properties.BookieProperties.Key.RETRY_COUNT;
 import static com.bookie.scrap.common.properties.BookieProperties.Key.SERVER_ID;
 
 @Slf4j
@@ -25,7 +24,7 @@ public class BookieProperties implements InitializableProperties {
         private final String defaultValue;
     }
 
-    private final Map<Key, String> propertyMap = new EnumMap<>(Key.class);
+    private final Map<Key, String> PROPERTY_MAP = new EnumMap<>(Key.class);
     private static final BookieProperties INSTANCE = new BookieProperties();
     private boolean initialized = false;
 
@@ -53,19 +52,21 @@ public class BookieProperties implements InitializableProperties {
             bookieProperties.load(inputStream);
 
             log.info("============ [BOOKIE PROPERTIES] ============");
-            propertyMap.put(RETRY_COUNT, bookieProperties.getProperty(RETRY_COUNT.value, RETRY_COUNT.defaultValue));
-            String serverId = bookieProperties.getProperty(SERVER_ID.value, SERVER_ID.defaultValue);
-            if (serverId.isBlank()) {
-                throw new RuntimeException("server.id in bookie.properties is empty");
+
+            for (Key key : Key.values()) {
+                PROPERTY_MAP.put(key, bookieProperties.getProperty(key.value, key.defaultValue));
+
+                if (Objects.equals(key, SERVER_ID) && PROPERTY_MAP.get(key).isBlank()) {
+                    throw new RuntimeException("server.id in bookie.properties is empty");
+                }
+
+                String formattedKey = String.format("%-15s", key.name());
+                log.info("BK {}: {}", formattedKey, PROPERTY_MAP.get(key));
             }
-            propertyMap.put(Key.SERVER_ID, serverId);
 
-            initialized = true;
-
-            log.info("RETRY MAX: {}", propertyMap.get(RETRY_COUNT));
-            log.info("SERVER ID: {}", propertyMap.get(Key.SERVER_ID));
             log.info("=============================================");
 
+            initialized = true;
             log.info("<= BookieProperties initialized successfull");
 
 
@@ -77,7 +78,7 @@ public class BookieProperties implements InitializableProperties {
     @Override
     public void verify() {
         for (Key key : Key.values()) {
-            if (!propertyMap.containsKey(key)) {
+            if (!PROPERTY_MAP.containsKey(key)) {
                 throw new IllegalStateException("Missing required key: " + key + " in bookie.properties");
             }
         }
@@ -88,7 +89,7 @@ public class BookieProperties implements InitializableProperties {
             throw new IllegalStateException("BookieProperties is not initialized. Please call init() first.");
         }
 
-        return Optional.ofNullable(propertyMap.get(key))
+        return Optional.ofNullable(PROPERTY_MAP.get(key))
                 .orElseThrow(() -> new IllegalArgumentException("Key [" + key + "] not found in properties"));
     }
 
