@@ -1,7 +1,10 @@
 ## 🔗연관된 이슈 (JIRA, Github Issue)
 - 
+-  
 
-<!-- ex) BK-23(JIRA), #12(Github Issue) -->
+<!-- ex) BK-23    (JIRA)         -->
+<!-- ex) fix #12  (Github Issue) -->
+
 <br>
 
 ## 📝작업 내용 (선택)
