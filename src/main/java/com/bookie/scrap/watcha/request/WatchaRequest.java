@@ -21,7 +21,7 @@ public class WatchaRequest<T> extends Request<T> {
     );
 
     public WatchaRequest() {
-        setImplClassName(this.getClass().getSimpleName());
+        super.setImplClassName(this.getClass().getSimpleName());
     }
 
     private Consumer<ClassicHttpRequest> applyWatchaHeaders() {
