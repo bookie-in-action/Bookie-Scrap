@@ -27,7 +27,7 @@ class WatchaBookMetaRepositoryTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            WatchaBookMetaDto book = WatchaBookMetaRequestFactory.getInstance().createRequest("byLKj8M").execute();
+            WatchaBookMetaDto book = WatchaBookMetaRequestFactory.getInstance().createRequest("bowenQY").execute();
 
             WatchaBookMetaRepository.getInstance().insertOrUpdate(book.toEntity(), em);
             em.getTransaction().commit();

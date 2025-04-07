@@ -12,13 +12,12 @@ import java.util.List;
 @Getter @Setter
 @Entity @Builder
 @AllArgsConstructor
-@Table(name = "BS_WATCHA_BOOK")
+@Table(name = "BS_WATCHA_BOOK_META")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public final class WatchaBookMetaEntity extends BaseEntity {
 
     @Column(name = "book_code")
     private String bookCode;
-
     @Column(name = "book_title")
     private String bookTitle;
 
