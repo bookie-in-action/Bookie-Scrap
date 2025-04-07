@@ -35,6 +35,9 @@ class WatchaBookMetaRequestFactoryTest {
 
         Request<WatchaBookMetaDto> watchaRequest = watchaBookRequestFactory.createRequest("boBNGJd");
         WatchaBookMetaDto bookDetail = watchaRequest.execute();
+        String hd = bookDetail.getBookPoster().getHd();
+
+        System.out.println("=============hd" + hd);
 
     }
 }

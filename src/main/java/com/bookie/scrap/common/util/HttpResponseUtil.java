@@ -39,6 +39,7 @@ public class HttpResponseUtil {
                 JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString(entity));
                 log.debug("\n" + jsonNode.toPrettyString());
             } else {
+                log.debug(EntityUtils.toString(entity));
                 log.debug("   not a json Response");
             }
 

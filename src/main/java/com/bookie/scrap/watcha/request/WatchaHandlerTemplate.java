@@ -20,7 +20,7 @@ public class WatchaHandlerTemplate {
 
             HttpResponseUtil.printLog(copiedEntity, httpResponse.getHeaders(), statusCode);
 
-            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301) {
+            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301 || statusCode == 308) {
                 return handlerFunction.apply(copiedEntity);
             } else {
                 String exceptionMsg = String.format("Unexpected status code: ");
@@ -41,7 +41,7 @@ public class WatchaHandlerTemplate {
 
             HttpResponseUtil.printLog(copiedEntity, httpResponse.getHeaders(), statusCode);
 
-            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301) {
+            if ((statusCode >= 200 && statusCode < 300) || statusCode == 302 || statusCode == 301 || statusCode == 308) {
                 return handlerFunction.apply(httpResponse.getHeaders());
             } else {
                 String exceptionMsg = String.format("Unexpected status code: ");
