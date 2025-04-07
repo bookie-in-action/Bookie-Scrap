@@ -22,30 +22,30 @@ public class HttpResponseUtil {
 
 
 
-        log.trace("=========================== HTTP RESPONSE ===========================");
-        log.trace("[Response Status Code]: " + code);
+        log.debug("=========================== HTTP RESPONSE ===========================");
+        log.debug("[Response Status Code]: " + code);
 
-        log.trace("[Response Headers]");
+        log.debug("[Response Headers]");
         Arrays.stream(headers)
-                .forEach(header -> log.trace("   " + header.getName() + ": " + header.getValue()));
+                .forEach(header -> log.debug("   " + header.getName() + ": " + header.getValue()));
 
 
         try {
 
             Optional<Header> contentTypeOpt = HttpResponseUtil.findHeader(headers, "Content-Type");
 
-            log.trace("[Response Body]");
+            log.debug("[Response Body]");
             if (contentTypeOpt.isPresent() && contentTypeOpt.get().getValue().contains("application/json")) {
                 JsonNode jsonNode = ObjectMapperUtil.readTree(EntityUtils.toString(entity));
-                log.trace("\n" + jsonNode.toPrettyString());
+                log.debug("\n" + jsonNode.toPrettyString());
             } else {
-                log.trace("   not a json Response");
+                log.debug("   not a json Response");
             }
 
         }catch (Exception e) {
             throw new RuntimeException("   Failed to log request body: " + e.getMessage());
         }
-        log.trace("================================ END ================================\n\n");
+        log.debug("================================ END ================================\n\n");
 
     }
 }

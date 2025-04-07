@@ -10,7 +10,7 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="com.bookie" level="INFO" additivity="false">
+    <logger name="com.bookie" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 </configuration>
