@@ -9,9 +9,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @Embeddable
-@NoArgsConstructor
 public class WatchaUserPhoto {
-    private String original;
-    private String large;
-    private String small;
+    private String original = "";
+    private String large = "";
+    private String small = "";
 }

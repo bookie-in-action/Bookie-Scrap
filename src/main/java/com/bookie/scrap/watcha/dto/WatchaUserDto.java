@@ -50,7 +50,7 @@ public class WatchaUserDto {
         return WatchaUserEntity.builder()
                 .userCode(StringUtil.nonNull(userCode))
                 .userName(StringUtil.nonNull(userName))
-                .userPhoto(userPhoto)
+                .userPhoto(userPhoto.getOriginal().contains("default") ? new WatchaUserPhoto() : userPhoto)
                 .isWatchaPlayUser(StringUtil.nonNull(isWatchaPlayUser))
                 .isOfficialUser(StringUtil.nonNull(isOfficialUser))
                 .userDescription(StringUtil.nonNull(userDescription))
