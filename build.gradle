@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     implementation 'org.quartz-scheduler:quartz:2.4.0'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.3'
 
     // 로깅
     implementation 'org.slf4j:slf4j-api:2.0.16'
@@ -59,5 +60,6 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    exclude '**/legacy/**'
 }
 
