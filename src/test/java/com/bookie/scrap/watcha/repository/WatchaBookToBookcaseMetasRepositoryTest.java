@@ -1,13 +1,15 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseMetaDto;
-import com.bookie.scrap.watcha.entity.WatchaBookToBookcaseMetaEntity;
-import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
-import com.bookie.scrap.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
+import com.bookie.legacy.common.db.EntityManagerFactoryProvider;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.domain.WatchaRequestParam;
+import com.bookie.legacy.watcha.dto.WatchaBookMetaDto;
+import com.bookie.legacy.watcha.dto.WatchaBookcaseMetaDto;
+import com.bookie.legacy.watcha.entity.WatchaBookToBookcaseMetaEntity;
+import com.bookie.legacy.watcha.repository.WatchaBookMetaRepository;
+import com.bookie.legacy.watcha.repository.WatchaBookToBookcaseMetasRepository;
+import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
+import com.bookie.legacy.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;

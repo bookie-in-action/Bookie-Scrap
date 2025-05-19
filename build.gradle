@@ -58,6 +58,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.quartz-scheduler:quartz:2.4.0'
     implementation 'io.lettuce:lettuce-core:6.5.5.RELEASE'
+    implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'

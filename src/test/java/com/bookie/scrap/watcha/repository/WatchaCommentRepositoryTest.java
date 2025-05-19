@@ -1,11 +1,12 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaCommentDto;
-import com.bookie.scrap.watcha.entity.WatchaCommentEntity;
-import com.bookie.scrap.watcha.request.WatchaCommentRequestFactory;
+import com.bookie.legacy.common.db.EntityManagerFactoryProvider;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.domain.WatchaRequestParam;
+import com.bookie.legacy.watcha.dto.WatchaCommentDto;
+import com.bookie.legacy.watcha.entity.WatchaCommentEntity;
+import com.bookie.legacy.watcha.repository.WatchaCommentRepository;
+import com.bookie.legacy.watcha.request.WatchaCommentRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;

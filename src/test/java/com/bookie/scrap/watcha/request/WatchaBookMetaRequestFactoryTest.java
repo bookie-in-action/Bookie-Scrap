@@ -1,10 +1,11 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.domain.RequestFactory;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.type.WatchaExternalService;
+import com.bookie.legacy.common.domain.Request;
+import com.bookie.legacy.common.domain.RequestFactory;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.dto.WatchaBookMetaDto;
+import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
+import com.bookie.legacy.watcha.type.WatchaExternalService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

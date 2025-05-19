@@ -1,9 +1,10 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaCommentDto;
+import com.bookie.legacy.common.domain.Request;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.domain.WatchaRequestParam;
+import com.bookie.legacy.watcha.dto.WatchaCommentDto;
+import com.bookie.legacy.watcha.request.WatchaCommentRequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

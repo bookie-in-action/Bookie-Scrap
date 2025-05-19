@@ -1,6 +1,8 @@
 package com.bookie.scrap.common.db.redis;
 
-import com.bookie.scrap.common.lifecycle.InitManager;
+import com.bookie.legacy.common.db.redis.RedisConnectionProducer;
+import com.bookie.legacy.common.db.redis.RedisSetManager;
+import com.bookie.legacy.common.lifecycle.InitManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

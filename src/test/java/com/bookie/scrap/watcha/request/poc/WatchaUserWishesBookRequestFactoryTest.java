@@ -1,10 +1,8 @@
 package com.bookie.scrap.watcha.request.poc;
 
-import com.bookie.scrap.common.lifecycle.InitManager;
+import com.bookie.legacy.common.lifecycle.InitManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WatchaUserWishesBookRequestFactoryTest {
     @BeforeAll

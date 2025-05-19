@@ -1,10 +1,11 @@
 package com.bookie.scrap.watcha.repository;
 
-import com.bookie.scrap.common.db.EntityManagerFactoryProvider;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.entity.WatchaBookMetaEntity;
-import com.bookie.scrap.watcha.request.WatchaBookMetaRequestFactory;
+import com.bookie.legacy.common.db.EntityManagerFactoryProvider;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.dto.WatchaBookMetaDto;
+import com.bookie.legacy.watcha.entity.WatchaBookMetaEntity;
+import com.bookie.legacy.watcha.repository.WatchaBookMetaRepository;
+import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeAll;

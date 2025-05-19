@@ -1,10 +1,9 @@
 package com.bookie.scrap.common.properties;
 
+import com.bookie.legacy.common.properties.BookieProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BookiePropertiesTest {
 

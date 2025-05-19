@@ -1,21 +1,17 @@
 package com.bookie.scrap.watcha.request;
 
-import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.lifecycle.InitManager;
-import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.dto.WatchaBookcaseToBookDto;
-import com.bookie.scrap.watcha.entity.WatchaBookcaseToBookEntity;
+import com.bookie.legacy.common.domain.Request;
+import com.bookie.legacy.common.lifecycle.InitManager;
+import com.bookie.legacy.watcha.domain.WatchaRequestFactory;
+import com.bookie.legacy.watcha.domain.WatchaRequestParam;
+import com.bookie.legacy.watcha.dto.WatchaBookcaseToBookDto;
+import com.bookie.legacy.watcha.entity.WatchaBookcaseToBookEntity;
+import com.bookie.legacy.watcha.request.WatchaBookcaseToBooksRequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j

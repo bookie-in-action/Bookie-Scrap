@@ -1,11 +1,7 @@
 package com.bookie.scrap.watcha.scheduler;
 
-import com.bookie.scrap.common.lifecycle.InitManager;
+import com.bookie.legacy.common.lifecycle.InitManager;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.quartz.JobExecutionException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WatchaJobTest {
 

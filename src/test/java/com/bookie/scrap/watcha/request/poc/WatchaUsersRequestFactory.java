@@ -1,11 +1,11 @@
 package com.bookie.scrap.watcha.request.poc;
 
-import com.bookie.scrap.common.domain.Request;
-import com.bookie.scrap.common.http.HttpMethod;
-import com.bookie.scrap.watcha.domain.WatchaRequestFactory;
-import com.bookie.scrap.watcha.dto.WatchaBookMetaDto;
-import com.bookie.scrap.watcha.request.WatchaBookMetaReponseHandler;
-import com.bookie.scrap.watcha.request.WatchaRequest;
+import com.bookie.legacy.common.domain.Request;
+import com.bookie.legacy.common.http.HttpMethod;
+import com.bookie.legacy.watcha.domain.WatchaRequestFactory;
+import com.bookie.legacy.watcha.dto.WatchaBookMetaDto;
+import com.bookie.legacy.watcha.request.WatchaBookMetaReponseHandler;
+import com.bookie.legacy.watcha.request.WatchaRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 

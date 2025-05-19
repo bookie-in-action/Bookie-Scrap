@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
+import com.bookie.legacy.watcha.dto.WatchaBookMetaDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

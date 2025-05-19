@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.dto;
 
-import com.bookie.scrap.watcha.type.WatchaUserPhoto;
+import com.bookie.legacy.watcha.type.WatchaUserPhoto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
