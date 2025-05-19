@@ -12,6 +12,21 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+sourceSets {
+    main {
+        java {
+            setSrcDirs(['src/main/java'])
+            exclude '**/legacy/**'
+        }
+    }
+    test {
+        java {
+            setSrcDirs(['src/test/java'])
+            exclude '**/legacy/**'
+        }
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
@@ -19,6 +34,7 @@ tasks.withType(JavaCompile).configureEach {
 repositories {
     mavenCentral()
 }
+
 
 dependencies {
     // 핵심 Spring Boot=

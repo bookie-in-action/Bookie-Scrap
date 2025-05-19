@@ -2,20 +2,22 @@ package com.bookie.scrap.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.quartz.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 import java.util.function.Function;
 
-@Getter
+@Getter @Setter
 @ConfigurationProperties(prefix = "bookie")
 public class SchedulerProperties {
 
     private List<SchedulerSetting> schedulerSettings;
-    @Getter
+
+    @Getter @Setter
     public static class SchedulerSetting {
-        private String id;
+        private String jobName;
         private String jobClass;
         private Mode mode;
         private String expression;
