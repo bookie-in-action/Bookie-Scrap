@@ -1,35 +1,15 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
+
 group = 'com.bookie.scrap'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-shadowJar {
-    archiveBaseName.set('bookie-scrap-fat')
-    archiveClassifier.set('') // -all 제거
-    archiveVersion.set('0.0.1')
-    destinationDirectory.set(file("fat-jar"))
-
-    manifest {
-        attributes 'Main-Class': 'com.bookie.scrap.common.lifecycle.Main'
-    }
-
-    exclude('**/logback.xml')
-    exclude('**/*.properties')
-}
-
-jar {
-    enabled = false
-}
-
-tasks.named("build") {
-    dependsOn(shadowJar)
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -41,37 +21,40 @@ repositories {
 }
 
 dependencies {
+    // 핵심 Spring Boot=
+    implementation 'org.springframework.boot:spring-boot-starter' // web 없음
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    implementation 'ch.qos.logback:logback-classic:1.5.14'
-    implementation 'ch.qos.logback:logback-core:1.5.14'
+    implementation 'org.quartz-scheduler:quartz:2.4.0'
+
+    // 로깅
     implementation 'org.slf4j:slf4j-api:2.0.16'
 
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.3'
-    implementation 'com.zaxxer:HikariCP:5.0.1'
-
-    implementation 'org.hibernate:hibernate-core:6.3.0.Final'
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
-    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
-
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
-    implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'org.quartz-scheduler:quartz:2.4.0'
-    implementation 'io.lettuce:lettuce-core:6.5.5.RELEASE'
-    implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
-
+    // 롬복
     compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.0'
-
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
     testImplementation 'org.mockito:mockito-core:5.10.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.0'
 
-    
+    /*deprecated
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
+    implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
+    implementation 'io.lettuce:lettuce-core:6.5.5.RELEASE'
+
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'org.hibernate:hibernate-core:6.3.0.Final'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
+
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.3'
+    */
 }
 
 test {
