@@ -1,6 +1,6 @@
 package com.bookie.scrap;
 
-import com.bookie.scrap.common.DynamicJobRegistrar;
+import com.bookie.scrap.common.scheduler.DynamicJobRegistrar;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
