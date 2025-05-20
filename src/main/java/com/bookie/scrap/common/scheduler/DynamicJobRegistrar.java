@@ -1,6 +1,5 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.scheduler;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.quartz.*;
 import org.springframework.stereotype.Component;

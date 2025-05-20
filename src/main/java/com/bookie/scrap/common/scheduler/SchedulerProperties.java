@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.scheduler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

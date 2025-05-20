@@ -1,6 +1,5 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.scheduler;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +43,6 @@ class DynamicJobRegistrarTest {
         intervalSetting.setMode(SchedulerProperties.SchedulerSetting.Mode.INTERVAL);
         intervalSetting.setJobClass(TestJob.class.getName());
         intervalSetting.setExpression("5");
-
 
         props.setSchedulerSettings(List.of(cronSetting, intervalSetting));
         DynamicJobRegistrar dynamicJobRegistrar = new DynamicJobRegistrar(scheduler, props);
