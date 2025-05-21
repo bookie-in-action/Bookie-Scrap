@@ -40,6 +40,7 @@ dependencies {
     // 핵심 Spring Boot (비앱)
     implementation 'org.springframework.boot:spring-boot-starter' // web 없음
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
