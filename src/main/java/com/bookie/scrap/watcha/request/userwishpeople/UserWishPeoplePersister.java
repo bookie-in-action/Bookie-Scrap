@@ -32,7 +32,7 @@ public class UserWishPeoplePersister implements WatchaPersistFactory<UserWishPeo
         for (int idx = 0; idx < userWishPeople.size(); idx++) {
 
             log.debug(
-                    "comment idx: {}, value: {}",
+                    "userWishPeoples idx: {}, value: {}",
                     idx,
                     mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userWishPeople.get(idx))
             );
