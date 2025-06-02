@@ -1,10 +1,10 @@
 package com.bookie.scrap.watcha.request.bookcomment;
 
+import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.http.SpringRequest;
 import com.bookie.scrap.common.domain.http.SpringResponse;
 import com.bookie.scrap.common.domain.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class BookCommentFetcher implements WatchaFetcherFactory<BookCommentRespo
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s/comments?";
 
     @Override
-    public BookCommentResponseDto fetch(String bookCode, WatchaRequestParam param) throws JsonProcessingException {
+    public BookCommentResponseDto fetch(String bookCode, PageInfo param) throws JsonProcessingException {
 
         String endpoint = getEndpoint(bookCode, param);
 
@@ -39,7 +39,7 @@ public class BookCommentFetcher implements WatchaFetcherFactory<BookCommentRespo
 
     }
 
-    public String getEndpoint(String bookCode, WatchaRequestParam param) {
+    public String getEndpoint(String bookCode, PageInfo param) {
         return param.buildUrlWithParamInfo(String.format(HTTP_URL_PATTERN, bookCode));
     }
 

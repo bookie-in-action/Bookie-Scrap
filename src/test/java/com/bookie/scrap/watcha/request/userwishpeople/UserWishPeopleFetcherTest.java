@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.request.userwishpeople;
 
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
+import com.bookie.scrap.watcha.request.bookcomment.WatchaBookCommentParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class UserWishPeopleFetcherTest {
 
     @Test
     void fetch() throws JsonProcessingException {
-        WatchaRequestParam requestParam = new WatchaRequestParam(1, 10);
+        WatchaBookCommentParam requestParam = new WatchaBookCommentParam(1, 10);
 
         UserWishPeopleResponseDto result = fetcher.fetch("ZWpqMekrDqrkn", requestParam);
         log.debug(result.getMetaData().toString());

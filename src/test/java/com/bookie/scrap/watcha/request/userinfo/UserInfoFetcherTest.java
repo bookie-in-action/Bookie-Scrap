@@ -1,14 +1,12 @@
 package com.bookie.scrap.watcha.request.userinfo;
 
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
+import com.bookie.scrap.watcha.request.bookcomment.WatchaBookCommentParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -20,7 +18,7 @@ class UserInfoFetcherTest {
 
     @Test
     void fetch() throws JsonProcessingException {
-        UserInfoResponseDto result = fetcher.fetch("ZWpqMekrDqrkn", new WatchaRequestParam(null));
+        UserInfoResponseDto result = fetcher.fetch("ZWpqMekrDqrkn", new WatchaBookCommentParam(null));
         log.debug(result.getUserInfo().toString());
     }
 }

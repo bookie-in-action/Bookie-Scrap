@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 
 
 @Slf4j
-public class PageInfo {
+public abstract class PageInfo {
 
     protected int page;
     protected int size;
@@ -61,6 +61,8 @@ public class PageInfo {
             throw new IllegalArgumentException("size parameter must be greater than or equal to 1");
         }
     }
+
+    abstract public String buildUrlWithParamInfo(String baseUrl);
 
 }
 

@@ -1,8 +1,10 @@
 package com.bookie.scrap.watcha.domain;
 
 
+import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.http.SpringRequest;
 import com.bookie.scrap.common.domain.http.SpringResponse;
+import com.bookie.scrap.watcha.request.bookcomment.WatchaBookCommentParam;
 import org.springframework.http.HttpMethod;
 
 public interface WatchaFetcherFactory<T> {
@@ -21,5 +23,5 @@ public interface WatchaFetcherFactory<T> {
         return new SpringResponse<>(response -> response.bodyToMono(String.class));
     }
 
-    T fetch(String bookCode, WatchaRequestParam param) throws Exception;
+    T fetch(String bookCode, PageInfo param) throws Exception;
 }

@@ -1,30 +1,28 @@
 package com.bookie.scrap.watcha.request.userwishbook;
 
-import com.bookie.scrap.watcha.request.bookcomment.WatchaBookCommentParam;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.bookie.scrap.watcha.request.userwishpeople.UserWishPeopleCollectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Slf4j
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserWishBookFetcherTest {
+class UserWishBookCollectionServiceTest {
 
     @Autowired
-    UserWishBookFetcher fetcher;
+    private UserWishBookCollectionService service;
 
     @Test
-    void fetch() throws JsonProcessingException {
+    void collect() throws Exception {
         WatchaUserWishBookParam requestParam = new WatchaUserWishBookParam(1, 10);
         requestParam.setSortDirection();
         requestParam.setSortOption();
 
-        UserWishBookResponseDto response = fetcher.fetch("2mwvggAE2vMa7", requestParam);
-        log.debug(response.getMetaData().toString());
-        log.debug(response.getResult().getNextUri().toString());
-        log.debug(response.getResult().getUserWishBooks().toString());
+        service.collect("JgAx8wnyY5LbO", requestParam);
     }
 }

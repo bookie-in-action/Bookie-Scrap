@@ -20,26 +20,26 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
     @Override
     public void persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
 
-        List<Object> userWishPeople = dto.getResult().getUserWishPeople();
+        List<Object> userWishBooks = dto.getResult().getUserWishBooks();
 
-        if (userWishPeople.isEmpty()) {
+        if (userWishBooks.isEmpty()) {
             return;
         }
 
-        log.debug("size: {}",userWishPeople.size());
+        log.debug("size: {}",userWishBooks.size());
 
-        for (int idx = 0; idx < userWishPeople.size(); idx++) {
+        for (int idx = 0; idx < userWishBooks.size(); idx++) {
 
             log.debug(
-                    "comment idx: {}, value: {}",
+                    "userWishBook idx: {}, value: {}",
                     idx,
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userWishPeople.get(idx))
+                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userWishBooks.get(idx))
             );
             log.debug("===========================");
 
             UserWishBookDocument document = new UserWishBookDocument();
             document.setUserCode(userCode);
-            document.setRawJson(userWishPeople.get(idx).toString());
+            document.setRawJson(userWishBooks.get(idx).toString());
             repository.save(document);
         }
 

@@ -22,7 +22,7 @@ public class UserWishBookResponseDto {
         private String nextUri;
 
         @JsonProperty("result")
-        private List<Object> userWishPeople;
+        private List<Object> userWishBooks;
     }
 
 }

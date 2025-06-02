@@ -1,10 +1,11 @@
 package com.bookie.scrap.watcha.request.userwishpeople;
 
+import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.http.SpringRequest;
 import com.bookie.scrap.common.domain.http.SpringResponse;
 import com.bookie.scrap.common.domain.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
+import com.bookie.scrap.watcha.request.bookcomment.WatchaBookCommentParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class UserWishPeopleFetcher implements WatchaFetcherFactory<UserWishPeopl
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/users/%s/wishes/people";
 
     @Override
-    public UserWishPeopleResponseDto fetch(String userCode, WatchaRequestParam param) throws JsonProcessingException {
+    public UserWishPeopleResponseDto fetch(String userCode, PageInfo param) throws JsonProcessingException {
 
         String endpoint = getEndpoint(userCode, param);
 
@@ -39,7 +40,7 @@ public class UserWishPeopleFetcher implements WatchaFetcherFactory<UserWishPeopl
         return mapper.readValue(rawJson, UserWishPeopleResponseDto.class);
     }
 
-    public String getEndpoint(String bookCode, WatchaRequestParam param) {
+    public String getEndpoint(String bookCode, PageInfo param) {
         return param.buildUrlWithParamInfo(String.format(HTTP_URL_PATTERN, bookCode));
     }
 }

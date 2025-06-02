@@ -1,6 +1,5 @@
 package com.bookie.scrap.watcha.request.bookcomment;
 
-import com.bookie.scrap.watcha.domain.WatchaRequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,7 +19,7 @@ class BookCommentFetcherTest {
 
     @Test
     void testExecute() throws Exception {
-        WatchaRequestParam requestParam = new WatchaRequestParam(1, 10);
+        WatchaBookCommentParam requestParam = new WatchaBookCommentParam(1, 10);
         requestParam.setPopularOrder();
 
         BookCommentResponseDto response = fetcher.fetch("byLKj8M", requestParam);

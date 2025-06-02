@@ -1,23 +1,22 @@
-package com.bookie.scrap.watcha.domain;
+package com.bookie.scrap.watcha.request.bookcomment;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
-import org.springframework.util.StringUtils;
 
 import java.net.URISyntaxException;
 
 @Slf4j
-public class WatchaRequestParam extends PageInfo {
+public class WatchaBookCommentParam extends PageInfo {
 
     private String filter;
     private String order;
 
-    public WatchaRequestParam(Void noUse) {
+    public WatchaBookCommentParam(Void noUse) {
         super(1, 1);
     }
 
-    public WatchaRequestParam(int page, int size) {
+    public WatchaBookCommentParam(int page, int size) {
         super(page, size);
     }
 
@@ -80,7 +79,7 @@ public class WatchaRequestParam extends PageInfo {
 
 
     public String getParamInfo() {
-        return "WatchaRequestParam{" +
+        return "WatchaCommentParam{" +
                 "page=" + super.page +
                 ", size=" + super.size +
                 ", filter='" + filter + '\'' +
