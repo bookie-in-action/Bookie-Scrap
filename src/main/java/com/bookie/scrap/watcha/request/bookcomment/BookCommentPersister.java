@@ -22,6 +22,10 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
 
         List<Object> comments = dto.getResult().getComments();
 
+        if (comments.isEmpty()) {
+            return;
+        }
+
         log.debug("size: {}",comments.size());
 
         for (int idx = 0; idx < comments.size(); idx++) {

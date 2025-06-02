@@ -1,7 +1,6 @@
-package com.bookie.scrap.watcha.request.userwishpeople;
+package com.bookie.scrap.watcha.request.userwishbook;
 
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
-import com.bookie.scrap.watcha.request.bookcomment.BookCommentDocument;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +12,13 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserWishPeoplePersister implements WatchaPersistFactory<UserWishPeopleResponseDto> {
+public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookResponseDto> {
 
     private final ObjectMapper mapper;
-    private final UserWishPeopleMongoRepository repository;
+    private final UserWishBookMongoRepository repository;
 
     @Override
-    public void persist(UserWishPeopleResponseDto dto, String userCode) throws JsonProcessingException {
+    public void persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
 
         List<Object> userWishPeople = dto.getResult().getUserWishPeople();
 
@@ -38,7 +37,7 @@ public class UserWishPeoplePersister implements WatchaPersistFactory<UserWishPeo
             );
             log.debug("===========================");
 
-            UserWishPeopleDocument document = new UserWishPeopleDocument();
+            UserWishBookDocument document = new UserWishBookDocument();
             document.setUserCode(userCode);
             document.setRawJson(userWishPeople.get(idx).toString());
             repository.save(document);

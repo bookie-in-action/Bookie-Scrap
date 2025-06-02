@@ -21,6 +21,6 @@ class UserWishPeopleCollectionServiceTest {
     void collect() throws Exception {
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 10);
 
-        service.collect("ZWpqMekrDqrkn", requestParam);
+        service.collect("JgAx8wnyY5LbO", requestParam);
     }
 }
