@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.comment;
+package com.bookie.scrap.watcha.request.bookcomment;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document(collection = "watcha_comments")
-public class WatchaCommentDocument {
+public class BookCommentDocument {
 
     @Id
     private String id;
@@ -23,7 +23,7 @@ public class WatchaCommentDocument {
 
     private LocalDateTime createdAt;
 
-    public WatchaCommentDocument() {
+    public BookCommentDocument() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
     }

@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.http;
+package com.bookie.scrap.common.domain.http;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
