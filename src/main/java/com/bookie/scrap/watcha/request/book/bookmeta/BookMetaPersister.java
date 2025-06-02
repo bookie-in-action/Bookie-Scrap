@@ -38,5 +38,7 @@ public class BookMetaPersister implements WatchaPersistFactory<BookMetaResponseD
         document.setRawJson(JsonUtil.toMap(bookMeta));
         repository.save(document);
 
+
+
     }
 }
