@@ -13,6 +13,10 @@ public class WatchaRequestParam extends PageInfo {
     private String filter;
     private String order;
 
+    public WatchaRequestParam(Void noUse) {
+        super(1, 1);
+    }
+
     public WatchaRequestParam(int page, int size) {
         super(page, size);
     }

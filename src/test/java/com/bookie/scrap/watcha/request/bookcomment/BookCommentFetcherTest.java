@@ -1,10 +1,7 @@
-package com.bookie.scrap.watcha.request.comment;
+package com.bookie.scrap.watcha.request.bookcomment;
 
 import com.bookie.scrap.watcha.domain.WatchaRequestParam;
-import com.bookie.scrap.watcha.request.bookcomment.BookCommentFetcher;
-import com.bookie.scrap.watcha.request.bookcomment.BookCommentResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;

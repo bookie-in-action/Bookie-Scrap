@@ -7,18 +7,16 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CommentCollectionServiceTest {
+class BookCommentCollectionServiceTest {
 
     @Autowired
     private BookCommentCollectionService service;
 
     @Test
-    void testService() {
+    void testService() throws Exception {
         WatchaRequestParam requestParam = new WatchaRequestParam(1, 10);
         requestParam.setPopularOrder();
         service.collect("byLKj8M", requestParam);
