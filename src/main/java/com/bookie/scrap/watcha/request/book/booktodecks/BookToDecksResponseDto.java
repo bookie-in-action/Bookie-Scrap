@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class BookToDecksResponseDto {
 
     @JsonProperty("metadata")
-    private Object metaData;
+    private JsonNode metaData;
 
     private InnerResult result;
 

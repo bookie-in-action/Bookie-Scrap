@@ -23,7 +23,7 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
 
         List<JsonNode> decks = dto.getResult().getDecks();
 
-        if (decks.isEmpty()) {
+        if (decks == null) {
             return;
         }
 

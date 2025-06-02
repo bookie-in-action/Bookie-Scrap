@@ -19,6 +19,6 @@ class UserWishPeopleCollectionServiceTest {
     void collect() throws Exception {
         WatchaBookCommentParam requestParam = new WatchaBookCommentParam(1, 10);
 
-        service.collect("JgAx8wnyY5LbO", requestParam);
+        service.collect("ZWpqMekrDqrkn", requestParam);
     }
 }

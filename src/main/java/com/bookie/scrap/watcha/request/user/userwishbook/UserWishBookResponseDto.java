@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.request.user.userwishbook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class UserWishBookResponseDto {
 
     @JsonProperty("metadata")
-    private Object metaData;
+    private JsonNode metaData;
 
     private InnerResult result;
 
@@ -22,7 +23,7 @@ public class UserWishBookResponseDto {
         private String nextUri;
 
         @JsonProperty("result")
-        private List<Object> userWishBooks;
+        private List<JsonNode> userWishBooks;
     }
 
 }

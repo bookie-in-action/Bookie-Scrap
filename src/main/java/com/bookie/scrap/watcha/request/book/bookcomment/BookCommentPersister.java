@@ -2,6 +2,7 @@ package com.bookie.scrap.watcha.request.book.bookcomment;
 
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,9 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
     @Override
     public void persist(BookCommentResponseDto dto, String bookCode) throws JsonProcessingException {
 
-        List<Object> comments = dto.getResult().getComments();
+        List<JsonNode> comments = dto.getResult().getComments();
 
-        if (comments.isEmpty()) {
+        if (comments == null) {
             return;
         }
 

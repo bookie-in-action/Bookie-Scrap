@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.request.user.userinfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,9 +10,9 @@ import java.util.List;
 public class UserInfoResponseDto {
 
     @JsonProperty("metadata")
-    private Object metaData;
+    private JsonNode metaData;
 
     @JsonProperty("result")
-    private Object userInfo;
+    private JsonNode userInfo;
 
 }

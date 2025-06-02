@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.request.book.bookcomment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class BookCommentResponseDto {
 
     @JsonProperty("metadata")
-    private Object metaData;
+    private JsonNode metaData;
 
     private InnerResult result;
 
@@ -22,6 +23,6 @@ public class BookCommentResponseDto {
         private String nextUri;
 
         @JsonProperty("result")
-        private List<Object> comments;
+        private List<JsonNode> comments;
     }
 }

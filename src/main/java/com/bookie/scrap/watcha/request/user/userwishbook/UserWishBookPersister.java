@@ -2,6 +2,7 @@ package com.bookie.scrap.watcha.request.user.userwishbook;
 
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,9 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
     @Override
     public void persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
 
-        List<Object> userWishBooks = dto.getResult().getUserWishBooks();
+        List<JsonNode> userWishBooks = dto.getResult().getUserWishBooks();
 
-        if (userWishBooks.isEmpty()) {
+        if (userWishBooks == null) {
             return;
         }
 
