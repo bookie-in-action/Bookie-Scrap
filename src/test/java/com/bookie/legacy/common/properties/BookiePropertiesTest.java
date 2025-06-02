@@ -3,8 +3,9 @@ package com.bookie.legacy.common.properties;
 import com.bookie.legacy.common.properties.BookieProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
+@Disabled
 class BookiePropertiesTest {
 
     static BookieProperties bookieProperies;

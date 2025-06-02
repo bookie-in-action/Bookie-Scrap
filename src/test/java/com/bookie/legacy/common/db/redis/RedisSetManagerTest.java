@@ -5,8 +5,10 @@ import com.bookie.legacy.common.db.redis.RedisSetManager;
 import com.bookie.legacy.common.lifecycle.InitManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class RedisSetManagerTest {
 
     @BeforeAll

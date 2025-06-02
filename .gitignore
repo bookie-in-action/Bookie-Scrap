@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 *.properties
 *.json
+*.yml
 
 # .sh 파일 제외
 src/**/*.sh

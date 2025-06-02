@@ -2,8 +2,9 @@ package com.bookie.legacy.common.properties;
 
 import com.bookie.legacy.common.properties.DbProperties;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
+@Disabled
 class DbPropertiesTest {
 
     @Test

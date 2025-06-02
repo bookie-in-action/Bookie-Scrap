@@ -17,7 +17,6 @@ import com.bookie.legacy.watcha.repository.WatchaBookToBookcaseMetasRepository;
 import com.bookie.legacy.watcha.repository.WatchaBookcaseToBooksRepository;
 import com.bookie.legacy.watcha.repository.WatchaCommentRepository;
 import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
-import com.bookie.legacy.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import com.bookie.legacy.watcha.request.WatchaBookcaseToBooksRequestFactory;
 import com.bookie.legacy.watcha.request.WatchaCommentRequestFactory;
 import com.bookie.legacy.watcha.dto.WatchaBookcaseMetaDto;

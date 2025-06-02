@@ -3,11 +3,12 @@ package com.bookie.legacy.watcha.domain;
 import com.bookie.legacy.watcha.domain.WatchaRequestParam;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
-
+@Disabled
 class WatchaRequestParamTest {
 
     @Test

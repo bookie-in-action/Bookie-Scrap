@@ -1,6 +1,6 @@
-package com.bookie.scrap.watcha;
+package com.bookie.scrap.watcha.domain;
 
-import com.bookie.scrap.common.PageInfo;
+import com.bookie.scrap.common.domain.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
@@ -10,24 +10,50 @@ import java.net.URISyntaxException;
 @Slf4j
 public class WatchaRequestParam extends PageInfo {
 
-    private final String filter;
-    private final String order;
+    private String filter;
+    private String order;
 
-    public WatchaRequestParam(int page, int size, String filter, String order) {
+    public WatchaRequestParam(int page, int size) {
         super(page, size);
+    }
 
-        if (!StringUtils.hasText(filter)) {
-            this.filter = "all";
-        } else {
-            this.filter = filter;
-        }
+    public void setAllFilter() {
+        this.filter = "all";
+    }
 
-        if (!StringUtils.hasText(order)) {
-            this.order = "popular";
-        } else {
-            this.order = order;
-        }
+    /**
+     * 좋아요 순
+     */
+    public void setPopularOrder() {
+        this.order = "popular";
+    }
 
+    /**
+     * 유저 반응 순
+     */
+    public void setRecommendedOrder() {
+        this.order = "recommended";
+    }
+
+    /**
+     * 높은 평가 순
+     */
+    public void setHighOrder() {
+        this.order = "high";
+    }
+
+    /**
+     * 낮은 평가 순
+     */
+    public void setLowOrder() {
+        this.order = "low";
+    }
+
+    /**
+     * 작성 순
+     */
+    public void setRecentOrder() {
+        this.order = "recent";
     }
 
     public String buildUrlWithParamInfo(String baseUrl) {

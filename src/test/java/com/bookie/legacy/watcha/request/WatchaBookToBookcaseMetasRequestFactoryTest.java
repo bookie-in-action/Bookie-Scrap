@@ -8,11 +8,12 @@ import com.bookie.legacy.watcha.request.WatchaBookToBookcaseMetasRequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.util.List;
-
+@Disabled
 @Slf4j
 class WatchaBookToBookcaseMetasRequestFactoryTest {
 

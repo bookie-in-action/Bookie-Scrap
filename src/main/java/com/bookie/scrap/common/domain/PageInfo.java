@@ -1,5 +1,5 @@
 
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.domain;
 
 
 import lombok.extern.slf4j.Slf4j;

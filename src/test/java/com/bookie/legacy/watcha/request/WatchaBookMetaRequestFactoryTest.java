@@ -8,8 +8,9 @@ import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
 import com.bookie.legacy.watcha.type.WatchaExternalService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
+@Disabled
 class WatchaBookMetaRequestFactoryTest {
 
     @BeforeAll

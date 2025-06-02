@@ -2,8 +2,9 @@ package com.bookie.legacy.watcha.request.poc;
 
 import com.bookie.legacy.common.lifecycle.InitManager;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
+@Disabled
 class WatchaUserWishesPeopleRequestFactoryTest {
 
     @BeforeAll

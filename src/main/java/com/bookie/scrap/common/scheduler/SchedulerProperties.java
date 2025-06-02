@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.quartz.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
 
+@Component
 @Getter @Setter
 @ConfigurationProperties(prefix = "bookie")
 public class SchedulerProperties {

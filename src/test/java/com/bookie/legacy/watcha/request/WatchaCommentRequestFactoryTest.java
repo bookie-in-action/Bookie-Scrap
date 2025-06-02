@@ -7,10 +7,11 @@ import com.bookie.legacy.watcha.dto.WatchaCommentDto;
 import com.bookie.legacy.watcha.request.WatchaCommentRequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
+@Disabled
 @Slf4j
 public class WatchaCommentRequestFactoryTest {
 

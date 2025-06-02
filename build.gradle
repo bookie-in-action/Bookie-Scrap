@@ -46,6 +46,7 @@ dependencies {
 
     implementation 'org.quartz-scheduler:quartz:2.4.0'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.3'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
 
     // 로깅
     implementation 'org.slf4j:slf4j-api:2.0.16'
@@ -53,12 +54,16 @@ dependencies {
     // 롬복
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    testCompileOnly 'org.projectlombok:lombok:1.18.28'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
     testImplementation 'org.mockito:mockito-core:5.10.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.0'
 
     /*deprecated

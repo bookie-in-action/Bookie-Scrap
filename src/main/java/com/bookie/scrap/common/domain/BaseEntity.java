@@ -1,4 +1,4 @@
-package com.bookie.scrap.common;
+package com.bookie.scrap.common.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,7 +27,6 @@ public abstract class BaseEntity {
     @PrePersist
     private void prePersist() {
         if (this.snowflakeId == null) {
-            // TODO:
             this.snowflakeId = UUID.randomUUID().toString();
         }
         if (this.createdAt == null) {

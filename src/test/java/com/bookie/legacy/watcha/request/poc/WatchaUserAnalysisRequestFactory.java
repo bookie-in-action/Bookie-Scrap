@@ -12,10 +12,11 @@ import org.apache.hc.client5.http.cookie.Cookie;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.message.BasicHeader;
+import org.junit.jupiter.api.Disabled;
 
 import java.time.Instant;
 
-
+@Disabled
 @Slf4j
 public class WatchaUserAnalysisRequestFactory implements WatchaRequestFactory<WatchaBookMetaDto> {
 

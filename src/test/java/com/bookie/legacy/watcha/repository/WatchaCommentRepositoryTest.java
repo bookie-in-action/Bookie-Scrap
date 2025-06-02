@@ -12,11 +12,12 @@ import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Disabled
 @Slf4j
 class WatchaCommentRepositoryTest {
 

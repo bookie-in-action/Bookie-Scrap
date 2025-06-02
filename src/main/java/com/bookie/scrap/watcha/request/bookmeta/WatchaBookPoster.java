@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha;
+package com.bookie.scrap.watcha.request.bookmeta;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

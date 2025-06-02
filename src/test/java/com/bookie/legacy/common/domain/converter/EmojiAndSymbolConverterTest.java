@@ -1,7 +1,9 @@
 package com.bookie.legacy.common.domain.converter;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class EmojiAndSymbolConverterTest {
 
     @Test

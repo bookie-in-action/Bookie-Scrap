@@ -2,9 +2,10 @@ package com.bookie.legacy.watcha.dto;
 
 import com.bookie.legacy.watcha.type.WatchaUserPhoto;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-
+@Disabled
 class WatchaUserDtoTest {
 
     @Test

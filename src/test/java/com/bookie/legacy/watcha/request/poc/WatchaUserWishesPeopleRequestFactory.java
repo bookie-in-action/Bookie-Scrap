@@ -8,8 +8,9 @@ import com.bookie.legacy.watcha.request.WatchaBookMetaReponseHandler;
 import com.bookie.legacy.watcha.request.WatchaRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.junit.jupiter.api.Disabled;
 
-
+@Disabled
 @Slf4j
 public class WatchaUserWishesPeopleRequestFactory implements WatchaRequestFactory<WatchaBookMetaDto> {
 

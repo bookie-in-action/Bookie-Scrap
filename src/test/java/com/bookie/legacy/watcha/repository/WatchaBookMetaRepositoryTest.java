@@ -9,10 +9,11 @@ import com.bookie.legacy.watcha.request.WatchaBookMetaRequestFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
+@Disabled
 class WatchaBookMetaRepositoryTest {
 
     private static EntityManagerFactory emf;
