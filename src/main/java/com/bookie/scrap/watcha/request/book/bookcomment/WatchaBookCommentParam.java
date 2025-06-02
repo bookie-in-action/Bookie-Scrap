@@ -66,8 +66,6 @@ public class WatchaBookCommentParam extends PageInfo {
             return new URIBuilder(baseUrl)
                     .addParameter("page", String.valueOf(super.page))
                     .addParameter("size", String.valueOf(super.size))
-                    .addParameter("order", this.order)
-                    .addParameter("filter", this.filter)
                     .build()
                     .toString();
 

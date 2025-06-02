@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.user.userwishpeople;
+package com.bookie.scrap.watcha.request.user.userlikepeople;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.http.SpringRequest;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserWishPeopleFetcher implements WatchaFetcherFactory<UserWishPeopleResponseDto> {
+public class UserLikePeopleFetcher implements WatchaFetcherFactory<UserLikePeopleResponseDto> {
 
     private final WebClientExecutor executor;
     private final ObjectMapper mapper;
@@ -26,7 +26,7 @@ public class UserWishPeopleFetcher implements WatchaFetcherFactory<UserWishPeopl
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/users/%s/wishes/people";
 
     @Override
-    public UserWishPeopleResponseDto fetch(String userCode, PageInfo param) throws JsonProcessingException {
+    public UserLikePeopleResponseDto fetch(String userCode, PageInfo param) throws JsonProcessingException {
 
         String endpoint = getEndpoint(userCode, param);
 
@@ -35,12 +35,11 @@ public class UserWishPeopleFetcher implements WatchaFetcherFactory<UserWishPeopl
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-
-        return mapper.readValue(rawJson, UserWishPeopleResponseDto.class);
+        return mapper.readValue(rawJson, UserLikePeopleResponseDto.class);
     }
 
-    public String getEndpoint(String bookCode, PageInfo param) {
-        return param.buildUrlWithParamInfo(String.format(HTTP_URL_PATTERN, bookCode));
+    public String getEndpoint(String userCode, PageInfo param) {
+        return param.buildUrlWithParamInfo(String.format(HTTP_URL_PATTERN, userCode));
     }
 }
 

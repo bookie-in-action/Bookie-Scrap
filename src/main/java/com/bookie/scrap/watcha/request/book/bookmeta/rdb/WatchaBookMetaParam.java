@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.book.bookmeta;
+package com.bookie.scrap.watcha.request.book.bookmeta.rdb;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import lombok.extern.slf4j.Slf4j;

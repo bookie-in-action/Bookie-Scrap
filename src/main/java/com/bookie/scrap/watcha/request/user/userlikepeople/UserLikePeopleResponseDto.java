@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.user.userwishpeople;
+package com.bookie.scrap.watcha.request.user.userlikepeople;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class UserWishPeopleResponseDto {
+public class UserLikePeopleResponseDto {
 
     @JsonProperty("metadata")
     private JsonNode metaData;
@@ -23,7 +23,7 @@ public class UserWishPeopleResponseDto {
         private String nextUri;
 
         @JsonProperty("result")
-        private List<JsonNode> userWishPeople;
+        private List<JsonNode> userLikePeople;
     }
 
 }

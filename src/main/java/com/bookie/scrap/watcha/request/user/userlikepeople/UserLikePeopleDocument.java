@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.user.userwishpeople;
+package com.bookie.scrap.watcha.request.user.userlikepeople;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Document(collection = "watcha_user_wishpeople")
-public class UserWishPeopleDocument {
+@Document(collection = "watcha_user_like_people")
+public class UserLikePeopleDocument {
 
     @Id
     private String id;
@@ -24,9 +24,9 @@ public class UserWishPeopleDocument {
 
     private LocalDateTime createdAt;
 
-    public UserWishPeopleDocument() {
+    public UserLikePeopleDocument() {
         this.id = UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }
 

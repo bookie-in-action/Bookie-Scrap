@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.user.userwishpeople;
+package com.bookie.scrap.watcha.request.user.userlikepeople;
 
 import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserWishPeopleCollectionServiceTest {
+class UserLikePeopleCollectionServiceTest {
 
     @Autowired
-    private UserWishPeopleCollectionService service;
+    private UserLikePeopleCollectionService service;
 
     @Test
     void collect() throws Exception {
-        WatchaBookCommentParam requestParam = new WatchaBookCommentParam(1, 10);
+        WatchaUserLikePeopleParam requestParam = new WatchaUserLikePeopleParam(1, 10);
 
-        service.collect("ZWpqMekrDqrkn", requestParam);
+        service.collect("2mwvggAE2vMa7", requestParam);
     }
 }
