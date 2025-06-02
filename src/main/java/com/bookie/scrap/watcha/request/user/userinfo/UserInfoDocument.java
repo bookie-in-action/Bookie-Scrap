@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -19,7 +20,7 @@ public class UserInfoDocument {
 
     private String userCode;
 
-    private String rawJson;
+    private Map<String, Object> rawJson;
 
     private LocalDateTime createdAt;
 

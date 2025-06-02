@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -20,7 +21,7 @@ public class BookMetaDocument {
 
     private String bookCode;
 
-    private JsonNode rawJson;
+    private Map<String, Object> rawJson;
 
     private LocalDateTime createdAt;
 

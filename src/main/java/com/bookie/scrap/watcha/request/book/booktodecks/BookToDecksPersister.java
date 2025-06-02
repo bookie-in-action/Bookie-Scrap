@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.book.booktodecks;
 
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
-    private final ObjectMapper mapper;
     private final BookToDecksMongoRepository repository;
 
     @Override
@@ -34,13 +34,13 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
             log.debug(
                     "decks idx: {}, value: {}",
                     idx,
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(decks.get(idx))
+                    JsonUtil.toPrettyJson(decks.get(idx))
             );
             log.debug("===========================");
 
             BookToDecksDocument document = new BookToDecksDocument();
             document.setBookCode(bookCode);
-            document.setRawJson(decks.get(idx).toString());
+            document.setRawJson(JsonUtil.toMap(decks.get(idx)));
             repository.save(document);
         }
 

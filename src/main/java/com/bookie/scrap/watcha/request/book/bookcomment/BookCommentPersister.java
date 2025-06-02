@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.book.bookcomment;
 
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookCommentPersister implements WatchaPersistFactory<BookCommentResponseDto> {
 
-    private final ObjectMapper mapper;
     private final BookCommentMongoRepository repository;
 
     @Override
@@ -34,13 +34,13 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
             log.debug(
                     "comment idx: {}, value: {}",
                     idx,
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(comments.get(idx))
+                    JsonUtil.toPrettyJson(comments.get(idx))
             );
             log.debug("===========================");
 
             BookCommentDocument document = new BookCommentDocument();
             document.setBookCode(bookCode);
-            document.setRawJson(comments.get(idx).toString());
+            document.setRawJson(JsonUtil.toMap(comments.get(idx)));
             repository.save(document);
         }
 

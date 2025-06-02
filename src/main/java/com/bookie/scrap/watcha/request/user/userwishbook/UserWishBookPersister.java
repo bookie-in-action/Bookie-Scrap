@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.user.userwishbook;
 
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,13 +35,13 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
             log.debug(
                     "userWishBook idx: {}, value: {}",
                     idx,
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userWishBooks.get(idx))
+                    JsonUtil.toPrettyJson(userWishBooks.get(idx))
             );
             log.debug("===========================");
 
             UserWishBookDocument document = new UserWishBookDocument();
             document.setUserCode(userCode);
-            document.setRawJson(userWishBooks.get(idx).toString());
+            document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
             repository.save(document);
         }
 

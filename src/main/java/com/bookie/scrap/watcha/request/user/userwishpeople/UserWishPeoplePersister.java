@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.user.userwishpeople;
 
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserWishPeoplePersister implements WatchaPersistFactory<UserWishPeopleResponseDto> {
 
-    private final ObjectMapper mapper;
     private final UserWishPeopleMongoRepository repository;
 
     @Override
@@ -34,13 +34,13 @@ public class UserWishPeoplePersister implements WatchaPersistFactory<UserWishPeo
             log.debug(
                     "userWishPeoples idx: {}, value: {}",
                     idx,
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userWishPeople.get(idx))
+                    JsonUtil.toPrettyJson(userWishPeople.get(idx))
             );
             log.debug("===========================");
 
             UserWishPeopleDocument document = new UserWishPeopleDocument();
             document.setUserCode(userCode);
-            document.setRawJson(userWishPeople.get(idx).toString());
+            document.setRawJson(JsonUtil.toMap(userWishPeople.get(idx)));
             repository.save(document);
         }
 

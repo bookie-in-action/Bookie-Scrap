@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.user.userinfo;
 
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserInfoPersister implements WatchaPersistFactory<UserInfoResponseDto> {
 
-    private final ObjectMapper mapper;
     private final UserInfoMongoRepository repository;
 
     @Override
@@ -21,12 +21,12 @@ public class UserInfoPersister implements WatchaPersistFactory<UserInfoResponseD
 
         JsonNode userInfo = dto.getUserInfo();
 
-        log.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userInfo));
+        log.debug(JsonUtil.toPrettyJson(userInfo));
         log.debug("===========================");
 
         UserInfoDocument document = new UserInfoDocument();
         document.setUserCode(userCode);
-        document.setRawJson(userInfo.toString());
+        document.setRawJson(JsonUtil.toMap(userInfo));
         repository.save(document);
 
     }

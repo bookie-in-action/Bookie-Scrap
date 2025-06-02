@@ -22,6 +22,6 @@ class UserWishBookCollectionServiceTest {
         requestParam.setSortDirection();
         requestParam.setSortOption();
 
-        service.collect("JgAx8wnyY5LbO", requestParam);
+        service.collect("2mwvggAE2vMa7", requestParam);
     }
 }
