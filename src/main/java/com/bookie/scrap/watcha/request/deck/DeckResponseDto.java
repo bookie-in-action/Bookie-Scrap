@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.book.booktodecks;
+package com.bookie.scrap.watcha.request.deck;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
-public class BookToDecksResponseDto {
+public class DeckResponseDto {
 
     @JsonProperty("metadata")
     private JsonNode metaData;
@@ -26,16 +26,16 @@ public class BookToDecksResponseDto {
         @JsonProperty("next_uri")
         private String nextUri;
 
-        private List<JsonNode> decks;
+        private List<JsonNode> books;
 
         @JsonIgnore
-        private List<String> deckCodes;
+        private List<String> bookCodes;
 
         @JsonSetter("result")
-        public void setDecks(List<JsonNode> decks) {
-            this.decks = decks;
-            this.deckCodes = decks.stream()
-                    .map(json -> json.get("code"))
+        public void setBooks(List<JsonNode> books) {
+            this.books = books;
+            this.bookCodes = books.stream()
+                    .map(json -> json.get("content").get("code"))
                     .filter(Objects::nonNull)
                     .map(JsonNode::asText)
                     .collect(Collectors.toList());

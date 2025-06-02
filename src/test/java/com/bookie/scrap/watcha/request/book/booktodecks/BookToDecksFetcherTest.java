@@ -1,18 +1,13 @@
 package com.bookie.scrap.watcha.request.book.booktodecks;
 
-import com.bookie.scrap.common.domain.PageInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -28,7 +23,7 @@ class BookToDecksFetcherTest {
 
         BookToDecksResponseDto response = fetcher.fetch("byLKj8M", param);
         JsonNode jsonNode = response.getResult().getDecks().get(0);
-        String code = response.getResult().getCodes().get(0);
+        String code = response.getResult().getDeckCodes().get(0);
 
 
         log.debug(code);
