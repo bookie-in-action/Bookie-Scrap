@@ -5,20 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
 @ToString
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WatchaBookMetaDto {
+public class BookMetaRdbDto {
 
     @JsonProperty("code")
     private String bookCode;
@@ -35,13 +31,15 @@ public class WatchaBookMetaDto {
     private Integer publishYear;
 
     @JsonProperty("poster")
-    private WatchaBookPoster bookPoster;
+    private RdbBookPoster bookPoster;
 
     @JsonProperty("author_names")
     private List<String> bookAuthors;
 
+    @JsonProperty("nations")
     private List<String> nations;
 
+    @JsonProperty("genres")
     private List<String> bookGenres;
 
     @JsonProperty("description")
@@ -73,23 +71,44 @@ public class WatchaBookMetaDto {
     }
 
     private List<String> externalServices;
-    @Setter private Map<WatchaExternalService, String> urlMap;
+    private Map<RdbExternalService, String> externalServiceUrlMap = Map.of(
+            RdbExternalService.KYOBO, "",
+            RdbExternalService.ALADIN, "",
+            RdbExternalService.YES24, ""
+    );
 
     @JsonProperty("external_services")
     protected void setExternalServices(List<JsonNode> externalServicesNode) {
-        this.externalServices = Optional.ofNullable(externalServicesNode)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(node -> {
-                    String href = node.path("href").asText();
-                    String[] splitUrl = href.split("/");
+        for (JsonNode node : externalServicesNode) {
+            String externalId = node.path("id").toString();
+            String externalLink = node.path("href").toString();
 
-                    return String.format("https://redirect.watcha.com/galaxy/%s", splitUrl[4]);
-                }).collect(Collectors.toList());
+            switch (externalId) {
+                case "aladdin":
+                    externalServiceUrlMap.put(RdbExternalService.ALADIN, externalLink);
+                    break;
+                case "yes24":
+                    externalServiceUrlMap.put(RdbExternalService.YES24, externalLink);
+                    break;
+                case "kyobobook":
+                    externalServiceUrlMap.put(RdbExternalService.KYOBO, externalLink);
+                    break;
+            }
+        }
+
+//        this.externalServices = Optional.ofNullable(externalServicesNode)
+//                .orElse(Collections.emptyList())
+//                .stream()
+//                .map(node -> {
+//                    String href = node.path("href").asText();
+//                    String[] splitUrl = href.split("/");
+//
+//                    return String.format("https://redirect.watcha.com/galaxy/%s", splitUrl[4]);
+//                }).collect(Collectors.toList());
     }
 
-    public WatchaBookMetaEntity toEntity() {
-        return WatchaBookMetaEntity.builder()
+    public BookMetaRdbEntity toEntity() {
+        return BookMetaRdbEntity.builder()
                 .bookCode(this.bookCode)
                 .bookDescription(this.bookDescription)
                 .bookTitle(this.mainTitle)
@@ -97,18 +116,18 @@ public class WatchaBookMetaDto {
                 .bookIndex(this.bookIndex)
                 .publishYear(this.publishYear)
                 .bookPoster(this.bookPoster)
-                .authors(String.join(",", this.bookAuthors))
-                .nations(String.join(",", this.nations))
-                .genres(String.join(",", this.getBookGenres()))
+                .authors(this.bookAuthors.toString())
+                .nations(this.nations.toString())
+                .genres(this.bookGenres.toString())
                 .bookDescription(this.bookDescription)
                 .publisherDescription(this.publisherDescription)
                 .authorDescription(this.authorDescription)
                 .averageRating(this.averageRating)
                 .ratingsCount(this.ratingsCount)
                 .wishesCount(this.wishesCount)
-                .aladinUrl(this.urlMap.get(WatchaExternalService.ALADIN))
-                .yes24Url(this.urlMap.get(WatchaExternalService.YES24))
-                .kyoboUrl(this.urlMap.get(WatchaExternalService.KYOBO))
+                .aladinUrl(this.externalServiceUrlMap.get(RdbExternalService.ALADIN))
+                .yes24Url(this.externalServiceUrlMap.get(RdbExternalService.YES24))
+                .kyoboUrl(this.externalServiceUrlMap.get(RdbExternalService.KYOBO))
                 .build();
     }
 }

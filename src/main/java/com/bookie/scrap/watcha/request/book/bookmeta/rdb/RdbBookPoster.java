@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @Getter @Setter
 @NoArgsConstructor
-public class WatchaBookPoster {
+public class RdbBookPoster {
         private String hd;
         private String xlarge;
         private String large;

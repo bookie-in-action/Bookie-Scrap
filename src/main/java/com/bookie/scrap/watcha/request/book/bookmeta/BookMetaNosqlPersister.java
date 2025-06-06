@@ -3,20 +3,15 @@ package com.bookie.scrap.watcha.request.book.bookmeta;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BookMetaPersister implements WatchaPersistFactory<BookMetaResponseDto> {
+public class BookMetaNosqlPersister implements WatchaPersistFactory<BookMetaResponseDto> {
 
     private final BookMetaMongoRepository repository;
 

@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "BS_WATCHA_BOOK_META")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class WatchaBookMetaEntity extends BaseEntity {
+public class BookMetaRdbEntity extends BaseEntity {
 
     @Column(name = "book_code")
     private String bookCode;
@@ -57,7 +57,7 @@ public class WatchaBookMetaEntity extends BaseEntity {
             @AttributeOverride(name = "medium", column = @Column(name = "poster_medium")),
             @AttributeOverride(name = "small", column = @Column(name = "poster_small"))
     })
-    private WatchaBookPoster bookPoster;
+    private RdbBookPoster bookPoster;
 
     @Column(name = "authors")
     private String authors;
@@ -77,7 +77,7 @@ public class WatchaBookMetaEntity extends BaseEntity {
     @Column(name = "kyobo_url")
     private String kyoboUrl;
 
-    public void updateEntity(WatchaBookMetaEntity that) {
+    public void updateEntity(BookMetaRdbEntity that) {
         this.bookSubtitle = that.bookSubtitle;
         this.bookIndex = that.bookIndex;
         this.publishYear = that.publishYear;
