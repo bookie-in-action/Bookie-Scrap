@@ -4,7 +4,6 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,12 +18,12 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
     private final BookCommentMongoRepository repository;
 
     @Override
-    public void persist(BookCommentResponseDto dto, String bookCode) throws JsonProcessingException {
+    public int persist(BookCommentResponseDto dto, String bookCode) throws JsonProcessingException {
 
         List<JsonNode> comments = dto.getResult().getComments();
 
         if (comments == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",comments.size());
@@ -43,6 +42,8 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
             document.setRawJson(JsonUtil.toMap(comments.get(idx)));
             repository.save(document);
         }
+
+        return comments.size();
 
     }
 }

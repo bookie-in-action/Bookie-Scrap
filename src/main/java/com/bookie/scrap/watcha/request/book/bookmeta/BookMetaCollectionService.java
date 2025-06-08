@@ -15,10 +15,10 @@ public class BookMetaCollectionService implements WatchaCollectorService {
     private final BookMetaRdbPersister rdbPersister;
 
     @Override
-    public void collect(String bookCode, PageInfo param) throws Exception{
+    public int collect(String bookCode, PageInfo param) throws Exception{
             BookMetaResponseDto response = fetcher.fetch(bookCode, param);
             noSqlpersister.persist(response, bookCode);
-            rdbPersister.persist(response, bookCode);
+            return rdbPersister.persist(response, bookCode);
     }
 }
 

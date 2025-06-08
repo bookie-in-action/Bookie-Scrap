@@ -20,12 +20,12 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
     private final UserWishBookMongoRepository repository;
 
     @Override
-    public void persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
 
         List<JsonNode> userWishBooks = dto.getResult().getUserWishBooks();
 
         if (userWishBooks == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",userWishBooks.size());
@@ -44,6 +44,8 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
             document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
             repository.save(document);
         }
+
+        return userWishBooks.size();
 
     }
 }

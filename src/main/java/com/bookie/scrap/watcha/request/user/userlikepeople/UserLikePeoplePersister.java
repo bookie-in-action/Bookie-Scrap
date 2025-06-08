@@ -18,12 +18,12 @@ public class UserLikePeoplePersister implements WatchaPersistFactory<UserLikePeo
     private final UserLikePeopleMongoRepository repository;
 
     @Override
-    public void persist(UserLikePeopleResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserLikePeopleResponseDto dto, String userCode) throws JsonProcessingException {
 
         List<JsonNode> userLikePeople = dto.getResult().getUserLikePeople();
 
         if (userLikePeople == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",userLikePeople.size());
@@ -42,6 +42,8 @@ public class UserLikePeoplePersister implements WatchaPersistFactory<UserLikePeo
             document.setRawJson(JsonUtil.toMap(userLikePeople.get(idx)));
             repository.save(document);
         }
+
+        return userLikePeople.size();
 
     }
 }

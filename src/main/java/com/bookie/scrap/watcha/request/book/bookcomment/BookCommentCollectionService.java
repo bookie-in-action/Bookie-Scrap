@@ -13,9 +13,9 @@ public class BookCommentCollectionService implements WatchaCollectorService {
     private final BookCommentPersister persister;
 
     @Override
-    public void collect(String bookCode, PageInfo param) throws Exception{
+    public int collect(String bookCode, PageInfo param) throws Exception{
             BookCommentResponseDto response = fetcher.fetch(bookCode, param);
-            persister.persist(response, bookCode);
+            return persister.persist(response, bookCode);
     }
 }
 

@@ -16,9 +16,13 @@ public class BookMetaNosqlPersister implements WatchaPersistFactory<BookMetaResp
     private final BookMetaMongoRepository repository;
 
     @Override
-    public void persist(BookMetaResponseDto dto, String bookCode) throws JsonProcessingException {
+    public int persist(BookMetaResponseDto dto, String bookCode) throws JsonProcessingException {
 
         JsonNode bookMeta = dto.getBookMeta();
+
+        if (bookMeta == null) {
+            return 0;
+        }
 
         log.debug(
                 "bookCode: {}, value: {}",
@@ -33,7 +37,7 @@ public class BookMetaNosqlPersister implements WatchaPersistFactory<BookMetaResp
         document.setRawJson(JsonUtil.toMap(bookMeta));
         repository.save(document);
 
-
+        return 1;
 
     }
 }

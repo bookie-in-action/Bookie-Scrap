@@ -4,7 +4,6 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,12 +18,12 @@ public class DeckPersister implements WatchaPersistFactory<DeckResponseDto> {
     private final DeckMongoRepository repository;
 
     @Override
-    public void persist(DeckResponseDto dto, String deckCode) throws JsonProcessingException {
+    public int persist(DeckResponseDto dto, String deckCode) throws JsonProcessingException {
 
         List<JsonNode> books = dto.getResult().getBooks();
 
         if (books == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",books.size());
@@ -45,5 +44,6 @@ public class DeckPersister implements WatchaPersistFactory<DeckResponseDto> {
             repository.save(document);
         }
 
+        return books.size();
     }
 }

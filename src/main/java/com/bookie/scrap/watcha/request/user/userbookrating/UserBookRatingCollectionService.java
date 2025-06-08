@@ -12,9 +12,9 @@ public class UserBookRatingCollectionService implements WatchaCollectorService {
     private final UserBookRatingFetcher fetcher;
     private final UserBookRatingPersister persister;
 
-    public void collect(String userCode, PageInfo param) throws Exception {
+    public int collect(String userCode, PageInfo param) throws Exception {
             UserBookRatingResponseDto response = fetcher.fetch(userCode, param);
-            persister.persist(response, userCode);
+            return persister.persist(response, userCode);
     }
 }
 

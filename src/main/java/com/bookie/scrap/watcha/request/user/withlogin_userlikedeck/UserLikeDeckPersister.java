@@ -18,12 +18,12 @@ public class UserLikeDeckPersister implements WatchaPersistFactory<UserLikeDeckR
     private final UserLikeDeckMongoRepository repository;
 
     @Override
-    public void persist(UserLikeDeckResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserLikeDeckResponseDto dto, String userCode) throws JsonProcessingException {
 
         List<JsonNode> userWishPeople = dto.getResult().getUserWishPeople();
 
         if (userWishPeople == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",userWishPeople.size());
@@ -42,6 +42,8 @@ public class UserLikeDeckPersister implements WatchaPersistFactory<UserLikeDeckR
             document.setRawJson(JsonUtil.toMap(userWishPeople.get(idx)));
             repository.save(document);
         }
+
+        return userWishPeople.size();
 
     }
 }

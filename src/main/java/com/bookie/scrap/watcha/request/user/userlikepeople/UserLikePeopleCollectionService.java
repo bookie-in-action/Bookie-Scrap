@@ -12,9 +12,9 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
     private final UserLikePeopleFetcher fetcher;
     private final UserLikePeoplePersister persister;
 
-    public void collect(String userCode, PageInfo param) throws Exception{
+    public int collect(String userCode, PageInfo param) throws Exception{
             UserLikePeopleResponseDto response = fetcher.fetch(userCode, param);
-            persister.persist(response, userCode);
+            return persister.persist(response, userCode);
     }
 }
 

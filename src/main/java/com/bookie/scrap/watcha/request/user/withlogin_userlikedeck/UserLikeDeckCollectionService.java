@@ -12,9 +12,9 @@ public class UserLikeDeckCollectionService implements WatchaCollectorService {
     private final UserLikeDeckFetcher fetcher;
     private final UserLikeDeckPersister persister;
 
-    public void collect(String bookCode, PageInfo param) throws Exception{
+    public int collect(String bookCode, PageInfo param) throws Exception{
             UserLikeDeckResponseDto response = fetcher.fetch(bookCode, param);
-            persister.persist(response, bookCode);
+            return persister.persist(response, bookCode);
     }
 }
 

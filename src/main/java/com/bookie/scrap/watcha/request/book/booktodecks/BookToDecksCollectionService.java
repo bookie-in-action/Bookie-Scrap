@@ -13,9 +13,9 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
     private final BookToDecksPersister persister;
 
     @Override
-    public void collect(String bookCode, PageInfo param) throws Exception{
+    public int collect(String bookCode, PageInfo param) throws Exception{
             BookToDecksResponseDto response = fetcher.fetch(bookCode, param);
-            persister.persist(response, bookCode);
+            return persister.persist(response, bookCode);
     }
 }
 

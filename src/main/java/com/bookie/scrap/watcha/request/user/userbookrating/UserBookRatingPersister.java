@@ -18,12 +18,12 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
     private final UserBookRatingMongoRepository repository;
 
     @Override
-    public void persist(UserBookRatingResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserBookRatingResponseDto dto, String userCode) throws JsonProcessingException {
 
         List<JsonNode> bookRatings = dto.getResult().getBookRatings();
 
         if (bookRatings == null) {
-            return;
+            return 0;
         }
 
         log.debug("size: {}",bookRatings.size());
@@ -43,5 +43,6 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
             repository.save(document);
         }
 
+        return bookRatings.size();
     }
 }

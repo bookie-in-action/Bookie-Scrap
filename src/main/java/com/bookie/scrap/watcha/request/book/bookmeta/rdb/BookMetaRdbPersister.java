@@ -16,14 +16,16 @@ public class BookMetaRdbPersister implements WatchaPersistFactory<BookMetaRespon
     private final ObjectMapper mapper;
 
     @Override
-    public void persist(BookMetaResponseDto dto, String bookCode) throws Exception {
+    public int persist(BookMetaResponseDto dto, String bookCode) throws Exception {
         BookMetaRdbDto bookMetaRdbDto = mapper.treeToValue(dto.getBookMeta(), BookMetaRdbDto.class);
 
         if (bookMetaRdbDto == null) {
-            throw new IllegalArgumentException("BookMetaRdbDto is null");
+            return 0;
         }
 
         BookMetaRdbEntity entity = bookMetaRdbDto.toEntity();
         repository.save(entity);
+
+        return 1;
     }
 }
