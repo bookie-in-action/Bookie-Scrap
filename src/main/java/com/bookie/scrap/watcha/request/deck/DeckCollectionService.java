@@ -1,9 +1,13 @@
 package com.bookie.scrap.watcha.request.deck;
 
 import com.bookie.scrap.common.domain.PageInfo;
+import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.bookie.scrap.common.exception.CollectionEx.MAKE;
 
 @Service
 @RequiredArgsConstructor
@@ -13,9 +17,13 @@ public class DeckCollectionService implements WatchaCollectorService {
     private final DeckPersister persister;
 
     @Override
-    public int collect(String bookCode, PageInfo param) throws Exception{
-            DeckResponseDto response = fetcher.fetch(bookCode, param);
-            return persister.persist(response, bookCode);
+    @Transactional
+    public int collect(String deckCode, PageInfo param) throws CollectionEx {
+        try {
+            DeckResponseDto response = fetcher.fetch(deckCode, param);
+            return persister.persist(response, deckCode);
+        } catch (Exception e) {
+            throw MAKE("deckCode:" + deckCode + ":DeckCollectionService", e);
+        }
     }
 }
-
