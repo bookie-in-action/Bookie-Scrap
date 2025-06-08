@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +29,8 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
 
         log.debug("size: {}",bookRatings.size());
 
+        List<UserBookRatingDocument> documents = new ArrayList<>();
+
         for (int idx = 0; idx < bookRatings.size(); idx++) {
 
             log.debug(
@@ -40,8 +43,10 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
             UserBookRatingDocument document = new UserBookRatingDocument();
             document.setUserCode(userCode);
             document.setRawJson(JsonUtil.toMap(bookRatings.get(idx)));
-            repository.save(document);
+            documents.add(document);
         }
+
+        repository.saveAll(documents);
 
         return bookRatings.size();
     }

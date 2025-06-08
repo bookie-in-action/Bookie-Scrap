@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +29,8 @@ public class DeckPersister implements WatchaPersistFactory<DeckResponseDto> {
 
         log.debug("size: {}",books.size());
 
+        List<DeckDocument> documents = new ArrayList<>();
+
         for (int idx = 0; idx < books.size(); idx++) {
 
             log.debug(
@@ -41,8 +44,10 @@ public class DeckPersister implements WatchaPersistFactory<DeckResponseDto> {
             DeckDocument document = new DeckDocument();
             document.setDeckCode(deckCode);
             document.setRawJson(JsonUtil.toMap(books.get(idx)));
-            repository.save(document);
+            documents.add(document);
         }
+
+        repository.saveAll(documents);
 
         return books.size();
     }
