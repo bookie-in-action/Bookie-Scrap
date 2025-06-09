@@ -98,7 +98,6 @@ public class RedisConfig {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.BOOK);
     }
 
-
     @Bean
     public RedisStringListService deckCodeList(RedisTemplate<String, String> redisStringListTemplate) {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.DECK);

@@ -3,6 +3,8 @@ package com.bookie.scrap.common.domain.redis;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.List;
+
 
 public class RedisStringListService {
 
@@ -20,6 +22,11 @@ public class RedisStringListService {
 
     public int add(String code) {
         ops().leftPush(namespace.getPrefix(), code);
+        return 1;
+    }
+
+    public int add(List<String> code) {
+        ops().leftPushAll(namespace.getPrefix(), code);
         return 1;
     }
 
