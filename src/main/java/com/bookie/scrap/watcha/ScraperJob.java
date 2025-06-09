@@ -1,10 +1,10 @@
 package com.bookie.scrap.watcha;
 
+import com.bookie.scrap.common.domain.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaPageInfo;
 import com.bookie.scrap.watcha.request.book.bookcomment.BookCommentCollectionService;
 import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;
 import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaCollectionService;
-import com.bookie.scrap.watcha.request.book.bookmeta.WatchaBookMetaParam;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksCollectionService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksParam;
 import com.bookie.scrap.watcha.request.deck.DeckCollectionService;
@@ -17,10 +17,13 @@ import com.bookie.scrap.watcha.request.user.userlikepeople.WatchaUserLikePeopleP
 import com.bookie.scrap.watcha.request.user.userwishbook.UserWishBookCollectionService;
 import com.bookie.scrap.watcha.request.user.userwishbook.WatchaUserWishBookParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ScraperJob implements Job {
@@ -36,50 +39,97 @@ public class ScraperJob implements Job {
     private final BookMetaCollectionService bookMetaCollectionService;
     private final BookToDecksCollectionService bookToDecksCollectionService;
 
+    @Qualifier("bookCodeList")
+    private final RedisStringListService bookRedisService;
+    @Qualifier("userCodeList")
+    private final RedisStringListService userRedisService;
+    @Qualifier("deckCodeList")
+    private final RedisStringListService deckRedisService;
+
     @Override
     public void execute(JobExecutionContext context) {
 
-//        userJob();
-//
-//        deckJob();
-//
-//        bookJob();
+        bookRedisService.add("byLKj8M");
+
+        scrapRoutine();
 
     }
 
-    private void bookJob() throws Exception {
-        WatchaBookCommentParam requestParam = new WatchaBookCommentParam(1, 10);
-        requestParam.setPopularOrder();
-        bookCommentCollectionService.collect("byLKj8M", requestParam);
+    private void scrapRoutine() {
+        try {
+            String bookCode = bookRedisService.pop();
+            bookJob(bookCode);
 
-        WatchaBookMetaParam param = new WatchaBookMetaParam(1, 10);
-        bookMetaCollectionService.collect("byLKj8M", param);
+            while (deckRedisService.size() > 0) {
+                deckJob(deckRedisService.pop());
+            }
+
+            while (userRedisService.size() > 0) {
+                userJob(userRedisService.pop());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void bookJob(String bookCode) throws Exception {
+
+        WatchaPageInfo param = new WatchaPageInfo(null);
+        bookMetaCollectionService.collect(bookCode, param);
+
+        WatchaBookCommentParam commentParam = new WatchaBookCommentParam(1, 10);
+        commentParam.setPopularOrder();
+        int commentCnt = -1;
+        while (commentCnt != 0) {
+            commentCnt = bookCommentCollectionService.collect(bookCode, commentParam);
+            commentParam.nextPage();
+        }
 
         BookToDecksParam bookToDecksParam = new BookToDecksParam(1, 10);
-        bookToDecksCollectionService.collect("byLKj8M", bookToDecksParam);
+        int bookToDecksCnt = -1;
+        while (bookToDecksCnt != 0) {
+            bookToDecksCnt = bookToDecksCollectionService.collect(bookCode, bookToDecksParam);
+            bookToDecksParam.nextPage();
+        }
     }
 
-    private void deckJob() throws Exception {
-        WatchaDeckParam param = new WatchaDeckParam(1, 10);
-        deckCollectionService.collect("gcdkyKnXjN", param);
+    private void deckJob(String deckCode) throws Exception {
+        WatchaDeckParam deckParam = new WatchaDeckParam(1, 10);
+        int booksCnt = -1;
+        while (booksCnt != 0) {
+            booksCnt = deckCollectionService.collect(deckCode, deckParam);
+            deckParam.nextPage();
+        }
     }
 
-    private void userJob() throws Exception {
-        WatchaUserBookRatingParam param = new WatchaUserBookRatingParam(1, 10);
-        userBookRatingCollectionService.collect("2mwvggAE2vMa7", param);
+    private void userJob(String userCode) throws Exception {
+        userInfoCollectionService.collect(userCode, new WatchaPageInfo(null));
 
-        userInfoCollectionService.collect("ZWpqMekrDqrkn", new WatchaPageInfo(null));
+        WatchaUserBookRatingParam bookRatingParam = new WatchaUserBookRatingParam(1, 10);
+        int bookRatingCnt = -1;
+        while (bookRatingCnt != 0) {
+            bookRatingCnt = userBookRatingCollectionService.collect(userCode, bookRatingParam);
+            bookRatingParam.nextPage();
+        }
 
-
-        WatchaUserLikePeopleParam requestParam = new WatchaUserLikePeopleParam(1, 10);
-        userLikePeopleCollectionService.collect("2mwvggAE2vMa7", requestParam);
-
+        WatchaUserLikePeopleParam userLikePeopleParam = new WatchaUserLikePeopleParam(1, 10);
+        int userLikePeopleCnt = -1;
+        while (userLikePeopleCnt != 0) {
+            userLikePeopleCnt = userLikePeopleCollectionService.collect(userCode, userLikePeopleParam);
+            userLikePeopleParam.nextPage();
+        }
 
         WatchaUserWishBookParam userWishParam = new WatchaUserWishBookParam(1, 10);
         userWishParam.setSortDirection();
         userWishParam.setSortOption();
 
-        userWishBookCollectionService.collect("2mwvggAE2vMa7", userWishParam);
+        userWishBookCollectionService.collect(userCode, userWishParam);
+        int userWishBookCnt = -1;
+        while (userWishBookCnt != 0) {
+            userWishBookCnt = userWishBookCollectionService.collect(userCode, userWishParam);
+            userWishParam.nextPage();
+        }
     }
 }
 
