@@ -1,8 +1,6 @@
 package com.bookie.scrap.common.springconfig;
 
-import com.bookie.scrap.common.domain.redis.RedisHashNamespace;
-import com.bookie.scrap.common.domain.redis.RedisHashService;
-import com.bookie.scrap.common.domain.redis.RedisProcessResult;
+import com.bookie.scrap.common.domain.redis.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -29,7 +27,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, RedisProcessResult> redisStringListTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, RedisProcessResult> redisStringTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, RedisProcessResult> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
@@ -77,6 +75,33 @@ public class RedisConfig {
     @Bean
     public RedisHashService failedUserCode(RedisTemplate<String, RedisProcessResult> redisStringListTemplate) {
         return new RedisHashService(redisStringListTemplate, RedisHashNamespace.FAILED_USER);
+    }
+
+
+    @Bean
+    public RedisTemplate<String, String> redisStringListTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+
+        return template;
+    }
+
+    @Bean
+    public RedisStringListService userCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.USER);
+    }
+
+    @Bean
+    public RedisStringListService bookCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.BOOK);
+    }
+
+
+    @Bean
+    public RedisStringListService deckCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.DECK);
     }
 
 }

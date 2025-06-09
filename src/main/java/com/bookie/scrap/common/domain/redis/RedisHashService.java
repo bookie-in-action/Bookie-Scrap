@@ -8,11 +8,11 @@ import java.util.List;
 public class RedisHashService {
 
     private final RedisTemplate<String, RedisProcessResult> stringRedisTemplate;
-    private final RedisHashNamespace listPrefix;
+    private final RedisHashNamespace namespace;
 
-    public RedisHashService(RedisTemplate<String, RedisProcessResult> stringRedisTemplate, RedisHashNamespace listPrefix) {
+    public RedisHashService(RedisTemplate<String, RedisProcessResult> stringRedisTemplate, RedisHashNamespace hashNamespace) {
         this.stringRedisTemplate = stringRedisTemplate;
-        this.listPrefix = listPrefix;
+        this.namespace = hashNamespace;
     }
 
     private HashOperations<String, String, RedisProcessResult> hashOps() {
@@ -24,28 +24,28 @@ public class RedisHashService {
             return 0;
         }
 
-        hashOps().put(listPrefix.getPrefix(), redisResult.getCode(), redisResult);
+        hashOps().put(namespace.getPrefix(), redisResult.getCode(), redisResult);
         return 1;
     }
 
     public RedisProcessResult get(String code) {
-        return hashOps().get(listPrefix.getPrefix(), code);
+        return hashOps().get(namespace.getPrefix(), code);
     }
 
     public List<RedisProcessResult> get(String... code) {
-        return hashOps().multiGet(listPrefix.getPrefix(), List.of(code));
+        return hashOps().multiGet(namespace.getPrefix(), List.of(code));
     }
 
     public void delete(String code) {
-        hashOps().delete(listPrefix.getPrefix(), code);
+        hashOps().delete(namespace.getPrefix(), code);
     }
 
     public void delete(String... code) {
-        hashOps().delete(listPrefix.getPrefix(), List.of(code));
+        hashOps().delete(namespace.getPrefix(), List.of(code));
     }
 
     public boolean exist(String code) {
-        return hashOps().hasKey(listPrefix.getPrefix(), code);
+        return hashOps().hasKey(namespace.getPrefix(), code);
     }
 }
 
