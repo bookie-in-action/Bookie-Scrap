@@ -1,11 +1,13 @@
 package com.bookie.scrap.watcha.request.book.booktodecks;
 
+import com.bookie.scrap.common.domain.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
+    @Qualifier("deckCodeList")
+    private final RedisStringListService deckRedisService;
     private final BookToDecksMongoRepository repository;
 
     @Override
@@ -46,6 +50,7 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
             documents.add(document);
         }
 
+        deckRedisService.add(dto.getResult().getDeckCodes());
         repository.saveAll(documents);
 
         return decks.size();

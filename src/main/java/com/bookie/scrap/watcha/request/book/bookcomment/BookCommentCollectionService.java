@@ -26,5 +26,6 @@ public class BookCommentCollectionService implements WatchaCollectorService {
             throw MAKE("bookCode:" + bookCode + ":BookCommentCollectionService", e);
         }
     }
+
 }
 

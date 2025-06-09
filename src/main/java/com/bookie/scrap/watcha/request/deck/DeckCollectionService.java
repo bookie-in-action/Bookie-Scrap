@@ -1,9 +1,11 @@
 package com.bookie.scrap.watcha.request.deck;
 
 import com.bookie.scrap.common.domain.PageInfo;
+import com.bookie.scrap.common.domain.redis.RedisStringListService;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ public class DeckCollectionService implements WatchaCollectorService {
 
     private final DeckFetcher fetcher;
     private final DeckPersister persister;
+
 
     @Override
     @Transactional

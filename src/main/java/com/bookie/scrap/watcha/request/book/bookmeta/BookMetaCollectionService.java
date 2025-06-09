@@ -1,6 +1,8 @@
 package com.bookie.scrap.watcha.request.book.bookmeta;
 
 import com.bookie.scrap.common.domain.PageInfo;
+import com.bookie.scrap.common.domain.redis.RedisHashService;
+import com.bookie.scrap.common.domain.redis.RedisProcessResult;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.bookie.scrap.watcha.request.book.bookmeta.rdb.BookMetaRdbPersister;
@@ -29,4 +31,5 @@ public class BookMetaCollectionService implements WatchaCollectorService {
             throw MAKE("bookCode:" + bookCode + ":BookMetaCollectionService", e);
         }
     }
+
 }

@@ -1,11 +1,13 @@
 package com.bookie.scrap.watcha.request.book.bookcomment;
 
+import com.bookie.scrap.common.domain.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookCommentPersister implements WatchaPersistFactory<BookCommentResponseDto> {
 
+    @Qualifier("userCodeList")
+    private final RedisStringListService userRedisService;
     private final BookCommentMongoRepository repository;
 
     @Override
@@ -30,7 +34,7 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
         log.debug("size: {}",comments.size());
 
         List<BookCommentDocument> documents = new ArrayList<>();
-
+        List<String> userCodes = new ArrayList<>();
         for (int idx = 0; idx < comments.size(); idx++) {
 
             log.debug(
@@ -44,10 +48,11 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
             document.setBookCode(bookCode);
             document.setRawJson(JsonUtil.toMap(comments.get(idx)));
             documents.add(document);
+            userCodes.add(comments.get(idx).get("user").get("code").asText());
         }
 
         repository.saveAll(documents);
-
+        userRedisService.add(userCodes);
         return comments.size();
 
     }
