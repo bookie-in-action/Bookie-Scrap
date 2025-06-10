@@ -15,12 +15,19 @@ import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class BookCommentPersister implements WatchaPersistFactory<BookCommentResponseDto> {
 
-    @Qualifier("userCodeList")
+
     private final RedisStringListService userRedisService;
     private final BookCommentMongoRepository repository;
+
+    public BookCommentPersister(
+            @Qualifier("userCodeList") RedisStringListService userRedisService,
+            BookCommentMongoRepository repository
+    ) {
+        this.userRedisService = userRedisService;
+        this.repository = repository;
+    }
 
     @Override
     public int persist(BookCommentResponseDto dto, String bookCode) throws JsonProcessingException {

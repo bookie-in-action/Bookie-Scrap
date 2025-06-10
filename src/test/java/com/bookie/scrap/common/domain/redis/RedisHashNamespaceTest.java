@@ -1,9 +1,11 @@
 package com.bookie.scrap.common.domain.redis;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Profile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Profile("test")
 class RedisHashNamespaceTest {
 
     private final RedisHashNamespace successBook = RedisHashNamespace.SUCCESS_BOOK;

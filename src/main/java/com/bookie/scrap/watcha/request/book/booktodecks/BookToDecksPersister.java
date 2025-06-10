@@ -15,12 +15,18 @@ import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
-    @Qualifier("deckCodeList")
     private final RedisStringListService deckRedisService;
     private final BookToDecksMongoRepository repository;
+
+    public BookToDecksPersister(
+            @Qualifier("deckCodeList") RedisStringListService deckRedisService,
+            BookToDecksMongoRepository repository
+    ) {
+        this.deckRedisService = deckRedisService;
+        this.repository = repository;
+    }
 
     @Override
     public int persist(BookToDecksResponseDto dto, String bookCode) throws JsonProcessingException {

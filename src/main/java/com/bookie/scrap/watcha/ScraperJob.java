@@ -7,8 +7,8 @@ import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;
 import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaCollectionService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksCollectionService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksParam;
-import com.bookie.scrap.watcha.request.deck.DeckCollectionService;
-import com.bookie.scrap.watcha.request.deck.WatchaDeckParam;
+import com.bookie.scrap.watcha.request.deck.booklist.DeckCollectionService;
+import com.bookie.scrap.watcha.request.deck.booklist.WatchaDeckParam;
 import com.bookie.scrap.watcha.request.user.userbookrating.UserBookRatingCollectionService;
 import com.bookie.scrap.watcha.request.user.userbookrating.WatchaUserBookRatingParam;
 import com.bookie.scrap.watcha.request.user.userinfo.UserInfoCollectionService;
@@ -16,7 +16,6 @@ import com.bookie.scrap.watcha.request.user.userlikepeople.UserLikePeopleCollect
 import com.bookie.scrap.watcha.request.user.userlikepeople.WatchaUserLikePeopleParam;
 import com.bookie.scrap.watcha.request.user.userwishbook.UserWishBookCollectionService;
 import com.bookie.scrap.watcha.request.user.userwishbook.WatchaUserWishBookParam;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class ScraperJob implements Job {
 
     private final UserBookRatingCollectionService userBookRatingCollectionService;
@@ -39,12 +37,36 @@ public class ScraperJob implements Job {
     private final BookMetaCollectionService bookMetaCollectionService;
     private final BookToDecksCollectionService bookToDecksCollectionService;
 
-    @Qualifier("bookCodeList")
     private final RedisStringListService bookRedisService;
-    @Qualifier("userCodeList")
     private final RedisStringListService userRedisService;
-    @Qualifier("deckCodeList")
     private final RedisStringListService deckRedisService;
+
+    public ScraperJob(
+            UserBookRatingCollectionService userBookRatingCollectionService,
+            UserInfoCollectionService userInfoCollectionService,
+            UserLikePeopleCollectionService userLikePeopleCollectionService,
+            UserWishBookCollectionService userWishBookCollectionService,
+            DeckCollectionService deckCollectionService,
+            BookCommentCollectionService bookCommentCollectionService,
+            BookMetaCollectionService bookMetaCollectionService,
+            BookToDecksCollectionService bookToDecksCollectionService,
+            @Qualifier("bookCodeList") RedisStringListService bookRedisService,
+            @Qualifier("userCodeList") RedisStringListService userRedisService,
+            @Qualifier("deckCodeList") RedisStringListService deckRedisService
+    ) {
+        this.userBookRatingCollectionService = userBookRatingCollectionService;
+        this.userInfoCollectionService = userInfoCollectionService;
+        this.userLikePeopleCollectionService = userLikePeopleCollectionService;
+        this.userWishBookCollectionService = userWishBookCollectionService;
+        this.deckCollectionService = deckCollectionService;
+        this.bookCommentCollectionService = bookCommentCollectionService;
+        this.bookMetaCollectionService = bookMetaCollectionService;
+        this.bookToDecksCollectionService = bookToDecksCollectionService;
+        this.bookRedisService = bookRedisService;
+        this.userRedisService = userRedisService;
+        this.deckRedisService = deckRedisService;
+    }
+
 
     @Override
     public void execute(JobExecutionContext context) {
