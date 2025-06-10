@@ -2,10 +2,7 @@ package com.bookie.scrap.common.domain.redis;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +58,13 @@ class RedisStringListServiceTest {
                 () -> assertEquals(poppedCode, bookCode, "팝된 값과 넣은 값이 같아야 함"),
                 () -> assertEquals(initialSize - 1, service.size(), "리스트 크기가 1 감소해야 함")
         );
+    }
+
+    @BeforeAll
+    void startup() {
+        while (service.size() > 0) {
+            service.pop();
+        }
     }
 
     @AfterAll

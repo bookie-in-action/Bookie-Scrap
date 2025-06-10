@@ -7,8 +7,9 @@ import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;
 import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaCollectionService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksCollectionService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksParam;
-import com.bookie.scrap.watcha.request.deck.booklist.DeckCollectionService;
-import com.bookie.scrap.watcha.request.deck.booklist.WatchaDeckParam;
+import com.bookie.scrap.watcha.request.deck.booklist.BooListCollectionService;
+import com.bookie.scrap.watcha.request.deck.booklist.WatchaBookListParam;
+import com.bookie.scrap.watcha.request.deck.deckinfo.DeckInfoCollectionService;
 import com.bookie.scrap.watcha.request.user.userbookrating.UserBookRatingCollectionService;
 import com.bookie.scrap.watcha.request.user.userbookrating.WatchaUserBookRatingParam;
 import com.bookie.scrap.watcha.request.user.userinfo.UserInfoCollectionService;
@@ -31,7 +32,8 @@ public class ScraperJob implements Job {
     private final UserLikePeopleCollectionService userLikePeopleCollectionService;
     private final UserWishBookCollectionService userWishBookCollectionService;
 
-    private final DeckCollectionService deckCollectionService;
+    private final BooListCollectionService booListCollectionService;
+    private final DeckInfoCollectionService deckInfoCollectionService;
 
     private final BookCommentCollectionService bookCommentCollectionService;
     private final BookMetaCollectionService bookMetaCollectionService;
@@ -46,7 +48,8 @@ public class ScraperJob implements Job {
             UserInfoCollectionService userInfoCollectionService,
             UserLikePeopleCollectionService userLikePeopleCollectionService,
             UserWishBookCollectionService userWishBookCollectionService,
-            DeckCollectionService deckCollectionService,
+            BooListCollectionService booListCollectionService,
+            DeckInfoCollectionService deckInfoCollectionService,
             BookCommentCollectionService bookCommentCollectionService,
             BookMetaCollectionService bookMetaCollectionService,
             BookToDecksCollectionService bookToDecksCollectionService,
@@ -58,7 +61,8 @@ public class ScraperJob implements Job {
         this.userInfoCollectionService = userInfoCollectionService;
         this.userLikePeopleCollectionService = userLikePeopleCollectionService;
         this.userWishBookCollectionService = userWishBookCollectionService;
-        this.deckCollectionService = deckCollectionService;
+        this.booListCollectionService = booListCollectionService;
+        this.deckInfoCollectionService = deckInfoCollectionService;
         this.bookCommentCollectionService = bookCommentCollectionService;
         this.bookMetaCollectionService = bookMetaCollectionService;
         this.bookToDecksCollectionService = bookToDecksCollectionService;
@@ -117,10 +121,13 @@ public class ScraperJob implements Job {
     }
 
     private void deckJob(String deckCode) throws Exception {
-        WatchaDeckParam deckParam = new WatchaDeckParam(1, 10);
+
+        deckInfoCollectionService.collect(deckCode, new WatchaPageInfo(null));
+
+        WatchaBookListParam deckParam = new WatchaBookListParam(1, 10);
         int booksCnt = -1;
         while (booksCnt != 0) {
-            booksCnt = deckCollectionService.collect(deckCode, deckParam);
+            booksCnt = booListCollectionService.collect(deckCode, deckParam);
             deckParam.nextPage();
         }
     }
