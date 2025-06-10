@@ -15,7 +15,16 @@ public class JsonUtil {
         return mapper.convertValue(node, new TypeReference<>() {});
     }
 
+    public static <T> Map<String, Object> toMap(T value) throws JsonProcessingException {
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(value));
+        return mapper.convertValue(jsonNode, new TypeReference<>() {});
+    }
+
     public static String toPrettyJson(JsonNode node) throws JsonProcessingException {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+    }
+
+    public static String toPrettyJson(String rawJson) throws JsonProcessingException {
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(rawJson));
     }
 }

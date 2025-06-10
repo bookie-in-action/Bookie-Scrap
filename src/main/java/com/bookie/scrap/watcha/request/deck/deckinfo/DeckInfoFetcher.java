@@ -1,9 +1,10 @@
-package com.bookie.scrap.watcha.request.deck;
+package com.bookie.scrap.watcha.request.deck.deckinfo;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.domain.http.SpringRequest;
 import com.bookie.scrap.common.domain.http.SpringResponse;
 import com.bookie.scrap.common.domain.http.WebClientExecutor;
+import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,17 +17,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DeckFetcher implements WatchaFetcherFactory<DeckResponseDto> {
+public class DeckInfoFetcher implements WatchaFetcherFactory<DeckInfoResponseDto> {
 
     private final WebClientExecutor executor;
     private final ObjectMapper mapper;
 
 
     @Getter private final HttpMethod HTTP_METHOD = HttpMethod.GET;
-    @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s/items";
+    @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s";
 
     @Override
-    public DeckResponseDto fetch(String deckCode, PageInfo param) throws JsonProcessingException {
+    public DeckInfoResponseDto fetch(String deckCode, PageInfo param) throws JsonProcessingException {
 
         String endpoint = getEndpoint(deckCode, param);
 
@@ -34,8 +35,9 @@ public class DeckFetcher implements WatchaFetcherFactory<DeckResponseDto> {
         SpringResponse<String> springResponse = createSpringResponse();
 
         String rawJson = executor.execute(springRequest, springResponse);
+        log.debug(JsonUtil.toPrettyJson(rawJson));
 
-        return mapper.readValue(rawJson, DeckResponseDto.class);
+        return mapper.readValue(rawJson, DeckInfoResponseDto.class);
     }
 
     public String getEndpoint(String deckCode, PageInfo param) {

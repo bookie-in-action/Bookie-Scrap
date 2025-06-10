@@ -1,5 +1,7 @@
-package com.bookie.scrap.watcha.request.deck;
+package com.bookie.scrap.watcha.request.deck.deckinfo;
 
+import com.bookie.scrap.watcha.request.deck.booklist.BookListResponseDto;
+import com.bookie.scrap.watcha.request.deck.booklist.WatchaBookListParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -12,19 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DeckFetcherTest {
+class DeckInfoFetcherTest {
 
     @Autowired
-    private DeckFetcher fetcher;
+    private DeckInfoFetcher fetcher;
 
     @Test
     void fetch() throws JsonProcessingException {
-        WatchaDeckParam param = new WatchaDeckParam(1, 10);
-        DeckResponseDto response = fetcher.fetch("gcdkyKnXjN", param);
+        WatchaBookListParam param = new WatchaBookListParam(1, 10);
+        DeckInfoResponseDto dto = fetcher.fetch("gcdkyKnXjN", param);
 
-        log.debug(response.getMetaData().toString());
-        log.debug(response.getResult().getBookCodes().toString());
-        log.debug(response.getResult().getBooks().get(0).toString());
+
 
     }
 }

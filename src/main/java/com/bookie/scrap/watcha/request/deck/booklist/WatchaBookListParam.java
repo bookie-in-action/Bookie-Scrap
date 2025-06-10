@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.deck;
+package com.bookie.scrap.watcha.request.deck.booklist;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -7,13 +7,13 @@ import org.apache.hc.core5.net.URIBuilder;
 import java.net.URISyntaxException;
 
 @Slf4j
-public class WatchaDeckParam extends PageInfo {
+public class WatchaBookListParam extends PageInfo {
 
-    public WatchaDeckParam(Void noUse) {
+    public WatchaBookListParam(Void noUse) {
         super(1, 1);
     }
 
-    public WatchaDeckParam(int page, int size) {
+    public WatchaBookListParam(int page, int size) {
         super(page, size);
     }
 

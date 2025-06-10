@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.deck;
+package com.bookie.scrap.watcha.request.deck.booklist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
-public class DeckResponseDto {
+public class BookListResponseDto {
 
     @JsonProperty("metadata")
     private JsonNode metaData;

@@ -1,4 +1,4 @@
-package com.bookie.scrap.watcha.request.deck;
+package com.bookie.scrap.watcha.request.deck.booklist;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Document(collection = "watcha_deck")
-public class DeckDocument {
+@Document(collection = "watcha_deck_booklist")
+public class BookListDocument {
 
     @Id
     private String id;
@@ -24,7 +24,7 @@ public class DeckDocument {
 
     private LocalDateTime createdAt;
 
-    public DeckDocument() {
+    public BookListDocument() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
     }

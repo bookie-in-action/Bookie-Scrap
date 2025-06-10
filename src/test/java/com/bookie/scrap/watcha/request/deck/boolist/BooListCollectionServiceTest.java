@@ -1,7 +1,7 @@
 package com.bookie.scrap.watcha.request.deck.boolist;
 
-import com.bookie.scrap.watcha.request.deck.booklist.DeckCollectionService;
-import com.bookie.scrap.watcha.request.deck.booklist.WatchaDeckParam;
+import com.bookie.scrap.watcha.request.deck.booklist.BooListCollectionService;
+import com.bookie.scrap.watcha.request.deck.booklist.WatchaBookListParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Profile;
 @Profile("test")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DeckCollectionServiceTest {
+class BooListCollectionServiceTest {
 
     @Autowired
-    DeckCollectionService service;
+    BooListCollectionService service;
 
     @Test
     void collect() throws Exception {
-        WatchaDeckParam param = new WatchaDeckParam(1, 10);
+        WatchaBookListParam param = new WatchaBookListParam(1, 10);
         service.collect("gcdkyKnXjN", param);
     }
 }
