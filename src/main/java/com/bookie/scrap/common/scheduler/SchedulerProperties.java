@@ -2,11 +2,13 @@ package com.bookie.scrap.common.scheduler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.quartz.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -18,6 +20,8 @@ public class SchedulerProperties {
     private List<SchedulerSetting> schedulerSettings;
 
     @Getter @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class SchedulerSetting {
         private String jobName;
         private String jobClass;
