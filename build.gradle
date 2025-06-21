@@ -86,3 +86,13 @@ test {
     exclude '**/legacy/**'
 }
 
+
+task copyJarToServerLib(type: Copy) {
+    from file("${buildDir}/libs/BookieScrap-${version}.jar")
+    into file("${rootDir}/server/lib")
+    doLast {
+        println "Copied JAR file to server/lib directory"
+    }
+}
+
+bootJar.finalizedBy(copyJarToServerLib)
