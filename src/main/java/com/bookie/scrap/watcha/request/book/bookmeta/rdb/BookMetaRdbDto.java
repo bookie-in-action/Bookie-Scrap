@@ -2,12 +2,16 @@ package com.bookie.scrap.watcha.request.book.bookmeta.rdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -70,15 +74,18 @@ public class BookMetaRdbDto {
                 .collect(Collectors.toList());
     }
 
+    @JsonProperty("external_services")
     private List<String> externalServices;
     private Map<RdbExternalService, String> externalServiceUrlMap = Map.of(
-            RdbExternalService.KYOBO, "",
-            RdbExternalService.ALADIN, "",
-            RdbExternalService.YES24, ""
+            RdbExternalService.KYOBO, "null",
+            RdbExternalService.ALADIN, "null",
+            RdbExternalService.YES24, "null"
     );
 
-    @JsonProperty("external_services")
+    @JsonSetter
     protected void setExternalServices(List<JsonNode> externalServicesNode) {
+        this.externalServices = externalServices;
+
         for (JsonNode node : externalServicesNode) {
             String externalId = node.path("id").toString();
             String externalLink = node.path("href").toString();
@@ -95,6 +102,7 @@ public class BookMetaRdbDto {
                     break;
             }
         }
+    }
 
 //        this.externalServices = Optional.ofNullable(externalServicesNode)
 //                .orElse(Collections.emptyList())
@@ -105,7 +113,6 @@ public class BookMetaRdbDto {
 //
 //                    return String.format("https://redirect.watcha.com/galaxy/%s", splitUrl[4]);
 //                }).collect(Collectors.toList());
-    }
 
     public BookMetaRdbEntity toEntity() {
         return BookMetaRdbEntity.builder()

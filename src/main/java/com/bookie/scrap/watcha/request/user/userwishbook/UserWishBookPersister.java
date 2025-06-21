@@ -23,7 +23,7 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
 
         List<JsonNode> userWishBooks = dto.getResult().getUserWishBooks();
 
-        if (userWishBooks == null) {
+        if (userWishBooks == null || userWishBooks.size() == 0) {
             return 0;
         }
 

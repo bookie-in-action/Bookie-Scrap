@@ -5,7 +5,6 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
 
         List<JsonNode> comments = dto.getResult().getComments();
 
-        if (comments == null) {
+        if (comments == null || comments.size() == 0) {
             return 0;
         }
 
@@ -55,11 +54,10 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
             document.setBookCode(bookCode);
             document.setRawJson(JsonUtil.toMap(comments.get(idx)));
             documents.add(document);
-            userCodes.add(comments.get(idx).get("user").get("code").asText());
         }
 
         repository.saveAll(documents);
-        userRedisService.add(userCodes);
+        userRedisService.add(dto.getResult().getUserCodes());
         return comments.size();
 
     }

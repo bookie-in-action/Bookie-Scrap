@@ -23,7 +23,7 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
 
         List<JsonNode> bookRatings = dto.getResult().getBookRatings();
 
-        if (bookRatings == null) {
+        if (bookRatings == null || bookRatings.size() == 0) {
             return 0;
         }
 

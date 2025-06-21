@@ -23,7 +23,7 @@ public class UserLikePeoplePersister implements WatchaPersistFactory<UserLikePeo
 
         List<JsonNode> userLikePeople = dto.getResult().getUserLikePeople();
 
-        if (userLikePeople == null) {
+        if (userLikePeople == null || userLikePeople.size() == 0) {
             return 0;
         }
 

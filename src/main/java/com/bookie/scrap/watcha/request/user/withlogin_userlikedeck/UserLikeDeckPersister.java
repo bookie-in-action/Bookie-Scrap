@@ -23,7 +23,7 @@ public class UserLikeDeckPersister implements WatchaPersistFactory<UserLikeDeckR
 
         List<JsonNode> userWishPeople = dto.getResult().getUserWishPeople();
 
-        if (userWishPeople == null) {
+        if (userWishPeople == null || userWishPeople.size() == 0) {
             return 0;
         }
 

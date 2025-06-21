@@ -76,23 +76,25 @@ public class ScraperJob implements Job {
     public void execute(JobExecutionContext context) {
 
         bookRedisService.add("byLKj8M");
-
         scrapRoutine();
 
     }
 
     private void scrapRoutine() {
         try {
-            String bookCode = bookRedisService.pop();
-            bookJob(bookCode);
+            while (bookRedisService.size() > 0) {
+                String bookCode = bookRedisService.pop();
+                bookJob(bookCode);
 
-            while (deckRedisService.size() > 0) {
-                deckJob(deckRedisService.pop());
+                while (deckRedisService.size() > 0) {
+                    deckJob(deckRedisService.pop());
+                }
+
+                while (userRedisService.size() > 0) {
+                    userJob(userRedisService.pop());
+                }
             }
 
-            while (userRedisService.size() > 0) {
-                userJob(userRedisService.pop());
-            }
 
         } catch (Exception e) {
             e.printStackTrace();

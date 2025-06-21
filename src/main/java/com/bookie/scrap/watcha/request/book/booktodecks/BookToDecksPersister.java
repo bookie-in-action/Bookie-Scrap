@@ -5,7 +5,6 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -33,7 +32,7 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
 
         List<JsonNode> decks = dto.getResult().getDecks();
 
-        if (decks == null) {
+        if (decks == null || decks.size() == 0) {
             return 0;
         }
 

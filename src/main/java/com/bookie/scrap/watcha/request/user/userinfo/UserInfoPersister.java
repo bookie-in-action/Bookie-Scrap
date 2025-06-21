@@ -20,7 +20,7 @@ public class UserInfoPersister implements WatchaPersistFactory<UserInfoResponseD
 
         JsonNode userInfo = dto.getUserInfo();
 
-        if (userInfo == null) {
+        if (userInfo == null || userInfo.size() == 0) {
             return 0;
         }
 

@@ -33,7 +33,7 @@ public class BookListPersister implements WatchaPersistFactory<BookListResponseD
 
         List<JsonNode> books = dto.getResult().getBooks();
 
-        if (books == null) {
+        if (books == null || books.size() == 0) {
             return 0;
         }
 
