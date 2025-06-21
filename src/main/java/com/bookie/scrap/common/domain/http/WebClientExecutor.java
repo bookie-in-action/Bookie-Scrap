@@ -30,9 +30,14 @@ public class WebClientExecutor {
         this.THREAD_SLEEP = threadSleep;
     }
 
-    public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) throws InterruptedException {
-        Thread.sleep(this.THREAD_SLEEP);
-        return executeWithRetry(springRequest, springResponse);
+    public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) {
+        try {
+            log.info("Thread sleep: {}ms....", this.THREAD_SLEEP);
+            Thread.sleep(this.THREAD_SLEEP);
+            return executeWithRetry(springRequest, springResponse);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private <T> T executeWithRetry(SpringRequest springRequest, SpringResponse<T> springResponse) {
