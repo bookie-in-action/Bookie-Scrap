@@ -8,10 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -75,20 +72,23 @@ public class BookMetaRdbDto {
     }
 
     @JsonProperty("external_services")
-    private List<String> externalServices;
-    private Map<RdbExternalService, String> externalServiceUrlMap = Map.of(
-            RdbExternalService.KYOBO, "null",
-            RdbExternalService.ALADIN, "null",
-            RdbExternalService.YES24, "null"
+    private List<JsonNode> externalServices;
+
+    private Map<RdbExternalService, String> externalServiceUrlMap =  new HashMap<>(
+            Map.of(
+                    RdbExternalService.KYOBO, "null",
+                    RdbExternalService.ALADIN, "null",
+                    RdbExternalService.YES24, "null"
+            )
     );
 
     @JsonSetter
-    protected void setExternalServices(List<JsonNode> externalServicesNode) {
+    protected void setExternalServices(List<JsonNode> externalServices) {
         this.externalServices = externalServices;
 
-        for (JsonNode node : externalServicesNode) {
-            String externalId = node.path("id").toString();
-            String externalLink = node.path("href").toString();
+        for (JsonNode node : externalServices) {
+            String externalId = node.get("id").asText();
+            String externalLink = node.get("href").asText();
 
             switch (externalId) {
                 case "aladdin":
