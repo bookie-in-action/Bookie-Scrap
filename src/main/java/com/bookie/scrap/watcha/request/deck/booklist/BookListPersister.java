@@ -1,0 +1,65 @@
+package com.bookie.scrap.watcha.request.deck.booklist;
+
+import com.bookie.scrap.common.domain.redis.RedisStringListService;
+import com.bookie.scrap.common.util.JsonUtil;
+import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Component
+public class BookListPersister implements WatchaPersistFactory<BookListResponseDto> {
+
+    private final RedisStringListService bookRedisService;
+
+    private final BookListMongoRepository repository;
+
+    public BookListPersister(
+            @Qualifier("bookCodeList") RedisStringListService bookRedisService,
+            BookListMongoRepository repository
+    ) {
+        this.bookRedisService = bookRedisService;
+        this.repository = repository;
+    }
+
+    @Override
+    public int persist(BookListResponseDto dto, String deckCode) throws JsonProcessingException {
+
+        List<JsonNode> books = dto.getResult().getBooks();
+
+        if (books == null || books.size() == 0) {
+            return 0;
+        }
+
+        log.debug("size: {}",books.size());
+
+        List<BookListDocument> documents = new ArrayList<>();
+        for (int idx = 0; idx < books.size(); idx++) {
+
+            log.debug(
+                    "deckCode: {}, book idx: {}, value: {}",
+                    deckCode,
+                    idx,
+                    JsonUtil.toPrettyJson(books.get(idx))
+            );
+            log.debug("===========================");
+
+            BookListDocument document = new BookListDocument();
+            document.setDeckCode(deckCode);
+            document.setRawJson(JsonUtil.toMap(books.get(idx)));
+            documents.add(document);
+
+        }
+
+        repository.saveAll(documents);
+        bookRedisService.add(dto.getResult().getBookCodes());
+
+        return books.size();
+    }
+}

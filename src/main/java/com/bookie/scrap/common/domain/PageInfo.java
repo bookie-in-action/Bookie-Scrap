@@ -1,15 +1,16 @@
+
 package com.bookie.scrap.common.domain;
 
-import com.bookie.scrap.common.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
+import org.springframework.util.StringUtils;
 
 import java.net.URISyntaxException;
 
 
 @Slf4j
-public class PageInfo {
+public abstract class PageInfo {
 
     protected int page;
     protected int size;
@@ -44,7 +45,7 @@ public class PageInfo {
     }
 
     protected void validNotEmpty(String text, String fieldName) {
-        if (!StringUtil.hasText(text)) {
+        if (!StringUtils.hasText(text)) {
             throw new IllegalArgumentException(fieldName + " must not be null or empty");
         }
     }
@@ -60,6 +61,8 @@ public class PageInfo {
             throw new IllegalArgumentException("size parameter must be greater than or equal to 1");
         }
     }
+
+    abstract public String buildUrlWithParamInfo(String baseUrl);
 
 }
 
