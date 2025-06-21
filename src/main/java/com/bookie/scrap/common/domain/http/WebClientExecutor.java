@@ -20,13 +20,18 @@ public class WebClientExecutor {
 
     private final WebClient webClient;
     private final int MAX_RETRIES;
+    private final int THREAD_SLEEP;
 
-    public WebClientExecutor(WebClient webClient, @Value("${bookie.http.limit:3}") int MAX_RETIRES) {
+    public WebClientExecutor(WebClient webClient,
+                             @Value("${bookie.http.limit:3}") int MAX_RETIRES,
+                             @Value("${bookie.http.thread-sleep:1000}") int threadSleep) {
         this.webClient = webClient;
         this.MAX_RETRIES = MAX_RETIRES;
+        this.THREAD_SLEEP = threadSleep;
     }
 
-    public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) {
+    public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) throws InterruptedException {
+        Thread.sleep(this.THREAD_SLEEP);
         return executeWithRetry(springRequest, springResponse);
     }
 
