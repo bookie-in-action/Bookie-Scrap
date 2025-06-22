@@ -1,6 +1,5 @@
-package com.bookie.scrap.common.domain.redis;
+package com.bookie.scrap.common.redis;
 
-import com.bookie.scrap.common.redis.RedisHashNamespace;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Profile;
 
