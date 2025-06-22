@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -16,15 +15,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
 
-    @Bean
-    public RedisTemplate<String, Object> redisObjectTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        return template;
-    }
+//    @Bean
+//    public RedisTemplate<String, Object> redisObjectTemplate(RedisConnectionFactory connectionFactory) {
+//        RedisTemplate<String, Object> template = new RedisTemplate<>();
+//        template.setConnectionFactory(connectionFactory);
+//        template.setKeySerializer(new StringRedisSerializer());
+//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//
+//        return template;
+//    }
 
     @Bean
     public RedisTemplate<String, RedisProcessResult> redisStringTemplate(RedisConnectionFactory connectionFactory) {
@@ -101,6 +100,28 @@ public class RedisConfig {
     @Bean
     public RedisStringListService deckCodeList(RedisTemplate<String, String> redisStringListTemplate) {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.DECK);
+    }
+
+    @Bean
+    public RedisTemplate<String, String> redisValueTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
+
+        template.afterPropertiesSet();
+
+        return template;
+    }
+
+
+    @Bean
+    public RedisConnectionService connectionService(RedisTemplate<String, String> redisValueTemplate) {
+        return new RedisConnectionService(redisValueTemplate, RedisValueNamespace.Connection);
     }
 
 }
