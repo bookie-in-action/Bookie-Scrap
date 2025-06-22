@@ -1,8 +1,9 @@
 package com.bookie.scrap.common.domain.redis;
 
+import com.bookie.scrap.common.redis.RedisHashService;
+import com.bookie.scrap.common.redis.RedisProcessResult;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha;
 
-import com.bookie.scrap.common.domain.redis.RedisStringListService;
+import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaPageInfo;
 import com.bookie.scrap.watcha.request.book.bookcomment.BookCommentCollectionService;
 import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;

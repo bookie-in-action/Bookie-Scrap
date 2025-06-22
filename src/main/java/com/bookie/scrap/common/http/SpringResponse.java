@@ -1,8 +1,7 @@
-package com.bookie.scrap.common.domain.http;
+package com.bookie.scrap.common.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
 

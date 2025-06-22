@@ -1,6 +1,6 @@
 package com.bookie.scrap.common.springconfig;
 
-import com.bookie.scrap.common.domain.redis.*;
+import com.bookie.scrap.common.redis.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

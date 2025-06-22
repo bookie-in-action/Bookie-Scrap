@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.domain.redis;
+package com.bookie.scrap.common.redis;
 
 public enum RedisHashNamespace {
     SUCCESS_USER("success:usercode"),

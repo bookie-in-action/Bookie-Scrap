@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.domain.redis;
+package com.bookie.scrap.common.redis;
 
 public enum RedisStringListNamespace {
     USER("usercode"),
