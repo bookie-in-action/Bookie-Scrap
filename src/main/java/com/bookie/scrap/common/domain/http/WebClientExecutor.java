@@ -32,6 +32,7 @@ public class WebClientExecutor {
 
     public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) {
         try {
+            log.info("Thread sleep: {}ms....", this.THREAD_SLEEP);
             Thread.sleep(this.THREAD_SLEEP);
             return executeWithRetry(springRequest, springResponse);
         } catch (InterruptedException e) {
