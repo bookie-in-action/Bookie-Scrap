@@ -1,9 +1,9 @@
 package com.bookie.scrap.watcha.request.deck.booklist;
 
 import com.bookie.scrap.common.domain.PageInfo;
-import com.bookie.scrap.common.domain.http.SpringRequest;
-import com.bookie.scrap.common.domain.http.SpringResponse;
-import com.bookie.scrap.common.domain.http.WebClientExecutor;
+import com.bookie.scrap.common.http.SpringRequest;
+import com.bookie.scrap.common.http.SpringResponse;
+import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,4 +1,4 @@
-package com.bookie.scrap.common.domain.redis;
+package com.bookie.scrap.common.redis;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;

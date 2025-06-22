@@ -2,8 +2,8 @@ package com.bookie.scrap.watcha.domain;
 
 
 import com.bookie.scrap.common.domain.PageInfo;
-import com.bookie.scrap.common.domain.http.SpringRequest;
-import com.bookie.scrap.common.domain.http.SpringResponse;
+import com.bookie.scrap.common.http.SpringRequest;
+import com.bookie.scrap.common.http.SpringResponse;
 import org.springframework.http.HttpMethod;
 
 public interface WatchaFetcherFactory<T> {

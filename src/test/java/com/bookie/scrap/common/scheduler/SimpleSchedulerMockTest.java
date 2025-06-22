@@ -11,7 +11,7 @@ import org.quartz.SchedulerException;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class SimpleSchedulerMock {
+public class SimpleSchedulerMockTest {
 
     @Mock
     private Scheduler scheduler;

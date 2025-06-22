@@ -1,6 +1,8 @@
-package com.bookie.scrap.common.domain.http;
+package com.bookie.scrap.common.http;
 
+import com.bookie.scrap.common.redis.RedisConnectionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -20,20 +22,27 @@ public class WebClientExecutor {
 
     private final WebClient webClient;
     private final int MAX_RETRIES;
+    private final int RETRY_HOUR;
     private final int THREAD_SLEEP;
+    private final RedisConnectionService redisConnectionService;
 
     public WebClientExecutor(WebClient webClient,
                              @Value("${bookie.http.limit:3}") int MAX_RETIRES,
-                             @Value("${bookie.http.thread-sleep:1000}") int threadSleep) {
+                             @Value("${bookie.http.retry-hour:1}") int RETRY_HOUR,
+                             @Value("${bookie.http.thread-sleep:1000}") int threadSleep,
+                             @Qualifier("connectionService") RedisConnectionService redisConnectionService) {
         this.webClient = webClient;
         this.MAX_RETRIES = MAX_RETIRES;
+        this.RETRY_HOUR = RETRY_HOUR;
         this.THREAD_SLEEP = threadSleep;
+        this.redisConnectionService = redisConnectionService;
     }
 
     public <T> T execute(SpringRequest springRequest, SpringResponse<T> springResponse) {
         try {
             log.info("Thread sleep: {}ms....", this.THREAD_SLEEP);
             Thread.sleep(this.THREAD_SLEEP);
+            redisConnectionService.add();
             return executeWithRetry(springRequest, springResponse);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -70,16 +79,16 @@ public class WebClientExecutor {
                         if (responseHandler != null) {
                             return responseHandler.apply(response);
                         } else {
-                            if (response.statusCode().isError()) {
+                            if (response.statusCode().isError() || response.statusCode().is4xxClientError()) {
                                 return response.bodyToMono(String.class).flatMap(body -> {
                                     log.warn("HTTP {} 오류 발생: {}", response.statusCode(), body);
-                                    return Mono.error(new RuntimeException("HTTP 오류: " + response.statusCode()));
+                                    return Mono.error(new IllegalStateException("HTTP 오류: " + response.statusCode()));
                                 });
                             }
                             return Mono.error(new IllegalStateException("No responseHandler defined."));
                         }
                     })
-                    .retryWhen(Retry.backoff(MAX_RETRIES, Duration.ofMillis(500))
+                    .retryWhen(Retry.backoff(MAX_RETRIES, Duration.ofHours(RETRY_HOUR))
                             .filter(throwable -> !(throwable instanceof IllegalStateException))
                             .onRetryExhaustedThrow((spec1, signal) -> signal.failure())
                     )

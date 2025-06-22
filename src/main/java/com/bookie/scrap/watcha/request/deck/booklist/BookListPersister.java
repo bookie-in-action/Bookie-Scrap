@@ -1,6 +1,6 @@
 package com.bookie.scrap.watcha.request.deck.booklist;
 
-import com.bookie.scrap.common.domain.redis.RedisStringListService;
+import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
