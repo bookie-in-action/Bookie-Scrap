@@ -75,9 +75,10 @@ public class ScraperJob implements Job {
     @Override
     public void execute(JobExecutionContext context) {
 
-        bookRedisService.add("byLKj8M");
+        if (bookRedisService.size() == 0) {
+            bookRedisService.add("byLKj8M");
+        }
         scrapRoutine();
-
     }
 
     private void scrapRoutine() {

@@ -1,6 +1,5 @@
 package com.bookie.scrap.watcha.request.user.userlikepeople;
 
-import com.bookie.scrap.watcha.request.book.bookcomment.WatchaBookCommentParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,6 +20,6 @@ class UserLikePeopleCollectionServiceTest {
     void collect() throws Exception {
         WatchaUserLikePeopleParam requestParam = new WatchaUserLikePeopleParam(1, 10);
 
-        service.collect("2mwvggAE2vMa7", requestParam);
+        service.collect("86ADvGkwevzZl", requestParam);
     }
 }
