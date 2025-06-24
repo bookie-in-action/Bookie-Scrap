@@ -4,6 +4,9 @@ public enum RedisStringListNamespace {
     USER("usercode"),
     BOOK("bookcode"),
     DECK("deckcode"),
+    SUCCESS_USER("success:usercode"),
+    SUCCESS_BOOK("success:bookcode"),
+    SUCCESS_DECK("success:deckcode"),
     ;
 
     private final String prefix;

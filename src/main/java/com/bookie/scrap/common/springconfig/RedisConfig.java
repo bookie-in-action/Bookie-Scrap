@@ -103,6 +103,21 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisStringListService successBookCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.SUCCESS_BOOK);
+    }
+
+    @Bean
+    public RedisStringListService successDeckCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.SUCCESS_DECK);
+    }
+
+    @Bean
+    public RedisStringListService successUserCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+        return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.SUCCESS_USER);
+    }
+
+    @Bean
     public RedisTemplate<String, String> redisValueTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
