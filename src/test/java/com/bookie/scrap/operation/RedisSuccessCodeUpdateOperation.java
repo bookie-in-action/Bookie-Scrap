@@ -1,6 +1,7 @@
 package com.bookie.scrap.operation;
 
-import com.bookie.scrap.common.redis.RedisStringListService;
+import com.bookie.scrap.common.redis.RedisHashService;
+import com.bookie.scrap.common.redis.RedisProcessResult;
 import com.bookie.scrap.common.scheduler.SchedulerStubConfig;
 import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaDocument;
 import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaMongoRepository;
@@ -9,6 +10,7 @@ import com.bookie.scrap.watcha.request.deck.deckinfo.DeckInfoMongoRepository;
 import com.bookie.scrap.watcha.request.user.userinfo.UserInfoDocument;
 import com.bookie.scrap.watcha.request.user.userinfo.UserInfoMongoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 @Slf4j
+@Tag("manual")
 @SpringBootTest
 @Import(SchedulerStubConfig.class)
 public class RedisSuccessCodeUpdateOperation {
@@ -30,16 +33,16 @@ public class RedisSuccessCodeUpdateOperation {
     private UserInfoMongoRepository userInfoMongoRepository;
 
     @Autowired
-    @Qualifier("successBookCodeList")
-    private RedisStringListService successBookCodeRedisService;
+    @Qualifier("successBookCode")
+    private RedisHashService successBookCodeRedisService;
 
     @Autowired
-    @Qualifier("successDeckCodeList")
-    private RedisStringListService successDeckCodeRedisService;
-    @Autowired
+    @Qualifier("successDeckCode")
+    private RedisHashService successDeckCodeRedisService;
 
-    @Qualifier("successUserCodeList")
-    private RedisStringListService successUserCodeRedisService;
+    @Autowired
+    @Qualifier("successUserCode")
+    private RedisHashService successUserCodeRedisService;
 
     @Test
     void bookCodeUpdate() {
@@ -47,7 +50,7 @@ public class RedisSuccessCodeUpdateOperation {
                 .map(BookMetaDocument::getBookCode)
                 .toList();
 
-        successBookCodes.forEach(successBookCodeRedisService::add);
+        successBookCodes.forEach(bookCode -> successBookCodeRedisService.add(new RedisProcessResult(bookCode)));
     }
 
     @Test
@@ -56,7 +59,8 @@ public class RedisSuccessCodeUpdateOperation {
                 .map(DeckInfoDocument::getDeckCode)
                 .toList();
 
-        successDeckCodes.forEach(successDeckCodeRedisService::add);
+        successDeckCodes.forEach(deckCode -> successDeckCodeRedisService.add(new RedisProcessResult(deckCode)));
+
     }
 
     @Test
@@ -65,7 +69,8 @@ public class RedisSuccessCodeUpdateOperation {
                 .map(UserInfoDocument::getUserCode)
                 .toList();
 
-        successUserCodes.forEach(successUserCodeRedisService::add);
+        successUserCodes.forEach(userCode -> successUserCodeRedisService.add(new RedisProcessResult(userCode)));
+
     }
 
 

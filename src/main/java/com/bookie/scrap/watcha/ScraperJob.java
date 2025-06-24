@@ -1,5 +1,7 @@
 package com.bookie.scrap.watcha;
 
+import com.bookie.scrap.common.redis.RedisHashService;
+import com.bookie.scrap.common.redis.RedisProcessResult;
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaPageInfo;
 import com.bookie.scrap.watcha.request.book.bookcomment.BookCommentCollectionService;
@@ -43,6 +45,13 @@ public class ScraperJob implements Job {
     private final RedisStringListService userRedisService;
     private final RedisStringListService deckRedisService;
 
+    private RedisHashService successBookCodeRedisService;
+    private RedisHashService successDeckCodeRedisService;
+    private RedisHashService successUserCodeRedisService;
+    private RedisHashService failedBookCodeRedisService;
+    private RedisHashService failedDeckCodeRedisService;
+    private RedisHashService failedUserCodeRedisService;
+
     public ScraperJob(
             UserBookRatingCollectionService userBookRatingCollectionService,
             UserInfoCollectionService userInfoCollectionService,
@@ -55,7 +64,13 @@ public class ScraperJob implements Job {
             BookToDecksCollectionService bookToDecksCollectionService,
             @Qualifier("bookCodeList") RedisStringListService bookRedisService,
             @Qualifier("userCodeList") RedisStringListService userRedisService,
-            @Qualifier("deckCodeList") RedisStringListService deckRedisService
+            @Qualifier("deckCodeList") RedisStringListService deckRedisService,
+            @Qualifier("successBookCode") RedisHashService successBookCodeRedisService,
+            @Qualifier("successDeckCode") RedisHashService successDeckCodeRedisService,
+            @Qualifier("successUserCode") RedisHashService successUserCodeRedisService,
+            @Qualifier("failedBookCode") RedisHashService failedBookCodeRedisService,
+            @Qualifier("failedDeckCode") RedisHashService failedDeckCodeRedisService,
+            @Qualifier("failedUserCode") RedisHashService failedUserCodeRedisService
     ) {
         this.userBookRatingCollectionService = userBookRatingCollectionService;
         this.userInfoCollectionService = userInfoCollectionService;
@@ -69,6 +84,12 @@ public class ScraperJob implements Job {
         this.bookRedisService = bookRedisService;
         this.userRedisService = userRedisService;
         this.deckRedisService = deckRedisService;
+        this.successBookCodeRedisService = successBookCodeRedisService;
+        this.successDeckCodeRedisService = successDeckCodeRedisService;
+        this.successUserCodeRedisService = successUserCodeRedisService;
+        this.failedBookCodeRedisService = failedBookCodeRedisService;
+        this.failedDeckCodeRedisService = failedDeckCodeRedisService;
+        this.failedUserCodeRedisService = failedUserCodeRedisService;
     }
 
 
@@ -82,85 +103,122 @@ public class ScraperJob implements Job {
     }
 
     private void scrapRoutine() {
-        try {
-            while (bookRedisService.size() > 0) {
-                String bookCode = bookRedisService.pop();
-                bookJob(bookCode);
+        while (bookRedisService.size() > 0) {
+            String bookCode = bookRedisService.pop();
+            bookJob(bookCode);
 
-                while (deckRedisService.size() > 0) {
-                    deckJob(deckRedisService.pop());
-                }
-
-                while (userRedisService.size() > 0) {
-                    userJob(userRedisService.pop());
-                }
+            while (deckRedisService.size() > 0) {
+                deckJob(deckRedisService.pop());
             }
 
+            while (userRedisService.size() > 0) {
+                userJob(userRedisService.pop());
+            }
+        }
+    }
 
+    private void bookJob(String bookCode) {
+        try {
+            if (successBookCodeRedisService.exist(bookCode)) {
+                log.info("bookJob: {} already exist",bookCode);
+                return;
+            }
+
+            log.info("bookJob: {} start",bookCode);
+            WatchaPageInfo param = new WatchaPageInfo(null);
+            bookMetaCollectionService.collect(bookCode, param);
+
+            WatchaBookCommentParam commentParam = new WatchaBookCommentParam(1, 10);
+            commentParam.setPopularOrder();
+            int commentCnt = -1;
+            while (commentCnt != 0) {
+                commentCnt = bookCommentCollectionService.collect(bookCode, commentParam);
+                commentParam.nextPage();
+            }
+
+            BookToDecksParam bookToDecksParam = new BookToDecksParam(1, 10);
+            int bookToDecksCnt = -1;
+            while (bookToDecksCnt != 0) {
+                bookToDecksCnt = bookToDecksCollectionService.collect(bookCode, bookToDecksParam);
+                bookToDecksParam.nextPage();
+            }
+
+            successBookCodeRedisService.add(new RedisProcessResult(bookCode));
+            log.info("bookJob: {}, success", bookCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
+            log.error("bookJob: {}, error: {}",bookCode, e.getMessage());
         }
+
     }
 
-    private void bookJob(String bookCode) throws Exception {
+    private void deckJob(String deckCode) {
 
-        WatchaPageInfo param = new WatchaPageInfo(null);
-        bookMetaCollectionService.collect(bookCode, param);
+        try {
 
-        WatchaBookCommentParam commentParam = new WatchaBookCommentParam(1, 10);
-        commentParam.setPopularOrder();
-        int commentCnt = -1;
-        while (commentCnt != 0) {
-            commentCnt = bookCommentCollectionService.collect(bookCode, commentParam);
-            commentParam.nextPage();
+            if (successDeckCodeRedisService.exist(deckCode)) {
+                log.info("deckJob: {} already exist",deckCode);
+                return;
+            }
+
+            deckInfoCollectionService.collect(deckCode, new WatchaPageInfo(null));
+
+            WatchaBookListParam deckParam = new WatchaBookListParam(1, 10);
+            int booksCnt = -1;
+            while (booksCnt != 0) {
+                booksCnt = booListCollectionService.collect(deckCode, deckParam);
+                deckParam.nextPage();
+            }
+
+            successDeckCodeRedisService.add(new RedisProcessResult(deckCode));
+            log.info("deckJob: {}, success", deckCode);
+        } catch (Exception e) {
+            failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
+            log.error("deckJob: {}, error: {}",deckCode, e.getMessage());
         }
 
-        BookToDecksParam bookToDecksParam = new BookToDecksParam(1, 10);
-        int bookToDecksCnt = -1;
-        while (bookToDecksCnt != 0) {
-            bookToDecksCnt = bookToDecksCollectionService.collect(bookCode, bookToDecksParam);
-            bookToDecksParam.nextPage();
-        }
     }
 
-    private void deckJob(String deckCode) throws Exception {
+    private void userJob(String userCode) {
+        try {
 
-        deckInfoCollectionService.collect(deckCode, new WatchaPageInfo(null));
+            if (successUserCodeRedisService.exist(userCode)) {
+                log.info("userJob: {} already exist",userCode);
+                return;
+            }
 
-        WatchaBookListParam deckParam = new WatchaBookListParam(1, 10);
-        int booksCnt = -1;
-        while (booksCnt != 0) {
-            booksCnt = booListCollectionService.collect(deckCode, deckParam);
-            deckParam.nextPage();
-        }
-    }
+            userInfoCollectionService.collect(userCode, new WatchaPageInfo(null));
 
-    private void userJob(String userCode) throws Exception {
-        userInfoCollectionService.collect(userCode, new WatchaPageInfo(null));
+            WatchaUserBookRatingParam bookRatingParam = new WatchaUserBookRatingParam(1, 10);
+            int bookRatingCnt = -1;
+            while (bookRatingCnt != 0) {
+                bookRatingCnt = userBookRatingCollectionService.collect(userCode, bookRatingParam);
+                bookRatingParam.nextPage();
+            }
 
-        WatchaUserBookRatingParam bookRatingParam = new WatchaUserBookRatingParam(1, 10);
-        int bookRatingCnt = -1;
-        while (bookRatingCnt != 0) {
-            bookRatingCnt = userBookRatingCollectionService.collect(userCode, bookRatingParam);
-            bookRatingParam.nextPage();
-        }
+            WatchaUserLikePeopleParam userLikePeopleParam = new WatchaUserLikePeopleParam(1, 10);
+            int userLikePeopleCnt = -1;
+            while (userLikePeopleCnt != 0) {
+                userLikePeopleCnt = userLikePeopleCollectionService.collect(userCode, userLikePeopleParam);
+                userLikePeopleParam.nextPage();
+            }
 
-        WatchaUserLikePeopleParam userLikePeopleParam = new WatchaUserLikePeopleParam(1, 10);
-        int userLikePeopleCnt = -1;
-        while (userLikePeopleCnt != 0) {
-            userLikePeopleCnt = userLikePeopleCollectionService.collect(userCode, userLikePeopleParam);
-            userLikePeopleParam.nextPage();
-        }
+            WatchaUserWishBookParam userWishParam = new WatchaUserWishBookParam(1, 10);
+            userWishParam.setSortDirection();
+            userWishParam.setSortOption();
 
-        WatchaUserWishBookParam userWishParam = new WatchaUserWishBookParam(1, 10);
-        userWishParam.setSortDirection();
-        userWishParam.setSortOption();
+            userWishBookCollectionService.collect(userCode, userWishParam);
+            int userWishBookCnt = -1;
+            while (userWishBookCnt != 0) {
+                userWishBookCnt = userWishBookCollectionService.collect(userCode, userWishParam);
+                userWishParam.nextPage();
+            }
 
-        userWishBookCollectionService.collect(userCode, userWishParam);
-        int userWishBookCnt = -1;
-        while (userWishBookCnt != 0) {
-            userWishBookCnt = userWishBookCollectionService.collect(userCode, userWishParam);
-            userWishParam.nextPage();
+            successUserCodeRedisService.add(new RedisProcessResult(userCode));
+            log.info("userJob: {}, success", userCode);
+        } catch (Exception e) {
+            failedUserCodeRedisService.add(new RedisProcessResult(userCode));
+            log.error("userJob: {}, error: {}",userCode, e.getMessage());
         }
     }
 }
