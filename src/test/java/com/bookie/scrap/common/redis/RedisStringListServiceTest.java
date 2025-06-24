@@ -1,6 +1,7 @@
 package com.bookie.scrap.common.redis;
 
 
+import com.bookie.scrap.common.scheduler.SchedulerStubConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,7 +9,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.stream.Stream;
 
@@ -16,8 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
-@Profile("test")
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(SchedulerStubConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RedisStringListServiceTest {
 
@@ -29,6 +32,13 @@ class RedisStringListServiceTest {
 
     static Stream<String> provideTestCodes() {
         return Stream.of(TEST_CODES);
+    }
+
+    @BeforeAll
+    void startup() {
+        while (service.size() > 0) {
+            service.pop();
+        }
     }
 
     @ParameterizedTest(name = "bookCode={0} 추가 및 조회 테스트")
@@ -56,13 +66,6 @@ class RedisStringListServiceTest {
                 () -> assertEquals(poppedCode, bookCode, "팝된 값과 넣은 값이 같아야 함"),
                 () -> assertEquals(initialSize - 1, service.size(), "리스트 크기가 1 감소해야 함")
         );
-    }
-
-    @BeforeAll
-    void startup() {
-        while (service.size() > 0) {
-            service.pop();
-        }
     }
 
     @AfterAll

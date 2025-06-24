@@ -118,7 +118,6 @@ public class RedisConfig {
         return template;
     }
 
-
     @Bean
     public RedisConnectionService connectionService(RedisTemplate<String, String> redisValueTemplate) {
         return new RedisConnectionService(redisValueTemplate, RedisValueNamespace.Connection);

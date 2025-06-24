@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.quartz.*;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.ScheduleBuilder;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -28,6 +30,7 @@ public class SchedulerProperties {
         private Mode mode;
         private String expression;
         private boolean enabled;
+        private boolean runOnStart;
 
         public Function<String, ScheduleBuilder<? extends Trigger>> getScheduleBuilder() {
             return mode.getBuilder();

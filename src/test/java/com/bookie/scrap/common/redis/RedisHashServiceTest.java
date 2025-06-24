@@ -1,5 +1,6 @@
 package com.bookie.scrap.common.redis;
 
+import com.bookie.scrap.common.scheduler.SchedulerStubConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +10,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,8 +20,9 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@Profile("test")
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(SchedulerStubConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RedisHashServiceTest {
 
@@ -69,7 +72,6 @@ class RedisHashServiceTest {
         service.add(redisProcessResult);
         assertTrue(service.exist(bookCode), "redis에 code가 존재해야 함");
 
-        // 다중 조회 메서드 사용 (가변인자로 하나만 전달)
         List<RedisProcessResult> results = service.get(new String[]{bookCode});
         assertNotNull(results, "조회된 결과 리스트가 null이 아니어야 함");
         assertEquals(1, results.size(), "결과 리스트 크기가 1이어야 함");
