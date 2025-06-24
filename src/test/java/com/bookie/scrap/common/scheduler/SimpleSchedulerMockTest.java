@@ -26,6 +26,7 @@ public class SimpleSchedulerMockTest {
                 "com.bookie.scrap.watcha.ScraperJob",
                 SchedulerProperties.SchedulerSetting.Mode.CRON,
                 "0 0 9 1 * ?",
+                true,
                 true
         ));
         this.schedulerProperties.setSchedulerSettings(props);

@@ -1,10 +1,13 @@
 package com.bookie.scrap.common.redis;
 
+import com.bookie.scrap.common.scheduler.SchedulerStubConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -12,6 +15,8 @@ import java.time.Instant;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
+@Import({SchedulerStubConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RedisConnectionServiceTest {
 
