@@ -7,9 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
-@Component
+@Repository
 public class DeckInfoPersister implements WatchaPersistFactory<DeckInfoResponseDto> {
 
     private final RedisStringListService userRedisService;

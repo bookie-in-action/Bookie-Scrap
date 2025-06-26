@@ -7,12 +7,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 @RequiredArgsConstructor
 public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookResponseDto> {
 
@@ -23,7 +24,7 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
 
         List<JsonNode> userWishBooks = dto.getResult().getUserWishBooks();
 
-        if (userWishBooks == null || userWishBooks.size() == 0) {
+        if (userWishBooks == null || userWishBooks.isEmpty()) {
             return 0;
         }
 

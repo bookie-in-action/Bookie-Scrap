@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 public class BookCommentPersister implements WatchaPersistFactory<BookCommentResponseDto> {
-
 
     private final RedisStringListService userRedisService;
     private final BookCommentMongoRepository repository;
@@ -40,7 +40,6 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
         log.debug("size: {}",comments.size());
 
         List<BookCommentDocument> documents = new ArrayList<>();
-        List<String> userCodes = new ArrayList<>();
 
         int count = 0;
         for (int idx = 0; idx < comments.size(); idx++) {

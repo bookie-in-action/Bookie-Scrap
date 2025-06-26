@@ -8,12 +8,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
     private final RedisStringListService deckRedisService;
