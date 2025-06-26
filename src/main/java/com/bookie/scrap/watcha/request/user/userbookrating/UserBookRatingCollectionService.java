@@ -2,13 +2,16 @@ package com.bookie.scrap.watcha.request.user.userbookrating;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
+import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
+import com.mongodb.MongoTimeoutException;
+import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.bookie.scrap.common.exception.CollectionEx.MAKE;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserBookRatingCollectionService implements WatchaCollectorService {
@@ -21,9 +24,20 @@ public class UserBookRatingCollectionService implements WatchaCollectorService {
     public int collect(String userCode, PageInfo param) throws CollectionEx {
         try {
             UserBookRatingResponseDto response = fetcher.fetch(userCode, param);
-            return persister.persist(response, userCode);
+
+            if (response == null) {
+                log.warn("userCode={} 의 userBookRating 수집 실패: fetch 결과가 null", userCode);
+                return 0;
+            }
+
+            try {
+                return persister.persist(response, userCode);
+            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+                log.warn("userCode={} userBookRating DB 연결 실패: {}", userCode, e.getMessage());
+                throw new RetriableCollectionEx("DB 연결 실패", e);
+            }
         } catch (Exception e) {
-            throw MAKE("userCode:" + userCode + ":UserBookRatingCollectionService", e);
+            throw new CollectionEx("userCode:" + userCode + ":UserBookRatingCollectionService", e);
         }
     }
 }

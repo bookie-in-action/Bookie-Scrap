@@ -19,7 +19,7 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
     private final UserWishBookMongoRepository repository;
 
     @Override
-    public int persist(UserWishBookResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserWishBookResponseDto dto, String userCode) {
 
         List<JsonNode> userWishBooks = dto.getResult().getUserWishBooks();
 
@@ -31,19 +31,26 @@ public class UserWishBookPersister implements WatchaPersistFactory<UserWishBookR
 
         List<UserWishBookDocument> documents = new ArrayList<>();
 
+        int count = 0;
         for (int idx = 0; idx < userWishBooks.size(); idx++) {
 
-            log.debug(
-                    "userWishBook idx: {}, value: {}",
-                    idx,
-                    JsonUtil.toPrettyJson(userWishBooks.get(idx))
-            );
-            log.debug("===========================");
+            try {
+                UserWishBookDocument document = new UserWishBookDocument();
+                document.setUserCode(userCode);
+                document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
+                documents.add(document);
 
-            UserWishBookDocument document = new UserWishBookDocument();
-            document.setUserCode(userCode);
-            document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
-            documents.add(document);
+                log.debug(
+                        "userWishBook idx: {}, value: {}",
+                        idx,
+                        JsonUtil.toPrettyJson(userWishBooks.get(idx))
+                );
+                log.debug("===========================");
+
+                count++;
+            } catch (JsonProcessingException e) {
+                log.warn("json 파싱 실패");
+            }
         }
 
         repository.saveAll(documents);

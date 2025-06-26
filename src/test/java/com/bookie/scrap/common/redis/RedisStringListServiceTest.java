@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class RedisStringListServiceTest {
 
     @Autowired
-    @Qualifier("bookCodeList")
+    @Qualifier("pendingBookCode")
     private RedisStringListService service;
 
     private static final String[] TEST_CODES = {"byLKj8M", "testCode123", "ABC987xyz"};

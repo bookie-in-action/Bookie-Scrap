@@ -5,6 +5,7 @@ import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
+import com.bookie.scrap.watcha.request.book.bookcomment.BookCommentResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class BookMetaFetcher implements WatchaFetcherFactory<BookMetaResponseDto
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s?";
 
     @Override
-    public BookMetaResponseDto fetch(String bookCode, PageInfo param) throws JsonProcessingException {
+    public BookMetaResponseDto fetch(String bookCode, PageInfo param) {
 
         String endpoint = getEndpoint(bookCode, param);
 
@@ -35,7 +36,17 @@ public class BookMetaFetcher implements WatchaFetcherFactory<BookMetaResponseDto
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-        return mapper.readValue(rawJson, BookMetaResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("bookCode={} meta fetch 실패: 응답이 null 또는 빈 문자열", bookCode);
+            return null;
+        }
+
+        try {
+            return mapper.readValue(rawJson, BookMetaResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("bookCode={} meta JSON 파싱 실패: {}", bookCode, e.getMessage());
+            return null;
+        }
 
     }
 

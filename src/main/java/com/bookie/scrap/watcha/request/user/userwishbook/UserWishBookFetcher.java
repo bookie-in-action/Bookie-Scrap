@@ -5,6 +5,7 @@ import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
+import com.bookie.scrap.watcha.request.user.userlikepeople.UserLikePeopleResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class UserWishBookFetcher implements WatchaFetcherFactory<UserWishBookRes
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/users/%s/wishes/book";
 
     @Override
-    public UserWishBookResponseDto fetch(String userCode, PageInfo param) throws JsonProcessingException {
+    public UserWishBookResponseDto fetch(String userCode, PageInfo param) {
 
         String endpoint = getEndpoint(userCode, param);
 
@@ -35,7 +36,17 @@ public class UserWishBookFetcher implements WatchaFetcherFactory<UserWishBookRes
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-        return mapper.readValue(rawJson, UserWishBookResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("json 파싱 실패");
+            return null;
+        }
+
+        try {
+            return mapper.readValue(rawJson, UserWishBookResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("userCode={} userWishBook JSON 파싱 실패: {}", userCode, e.getMessage());
+            return null;
+        }
     }
 
     public String getEndpoint(String bookCode, PageInfo param) {

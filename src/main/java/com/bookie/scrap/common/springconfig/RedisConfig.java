@@ -88,17 +88,17 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisStringListService userCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+    public RedisStringListService pendingUserCode(RedisTemplate<String, String> redisStringListTemplate) {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.USER);
     }
 
     @Bean
-    public RedisStringListService bookCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+    public RedisStringListService pendingBookCode(RedisTemplate<String, String> redisStringListTemplate) {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.BOOK);
     }
 
     @Bean
-    public RedisStringListService deckCodeList(RedisTemplate<String, String> redisStringListTemplate) {
+    public RedisStringListService pendingDeckCode(RedisTemplate<String, String> redisStringListTemplate) {
         return new RedisStringListService(redisStringListTemplate, RedisStringListNamespace.DECK);
     }
 

@@ -10,11 +10,4 @@ public class CollectionEx extends RuntimeException {
         super(message);
     }
 
-    public static CollectionEx MAKE(String message) {
-        return new CollectionEx(message);
-    }
-
-    public static CollectionEx MAKE(String message, Throwable cause) {
-        return new CollectionEx(message, cause);
-    }
 }

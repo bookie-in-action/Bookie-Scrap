@@ -6,6 +6,7 @@ import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class BookCommentFetcher implements WatchaFetcherFactory<BookCommentRespo
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/contents/%s/comments?";
 
     @Override
-    public BookCommentResponseDto fetch(String bookCode, PageInfo param) throws JsonProcessingException {
+    public BookCommentResponseDto fetch(String bookCode, PageInfo param) {
 
         String endpoint = getEndpoint(bookCode, param);
 
@@ -35,7 +36,17 @@ public class BookCommentFetcher implements WatchaFetcherFactory<BookCommentRespo
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-        return mapper.readValue(rawJson, BookCommentResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("bookCode={} comment fetch 실패: 응답이 null 또는 빈 문자열", bookCode);
+            return null;
+        }
+
+        try {
+            return mapper.readValue(rawJson, BookCommentResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("bookCode={} comment JSON 파싱 실패: {}", bookCode, e.getMessage());
+            return null;
+        }
 
     }
 

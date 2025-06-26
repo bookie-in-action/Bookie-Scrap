@@ -1,5 +1,7 @@
 package com.bookie.scrap.watcha;
 
+import com.bookie.scrap.common.exception.CollectionEx;
+import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.common.redis.RedisHashService;
 import com.bookie.scrap.common.redis.RedisProcessResult;
 import com.bookie.scrap.common.redis.RedisStringListService;
@@ -41,16 +43,16 @@ public class ScraperJob implements Job {
     private final BookMetaCollectionService bookMetaCollectionService;
     private final BookToDecksCollectionService bookToDecksCollectionService;
 
-    private final RedisStringListService bookRedisService;
-    private final RedisStringListService userRedisService;
-    private final RedisStringListService deckRedisService;
+    private final RedisStringListService pendingBookRedisService;
+    private final RedisStringListService pendingUserRedisService;
+    private final RedisStringListService pendingDeckRedisService;
 
-    private RedisHashService successBookCodeRedisService;
-    private RedisHashService successDeckCodeRedisService;
-    private RedisHashService successUserCodeRedisService;
-    private RedisHashService failedBookCodeRedisService;
-    private RedisHashService failedDeckCodeRedisService;
-    private RedisHashService failedUserCodeRedisService;
+    private final RedisHashService successBookCodeRedisService;
+    private final RedisHashService successDeckCodeRedisService;
+    private final RedisHashService successUserCodeRedisService;
+    private final RedisHashService failedBookCodeRedisService;
+    private final RedisHashService failedDeckCodeRedisService;
+    private final RedisHashService failedUserCodeRedisService;
 
     public ScraperJob(
             UserBookRatingCollectionService userBookRatingCollectionService,
@@ -62,9 +64,9 @@ public class ScraperJob implements Job {
             BookCommentCollectionService bookCommentCollectionService,
             BookMetaCollectionService bookMetaCollectionService,
             BookToDecksCollectionService bookToDecksCollectionService,
-            @Qualifier("bookCodeList") RedisStringListService bookRedisService,
-            @Qualifier("userCodeList") RedisStringListService userRedisService,
-            @Qualifier("deckCodeList") RedisStringListService deckRedisService,
+            @Qualifier("pendingBookCode") RedisStringListService pendingBookRedisService,
+            @Qualifier("pendingUserCode") RedisStringListService pendingUserRedisService,
+            @Qualifier("pendingDeckCode") RedisStringListService pendingDeckRedisService,
             @Qualifier("successBookCode") RedisHashService successBookCodeRedisService,
             @Qualifier("successDeckCode") RedisHashService successDeckCodeRedisService,
             @Qualifier("successUserCode") RedisHashService successUserCodeRedisService,
@@ -81,9 +83,9 @@ public class ScraperJob implements Job {
         this.bookCommentCollectionService = bookCommentCollectionService;
         this.bookMetaCollectionService = bookMetaCollectionService;
         this.bookToDecksCollectionService = bookToDecksCollectionService;
-        this.bookRedisService = bookRedisService;
-        this.userRedisService = userRedisService;
-        this.deckRedisService = deckRedisService;
+        this.pendingBookRedisService = pendingBookRedisService;
+        this.pendingUserRedisService = pendingUserRedisService;
+        this.pendingDeckRedisService = pendingDeckRedisService;
         this.successBookCodeRedisService = successBookCodeRedisService;
         this.successDeckCodeRedisService = successDeckCodeRedisService;
         this.successUserCodeRedisService = successUserCodeRedisService;
@@ -96,23 +98,23 @@ public class ScraperJob implements Job {
     @Override
     public void execute(JobExecutionContext context) {
 
-        if (bookRedisService.size() == 0) {
-            bookRedisService.add("byLKj8M");
+        if (pendingBookRedisService.size() == 0) {
+            pendingBookRedisService.add("byLKj8M");
         }
         scrapRoutine();
     }
 
     private void scrapRoutine() {
-        while (bookRedisService.size() > 0) {
-            String bookCode = bookRedisService.pop();
+        while (pendingBookRedisService.size() > 0) {
+            String bookCode = pendingBookRedisService.pop();
             bookJob(bookCode);
 
-            while (deckRedisService.size() > 0) {
-                deckJob(deckRedisService.pop());
+            while (pendingDeckRedisService.size() > 0) {
+                deckJob(pendingDeckRedisService.pop());
             }
 
-            while (userRedisService.size() > 0) {
-                userJob(userRedisService.pop());
+            while (pendingUserRedisService.size() > 0) {
+                userJob(pendingUserRedisService.pop());
             }
         }
     }
@@ -120,11 +122,11 @@ public class ScraperJob implements Job {
     private void bookJob(String bookCode) {
         try {
             if (successBookCodeRedisService.exist(bookCode)) {
-                log.info("bookJob: {} already exist",bookCode);
+                log.info("bookJob: {} already exist", bookCode);
                 return;
             }
 
-            log.info("bookJob: {} start",bookCode);
+            log.info("bookJob: {} start", bookCode);
             WatchaPageInfo param = new WatchaPageInfo(null);
             bookMetaCollectionService.collect(bookCode, param);
 
@@ -145,17 +147,18 @@ public class ScraperJob implements Job {
 
             successBookCodeRedisService.add(new RedisProcessResult(bookCode));
             log.info("bookJob: {}, success", bookCode);
-        } catch (Exception e) {
+        } catch (RetriableCollectionEx e) {
+            pendingBookRedisService.add(bookCode);
+            log.warn("bookJob: {}, 재시도 대상 예외 발생: {}", bookCode, e.getMessage());
+//            retryBookCodeRedisService.add(new RedisProcessResult(bookCode));
+        } catch (CollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
-            log.error("bookJob: {}, error: {}",bookCode, e.getMessage());
+            log.error("bookJob: {}, error: {}", bookCode, e.getMessage());
         }
-
     }
 
     private void deckJob(String deckCode) {
-
         try {
-
             if (successDeckCodeRedisService.exist(deckCode)) {
                 log.info("deckJob: {} already exist",deckCode);
                 return;
@@ -172,21 +175,21 @@ public class ScraperJob implements Job {
 
             successDeckCodeRedisService.add(new RedisProcessResult(deckCode));
             log.info("deckJob: {}, success", deckCode);
-        } catch (Exception e) {
+        } catch (RetriableCollectionEx e) {
+            pendingDeckRedisService.add(deckCode);
+            log.warn("deckJob: {}, 재시도 대상 예외 발생: {}", deckCode, e.getMessage());
+        } catch (CollectionEx e) {
             failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
             log.error("deckJob: {}, error: {}",deckCode, e.getMessage());
         }
-
     }
 
     private void userJob(String userCode) {
         try {
-
             if (successUserCodeRedisService.exist(userCode)) {
                 log.info("userJob: {} already exist",userCode);
                 return;
             }
-
             userInfoCollectionService.collect(userCode, new WatchaPageInfo(null));
 
             WatchaUserBookRatingParam bookRatingParam = new WatchaUserBookRatingParam(1, 10);
@@ -216,7 +219,10 @@ public class ScraperJob implements Job {
 
             successUserCodeRedisService.add(new RedisProcessResult(userCode));
             log.info("userJob: {}, success", userCode);
-        } catch (Exception e) {
+        } catch (RetriableCollectionEx e) {
+            pendingUserRedisService.add(userCode);
+            log.warn("userJob: {}, 재시도 대상 예외 발생: {}", userCode, e.getMessage());
+        } catch (CollectionEx e) {
             failedUserCodeRedisService.add(new RedisProcessResult(userCode));
             log.error("userJob: {}, error: {}",userCode, e.getMessage());
         }

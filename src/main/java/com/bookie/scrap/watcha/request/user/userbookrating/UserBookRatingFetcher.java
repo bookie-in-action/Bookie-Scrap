@@ -5,6 +5,7 @@ import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
+import com.bookie.scrap.watcha.request.deck.deckinfo.DeckInfoResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -35,8 +36,18 @@ public class UserBookRatingFetcher implements WatchaFetcherFactory<UserBookRatin
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-        log.debug(rawJson);
-        return mapper.readValue(rawJson, UserBookRatingResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("json 파싱 실패");
+            return null;
+        }
+//        log.debug(rawJson);
+
+        try {
+            return mapper.readValue(rawJson, UserBookRatingResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("userCode={} userBookRating JSON 파싱 실패: {}", userCode, e.getMessage());
+            return null;
+        }
     }
 
     public String getEndpoint(String bookCode, PageInfo param) {

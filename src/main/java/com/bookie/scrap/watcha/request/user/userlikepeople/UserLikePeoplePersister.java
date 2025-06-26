@@ -19,11 +19,11 @@ public class UserLikePeoplePersister implements WatchaPersistFactory<UserLikePeo
     private final UserLikePeopleMongoRepository repository;
 
     @Override
-    public int persist(UserLikePeopleResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserLikePeopleResponseDto dto, String userCode) {
 
         List<JsonNode> userLikePeople = dto.getResult().getUserLikePeople();
 
-        if (userLikePeople == null || userLikePeople.size() == 0) {
+        if (userLikePeople == null || userLikePeople.isEmpty()) {
             return 0;
         }
 
@@ -31,24 +31,31 @@ public class UserLikePeoplePersister implements WatchaPersistFactory<UserLikePeo
 
         List<UserLikePeopleDocument> documents = new ArrayList<>();
 
+        int count = 0;
         for (int idx = 0; idx < userLikePeople.size(); idx++) {
+            try {
 
-            log.debug(
-                    "userLikePeoples idx: {}, value: {}",
-                    idx,
-                    JsonUtil.toPrettyJson(userLikePeople.get(idx))
-            );
-            log.debug("===========================");
+                UserLikePeopleDocument document = new UserLikePeopleDocument();
+                document.setUserCode(userCode);
+                document.setRawJson(JsonUtil.toMap(userLikePeople.get(idx)));
+                documents.add(document);
 
-            UserLikePeopleDocument document = new UserLikePeopleDocument();
-            document.setUserCode(userCode);
-            document.setRawJson(JsonUtil.toMap(userLikePeople.get(idx)));
-            documents.add(document);
+                log.debug(
+                        "userLikePeoples idx: {}, value: {}",
+                        idx,
+                        JsonUtil.toPrettyJson(userLikePeople.get(idx))
+                );
+                log.debug("===========================");
+
+                count++;
+            } catch (JsonProcessingException e) {
+                log.warn("json 파싱 실패");
+            }
         }
 
         repository.saveAll(documents);
 
-        return userLikePeople.size();
+        return count;
 
     }
 }

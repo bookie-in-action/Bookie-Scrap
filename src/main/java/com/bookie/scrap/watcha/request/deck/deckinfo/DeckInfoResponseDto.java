@@ -46,5 +46,18 @@ public class DeckInfoResponseDto {
             this.userCode = user.get("code").asText();
         }
 
+        @Override
+        public String toString() {
+            return "DeckInfoResponseDto.InnerResult{" +
+                    "updated_at='" + updated_at + '\'' +
+                    ", created_at='" + created_at + '\'' +
+                    ", replies_count='" + replies_count + '\'' +
+                    ", likes_count='" + likes_count + '\'' +
+                    ", contents_count='" + contents_count + '\'' +
+                    ", description='" + description + '\'' +
+                    ", title='" + title + '\'' +
+                    ", deckCode='" + deckCode + '\'' +
+                    '}';
+        }
     }
 }

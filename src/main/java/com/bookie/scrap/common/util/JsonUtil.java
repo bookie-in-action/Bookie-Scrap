@@ -11,7 +11,7 @@ public class JsonUtil {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static Map<String, Object> toMap(JsonNode node) {
+    public static Map<String, Object> toMap(JsonNode node) throws JsonProcessingException {
         return mapper.convertValue(node, new TypeReference<>() {});
     }
 
