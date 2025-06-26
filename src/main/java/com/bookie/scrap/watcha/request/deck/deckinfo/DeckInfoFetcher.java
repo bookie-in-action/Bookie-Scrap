@@ -6,6 +6,7 @@ import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
+import com.bookie.scrap.watcha.request.deck.booklist.BookListResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class DeckInfoFetcher implements WatchaFetcherFactory<DeckInfoResponseDto
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/decks/%s";
 
     @Override
-    public DeckInfoResponseDto fetch(String deckCode, PageInfo param) throws JsonProcessingException {
+    public DeckInfoResponseDto fetch(String deckCode, PageInfo param) {
 
         String endpoint = getEndpoint(deckCode, param);
 
@@ -35,9 +36,19 @@ public class DeckInfoFetcher implements WatchaFetcherFactory<DeckInfoResponseDto
         SpringResponse<String> springResponse = createSpringResponse();
 
         String rawJson = executor.execute(springRequest, springResponse);
-        log.debug(JsonUtil.toPrettyJson(rawJson));
+//        log.debug(JsonUtil.toPrettyJson(rawJson));
 
-        return mapper.readValue(rawJson, DeckInfoResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("json 파싱 실패");
+            return null;
+        }
+
+        try {
+            return mapper.readValue(rawJson, DeckInfoResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("deckCode={} deckInfo JSON 파싱 실패: {}", deckCode, e.getMessage());
+            return null;
+        }
     }
 
     public String getEndpoint(String deckCode, PageInfo param) {

@@ -7,23 +7,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 @RequiredArgsConstructor
 public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRatingResponseDto> {
 
     private final UserBookRatingMongoRepository repository;
 
     @Override
-    public int persist(UserBookRatingResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserBookRatingResponseDto dto, String userCode) {
 
         List<JsonNode> bookRatings = dto.getResult().getBookRatings();
 
-        if (bookRatings == null || bookRatings.size() == 0) {
+        if (bookRatings == null || bookRatings.isEmpty()) {
             return 0;
         }
 
@@ -31,23 +32,30 @@ public class UserBookRatingPersister implements WatchaPersistFactory<UserBookRat
 
         List<UserBookRatingDocument> documents = new ArrayList<>();
 
+        int count = 0;
         for (int idx = 0; idx < bookRatings.size(); idx++) {
 
-            log.debug(
-                    "userBookRating idx: {}, value: {}",
-                    idx,
-                    JsonUtil.toPrettyJson(bookRatings.get(idx))
-            );
-            log.debug("===========================");
+            try {
+                UserBookRatingDocument document = new UserBookRatingDocument();
+                document.setUserCode(userCode);
+                document.setRawJson(JsonUtil.toMap(bookRatings.get(idx)));
+                documents.add(document);
 
-            UserBookRatingDocument document = new UserBookRatingDocument();
-            document.setUserCode(userCode);
-            document.setRawJson(JsonUtil.toMap(bookRatings.get(idx)));
-            documents.add(document);
+                log.debug(
+                        "userBookRating idx: {}, value: {}",
+                        idx,
+                        JsonUtil.toPrettyJson(bookRatings.get(idx))
+                );
+                log.debug("===========================");
+
+                count++;
+            } catch (JsonProcessingException e) {
+                log.warn("json 파싱 실패");
+            }
         }
 
         repository.saveAll(documents);
 
-        return bookRatings.size();
+        return count;
     }
 }

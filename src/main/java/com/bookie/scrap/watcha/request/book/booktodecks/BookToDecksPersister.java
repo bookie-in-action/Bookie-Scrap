@@ -8,19 +8,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
     private final RedisStringListService deckRedisService;
     private final BookToDecksMongoRepository repository;
 
     public BookToDecksPersister(
-            @Qualifier("deckCodeList") RedisStringListService deckRedisService,
+            @Qualifier("pendingDeckCode") RedisStringListService deckRedisService,
             BookToDecksMongoRepository repository
     ) {
         this.deckRedisService = deckRedisService;
@@ -28,11 +29,11 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
     }
 
     @Override
-    public int persist(BookToDecksResponseDto dto, String bookCode) throws JsonProcessingException {
+    public int persist(BookToDecksResponseDto dto, String bookCode) {
 
         List<JsonNode> decks = dto.getResult().getDecks();
 
-        if (decks == null || decks.size() == 0) {
+        if (decks == null || decks.isEmpty()) {
             return 0;
         }
 
@@ -40,25 +41,31 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
 
         List<BookToDecksDocument> documents = new ArrayList<>();
 
+        int count = 0;
         for (int idx = 0; idx < decks.size(); idx++) {
+            try {
+                BookToDecksDocument document = new BookToDecksDocument();
+                document.setBookCode(bookCode);
+                document.setRawJson(JsonUtil.toMap(decks.get(idx)));
+                documents.add(document);
 
-            log.debug(
-                    "decks idx: {}, value: {}",
-                    idx,
-                    JsonUtil.toPrettyJson(decks.get(idx))
-            );
-            log.debug("===========================");
+                log.debug(
+                        "decks idx: {}, value: {}",
+                        idx,
+                        JsonUtil.toPrettyJson(decks.get(idx))
+                );
+                log.debug("===========================");
 
-            BookToDecksDocument document = new BookToDecksDocument();
-            document.setBookCode(bookCode);
-            document.setRawJson(JsonUtil.toMap(decks.get(idx)));
-            documents.add(document);
+                count++;
+            } catch (JsonProcessingException e) {
+                log.warn("json 파싱 실패");
+            }
         }
 
         deckRedisService.add(dto.getResult().getDeckCodes());
         repository.saveAll(documents);
 
-        return decks.size();
+        return count;
 
     }
 }

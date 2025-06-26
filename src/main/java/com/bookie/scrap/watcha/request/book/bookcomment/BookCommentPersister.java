@@ -8,20 +8,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository
 public class BookCommentPersister implements WatchaPersistFactory<BookCommentResponseDto> {
-
 
     private final RedisStringListService userRedisService;
     private final BookCommentMongoRepository repository;
 
     public BookCommentPersister(
-            @Qualifier("userCodeList") RedisStringListService userRedisService,
+            @Qualifier("pendingUserCode") RedisStringListService userRedisService,
             BookCommentMongoRepository repository
     ) {
         this.userRedisService = userRedisService;
@@ -29,36 +29,43 @@ public class BookCommentPersister implements WatchaPersistFactory<BookCommentRes
     }
 
     @Override
-    public int persist(BookCommentResponseDto dto, String bookCode) throws JsonProcessingException {
+    public int persist(BookCommentResponseDto dto, String bookCode) {
 
         List<JsonNode> comments = dto.getResult().getComments();
 
-        if (comments == null || comments.size() == 0) {
+        if (comments == null || comments.isEmpty()) {
             return 0;
         }
 
         log.debug("size: {}",comments.size());
 
         List<BookCommentDocument> documents = new ArrayList<>();
-        List<String> userCodes = new ArrayList<>();
+
+        int count = 0;
         for (int idx = 0; idx < comments.size(); idx++) {
 
-            log.debug(
-                    "comment idx: {}, value: {}",
-                    idx,
-                    JsonUtil.toPrettyJson(comments.get(idx))
-            );
-            log.debug("===========================");
+            try {
+                BookCommentDocument document = new BookCommentDocument();
+                document.setBookCode(bookCode);
+                document.setRawJson(JsonUtil.toMap(comments.get(idx)));
+                documents.add(document);
 
-            BookCommentDocument document = new BookCommentDocument();
-            document.setBookCode(bookCode);
-            document.setRawJson(JsonUtil.toMap(comments.get(idx)));
-            documents.add(document);
+                log.debug(
+                        "comment idx: {}, value: {}",
+                        idx,
+                        JsonUtil.toPrettyJson(comments.get(idx))
+                );
+                log.debug("===========================");
+
+                count++;
+            } catch (JsonProcessingException e) {
+                log.warn("json 파싱 실패");
+            }
         }
 
         repository.saveAll(documents);
         userRedisService.add(dto.getResult().getUserCodes());
-        return comments.size();
+        return count;
 
     }
 }

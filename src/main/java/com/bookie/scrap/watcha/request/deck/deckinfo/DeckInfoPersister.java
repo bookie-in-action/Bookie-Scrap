@@ -7,9 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
-@Component
+@Repository
 public class DeckInfoPersister implements WatchaPersistFactory<DeckInfoResponseDto> {
 
     private final RedisStringListService userRedisService;
@@ -17,7 +18,7 @@ public class DeckInfoPersister implements WatchaPersistFactory<DeckInfoResponseD
     private final DeckInfoMongoRepository repository;
 
     public DeckInfoPersister(
-            @Qualifier("userCodeList") RedisStringListService userRedisService,
+            @Qualifier("pendingUserCode") RedisStringListService userRedisService,
             DeckInfoMongoRepository repository
     ) {
         this.userRedisService = userRedisService;
@@ -25,13 +26,22 @@ public class DeckInfoPersister implements WatchaPersistFactory<DeckInfoResponseD
     }
 
     @Override
-    public int persist(DeckInfoResponseDto dto, String deckCode) throws JsonProcessingException {
+    public int persist(DeckInfoResponseDto dto, String deckCode) {
 
-        DeckInfoDocument document = new DeckInfoDocument();
-        document.setDeckCode(deckCode);
-        document.setRawJson(JsonUtil.toMap(dto.getResult()));
+        try {
+            DeckInfoDocument document = new DeckInfoDocument();
+            document.setDeckCode(deckCode);
+            document.setRawJson(JsonUtil.toMap(dto.getResult()));
+            repository.save(document);
 
-        repository.save(document);
+            log.debug(dto.getResult().toString());
+            log.debug("===========================");
+
+        } catch (JsonProcessingException e) {
+            log.warn("json 파싱 실패");
+             return 0;
+        }
+
         userRedisService.add(dto.getResult().getUserCode());
 
         return 1;

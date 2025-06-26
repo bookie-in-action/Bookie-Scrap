@@ -5,6 +5,7 @@ import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
 import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
+import com.bookie.scrap.watcha.request.user.userbookrating.UserBookRatingResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class UserInfoFetcher implements WatchaFetcherFactory<UserInfoResponseDto
     @Getter private final String HTTP_URL_PATTERN = "https://pedia.watcha.com/api/users/%s";
 
     @Override
-    public UserInfoResponseDto fetch(String userCode, PageInfo param) throws JsonProcessingException {
+    public UserInfoResponseDto fetch(String userCode, PageInfo param) {
 
         String endpoint = String.format(HTTP_URL_PATTERN, userCode);
 
@@ -35,7 +36,16 @@ public class UserInfoFetcher implements WatchaFetcherFactory<UserInfoResponseDto
 
         String rawJson = executor.execute(springRequest, springResponse);
 
-        return mapper.readValue(rawJson, UserInfoResponseDto.class);
+        if (rawJson == null || rawJson.isBlank()) {
+            log.warn("json 파싱 실패");
+            return null;
+        }
+        try {
+            return mapper.readValue(rawJson, UserInfoResponseDto.class);
+        } catch (JsonProcessingException e) {
+            log.warn("userCode={} userInfo JSON 파싱 실패: {}", userCode, e.getMessage());
+            return null;
+        }
 
     }
 

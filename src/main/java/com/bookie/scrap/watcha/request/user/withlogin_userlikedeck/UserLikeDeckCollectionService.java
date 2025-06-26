@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.bookie.scrap.common.exception.CollectionEx.MAKE;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class UserLikeDeckCollectionService implements WatchaCollectorService {
             UserLikeDeckResponseDto response = fetcher.fetch(userCode, param);
             return persister.persist(response, userCode);
         } catch (Exception e) {
-            throw MAKE("userCode:" + userCode + ":UserLikeDeckCollectionService", e);
+            throw new CollectionEx("userCode:" + userCode + ":UserLikeDeckCollectionService", e);
         }
     }
 }

@@ -7,16 +7,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
-@Component
+@Repository
 @RequiredArgsConstructor
 public class BookMetaNosqlPersister implements WatchaPersistFactory<BookMetaResponseDto> {
 
     private final BookMetaMongoRepository repository;
 
     @Override
-    public int persist(BookMetaResponseDto dto, String bookCode) throws JsonProcessingException {
+    public int persist(BookMetaResponseDto dto, String bookCode) {
 
         JsonNode bookMeta = dto.getBookMeta();
 
@@ -24,20 +25,25 @@ public class BookMetaNosqlPersister implements WatchaPersistFactory<BookMetaResp
             return 0;
         }
 
-        log.debug(
-                "bookCode: {}, value: {}",
-                bookCode,
-                JsonUtil.toPrettyJson(bookMeta)
-        );
-        log.debug("===========================");
-
-
         BookMetaDocument document = new BookMetaDocument();
-        document.setBookCode(bookCode);
-        document.setRawJson(JsonUtil.toMap(bookMeta));
-        repository.save(document);
 
-        return 1;
+        try {
+            document.setBookCode(bookCode);
+            document.setRawJson(JsonUtil.toMap(bookMeta));
+            repository.save(document);
+
+            log.debug(
+                    "bookCode: {}, value: {}",
+                    bookCode,
+                    JsonUtil.toPrettyJson(bookMeta)
+            );
+            log.debug("===========================");
+
+            return 1;
+        } catch (JsonProcessingException e) {
+            log.warn("json 파싱 실패");
+            return 0;
+        }
 
     }
 }

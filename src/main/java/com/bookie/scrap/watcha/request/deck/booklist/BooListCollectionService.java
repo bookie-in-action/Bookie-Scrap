@@ -2,16 +2,19 @@ package com.bookie.scrap.watcha.request.deck.booklist;
 
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
+import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksResponseDto;
+import com.mongodb.MongoTimeoutException;
+import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bookie.scrap.common.exception.CollectionEx.MAKE;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BooListCollectionService implements WatchaCollectorService {
@@ -22,12 +25,22 @@ public class BooListCollectionService implements WatchaCollectorService {
 
     @Override
     @Transactional
-    public int collect(String deckCode, PageInfo param) throws CollectionEx {
+    public int collect(String deckCode, PageInfo param) {
         try {
             BookListResponseDto response = fetcher.fetch(deckCode, param);
-            return persister.persist(response, deckCode);
+
+            if (response == null) {
+                log.warn("deckCode={} 의 bookList 수집 실패: fetch 결과가 null", deckCode);
+                return 0;
+            }
+            try {
+                return persister.persist(response, deckCode);
+            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+                log.warn("deckCode={} bookList DB 연결 실패: {}", deckCode, e.getMessage());
+                throw new RetriableCollectionEx("DB 연결 실패", e);
+            }
         } catch (Exception e) {
-            throw MAKE("deckCode:" + deckCode + ":DeckCollectionService", e);
+            throw new CollectionEx("deckCode:" + deckCode + ":DeckCollectionService", e);
         }
     }
 
@@ -38,7 +51,7 @@ public class BooListCollectionService implements WatchaCollectorService {
             persister.persist(response, deckCode);
             return response.getResult().getBookCodes();
         } catch (Exception e) {
-            throw MAKE("deckCode:" + deckCode + ":DeckCollectionService", e);
+            throw new CollectionEx("deckCode:" + deckCode + ":DeckCollectionService", e);
         }
     }
 }

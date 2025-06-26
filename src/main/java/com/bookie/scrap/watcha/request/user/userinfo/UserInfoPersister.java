@@ -7,31 +7,38 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
-@Component
+@Repository
 @RequiredArgsConstructor
 public class UserInfoPersister implements WatchaPersistFactory<UserInfoResponseDto> {
 
     private final UserInfoMongoRepository repository;
 
     @Override
-    public int persist(UserInfoResponseDto dto, String userCode) throws JsonProcessingException {
+    public int persist(UserInfoResponseDto dto, String userCode) {
 
         JsonNode userInfo = dto.getUserInfo();
 
-        if (userInfo == null || userInfo.size() == 0) {
+        if (userInfo == null || userInfo.isEmpty()) {
             return 0;
         }
 
-        log.debug(JsonUtil.toPrettyJson(userInfo));
-        log.debug("===========================");
+        try {
 
-        UserInfoDocument document = new UserInfoDocument();
-        document.setUserCode(userCode);
-        document.setRawJson(JsonUtil.toMap(userInfo));
-        repository.save(document);
+            UserInfoDocument document = new UserInfoDocument();
+            document.setUserCode(userCode);
+            document.setRawJson(JsonUtil.toMap(userInfo));
+            repository.save(document);
 
-        return 1;
+            log.debug(JsonUtil.toPrettyJson(userInfo));
+            log.debug("===========================");
+
+            return 1;
+        } catch (JsonProcessingException e) {
+            log.warn("json 파싱 실패");
+            return 0;
+        }
     }
 }

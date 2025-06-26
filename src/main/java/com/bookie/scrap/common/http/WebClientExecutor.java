@@ -45,7 +45,12 @@ public class WebClientExecutor {
             redisConnectionService.add();
             return executeWithRetry(springRequest, springResponse);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            log.error("쓰레드 인터럽트 발생", e);
+            return null;
+        } catch (RuntimeException e) {
+            log.error("WebClient 실행 중 오류 발생 {} 이상 오류 발생", MAX_RETRIES, e);
+            return null;
         }
     }
 
