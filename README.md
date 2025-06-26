@@ -12,7 +12,11 @@ Bookie-Scrap은 Watcha와 같은 플랫폼에서 도서 관련 데이터를 수�
 
 - **ScrapApp**: 메인 애플리케이션 클래스 (CommandLineRunner 구현)
 - **WatchaCollectorService**: Watcha 플랫폼 데이터 수집 서비스
-- **MongoDB 저장소**: 수집된 데이터 저장을 위한 NoSQL 데이터베이스
+- **이중 저장소 아키텍처**:
+  - **MongoDB**: 원시 데이터 저장을 위한 NoSQL 데이터베이스
+  - **JPA/RDB**: 구조화된 데이터 저장을 위한 관계형 데이터베이스
+- **Redis**: 캐싱 및 임시 데이터 저장
+- **예외 처리 메커니즘**: 커스텀 예외 클래스와 재시도 로직 구현
 
 ### 데이터 수집 도메인
 
@@ -36,7 +40,9 @@ Bookie-Scrap은 Watcha와 같은 플랫폼에서 도서 관련 데이터를 수�
 - **Java 17**
 - **Spring Boot** (CommandLineRunner)
 - **Spring WebFlux** (비동기 웹 요청)
-- **MongoDB** (데이터 저장소)
+- **MongoDB** (NoSQL 데이터 저장소)
+- **Spring Data JPA** (관계형 데이터베이스 연동)
+- **Redis** (캐싱 및 데이터 저장)
 - **Lombok** (코드 간소화)
 - **Gradle** (빌드 도구)
 
@@ -83,12 +89,20 @@ src/main/java/com/bookie/scrap/
 
 ## 📊 데이터 수집 프로세스
 
-1. **Fetcher**: 웹 요청을 통해 데이터 수집
-2. **Document**: 수집된 데이터를 MongoDB 문서 형태로 변환
-3. **Persister**: MongoDB에 데이터 저장
-4. **Repository**: 데이터 접근 계층
+1. **Fetcher**: WebFlux를 활용한 비동기 웹 요청으로 데이터 수집
+2. **Persister**: 트랜잭션 관리 하에 MongoDB와 RDB에 데이터 동시 저장
+3. **Repository**: MongoDB와 JPA 기반 데이터 접근 계층
 
-각 도메인별로 위 프로세스가 구현되어 있어 체계적인 데이터 수집이 가능합니다.
+### 기술적 특징
+- **예외 처리 전략**: 
+  - 커스텀 예외 클래스(CollectionEx, RetriableCollectionEx)를 통한 체계적 오류 관리
+  - 데이터베이스 연결 실패 시 자동 재시도 메커니즘
+- **이중 저장소 전략**: 
+  - MongoDB: 유연한 스키마로 원시 데이터 저장
+  - RDB: 구조화된 데이터 분석 및 조회 최적화
+- **Redis 활용**: 빈번한 요청 데이터 캐싱으로 성능 최적화
+
+각 도메인별로 위 프로세스가 구현되어 있어 체계적이고 안정적인 데이터 수집이 가능합니다.
 
 ## 📝 라이선스
 
