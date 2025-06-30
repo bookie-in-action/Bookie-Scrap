@@ -22,10 +22,10 @@ public class RedisConnectionService {
 
     public void add() {
         if (!redisTemplate.hasKey(namespace.getPrefix())) {
-            hashOps().put(namespace.getPrefix(), "startTime", ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString());
+            hashOps().put(namespace.getPrefix(), "startTime", Instant.now().toString());
         }
 
-        hashOps().put(namespace.getPrefix(), "endTime", ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString());
+        hashOps().put(namespace.getPrefix(), "endTime", Instant.now().toString());
 
         redisTemplate.opsForHash().increment(namespace.getPrefix(), "count", 1);
     }
