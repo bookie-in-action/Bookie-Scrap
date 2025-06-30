@@ -2,6 +2,7 @@
 package com.bookie.scrap.common.domain;
 
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.util.StringUtils;
@@ -10,6 +11,7 @@ import java.net.URISyntaxException;
 
 
 @Slf4j
+@Getter
 public abstract class PageInfo {
 
     protected int page;

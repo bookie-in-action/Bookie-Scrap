@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,7 +44,7 @@ class RedisHashServiceTest {
         service.delete(bookCode);
         assertFalse(service.exist(bookCode), "테스트 시작 전 redis에 code가 존재하지 않아야 함");
 
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         RedisProcessResult redisProcessResult = new RedisProcessResult(bookCode, now);
 
         int addResult = service.add(redisProcessResult);
@@ -66,7 +66,7 @@ class RedisHashServiceTest {
         // 테스트 전 기존 데이터 삭제
         service.delete(bookCode);
 
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         RedisProcessResult redisProcessResult = new RedisProcessResult(bookCode, now);
 
         service.add(redisProcessResult);
@@ -88,7 +88,8 @@ class RedisHashServiceTest {
     @MethodSource("provideTestCodes")
     @DisplayName("Redis에 저장된 RedisProcessResult 삭제 검증")
     void testDelete(String bookCode) {
-        LocalDateTime now = LocalDateTime.now();
+
+        Instant now = Instant.now();
         RedisProcessResult redisProcessResult = new RedisProcessResult(bookCode, now);
 
         service.add(redisProcessResult);

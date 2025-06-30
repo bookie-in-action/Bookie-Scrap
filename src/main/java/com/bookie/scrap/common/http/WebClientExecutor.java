@@ -1,6 +1,8 @@
 package com.bookie.scrap.common.http;
 
 import com.bookie.scrap.common.redis.RedisConnectionService;
+import com.bookie.scrap.common.util.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Function;
 
 
@@ -99,8 +102,18 @@ public class WebClientExecutor {
                     )
                     .doOnError(e -> log.error("WebClient 처리 실패", e));
 
-            return responseMono.block();
+            log.debug("===========================");
 
+            T webClientResponse = responseMono.block();
+
+            try {
+                log.debug("webClient Response: {}", JsonUtil.toPrettyJson(Objects.requireNonNull(webClientResponse).toString()));
+            } catch (JsonProcessingException e) {
+                log.debug("webClient Response: {}", Objects.requireNonNull(webClientResponse));
+            }
+            log.debug("===========================");
+
+            return webClientResponse;
         } catch (WebClientException e) {
             log.error("WebClientExecutor 실행 중 예외 발생", e);
             return null;

@@ -1,13 +1,7 @@
 package com.bookie.legacy.common.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-
-import static org.junit.jupiter.api.Assertions.*;
 @Disabled
 class ThreadTest {
 

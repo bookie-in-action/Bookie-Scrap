@@ -32,10 +32,17 @@ public class UserWishBookCollectionService implements WatchaCollectorService {
             }
 
             try {
-                return persister.persist(response, userCode);
+                int savedCnt = persister.persist(response, userCode);
+                log.info(
+                        "userCode={} userWishBook service page={} saved={}/{} success",
+                        userCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("userCode={} userWishBook DB 연결 실패: {}", userCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("userCode=" + userCode + " userWishBook DB 연결 실패", e);
             }
         } catch (Exception e) {
             throw new CollectionEx("userCode:" + userCode + ":UserWishBookCollectionService", e);
