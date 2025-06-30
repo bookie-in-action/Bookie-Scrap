@@ -47,10 +47,12 @@ public class BooListCollectionService implements WatchaCollectorService {
             }
             try {
                 bookRedisService.add(response.getResult().getBookCodes());
-                return persister.persist(response, deckCode);
+                int savedCnt = persister.persist(response, deckCode);
+                log.info("deckCode={} bookList service saved={}/{} success", deckCode, param.getSize(), savedCnt);
+
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("deckCode={} bookList DB 연결 실패: {}", deckCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("deckCode=" + deckCode + " bookList DB 연결 실패", e);
             }
         } catch (Exception e) {
             throw new CollectionEx("deckCode:" + deckCode + ":DeckCollectionService", e);

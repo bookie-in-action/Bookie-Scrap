@@ -45,10 +45,12 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
 
             try {
                 userRedisService.add(response.getResult().getUserCode());
-                return persister.persist(response, deckCode);
+                int savedCnt = persister.persist(response, deckCode);
+                log.info("deckCode={} deckInfo service saved={}/{} success", deckCode, param.getSize(), savedCnt);
+
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("deckCode={} deckInfo DB 연결 실패: {}", deckCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("deckCode=" + deckCode + " deckInfo DB 연결 실패", e);
             }
         } catch (Exception e) {
             throw new CollectionEx("deckCode:" + deckCode + ":DeckInfoCollectionService", e);

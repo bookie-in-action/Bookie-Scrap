@@ -47,10 +47,12 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
 
             try {
                 deckRedisService.add(response.getResult().getDeckCodes());
-                return persister.persist(response, bookCode);
+                int savedCnt = persister.persist(response, bookCode);
+                log.info("bookCode={} toDecks service saved={}/{} success", bookCode, param.getSize(), savedCnt);
+
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("bookCode={} toDecks DB 연결 실패: {}", bookCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("bookCode=" + bookCode + " toDeck DB 연결 실패", e);
             }
 
         } catch (Exception e) {

@@ -40,16 +40,18 @@ public class BookCommentCollectionService implements WatchaCollectorService {
             BookCommentResponseDto response = fetcher.fetch(bookCode, param);
 
             if (response == null) {
-                log.warn("bookCode={} 의 comment 수집 실패: fetch 결과가 null", bookCode);
+                log.warn("bookCode={} 의 bookComment 수집 실패: fetch 결과가 null", bookCode);
                 return 0;
             }
 
             try {
                 userRedisService.add(response.getResult().getUserCodes());
-                return persister.persist(response, bookCode);
+                int savedCnt = persister.persist(response, bookCode);
+                log.info("bookCode={} bookComment service saved={}/{} success", bookCode, param.getSize(), savedCnt);
+
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("bookCode={} comment DB 연결 실패: {}", bookCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("bookCode=" + bookCode + " bookComment DB 연결 실패", e);
             }
         }
         catch (Exception e) {
