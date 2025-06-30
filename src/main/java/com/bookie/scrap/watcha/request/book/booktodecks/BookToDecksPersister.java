@@ -5,6 +5,7 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -15,18 +16,10 @@ import java.util.List;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksResponseDto> {
 
-    private final RedisStringListService deckRedisService;
     private final BookToDecksMongoRepository repository;
-
-    public BookToDecksPersister(
-            @Qualifier("pendingDeckCode") RedisStringListService deckRedisService,
-            BookToDecksMongoRepository repository
-    ) {
-        this.deckRedisService = deckRedisService;
-        this.repository = repository;
-    }
 
     @Override
     public int persist(BookToDecksResponseDto dto, String bookCode) {
@@ -62,7 +55,6 @@ public class BookToDecksPersister implements WatchaPersistFactory<BookToDecksRes
             }
         }
 
-        deckRedisService.add(dto.getResult().getDeckCodes());
         repository.saveAll(documents);
 
         return count;

@@ -27,7 +27,7 @@ public class BookMetaDocument {
 
     public BookMetaDocument() {
         this.id = UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }
 

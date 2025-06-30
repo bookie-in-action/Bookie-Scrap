@@ -3,12 +3,14 @@ package com.bookie.scrap.watcha.request.deck.booklist;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
+import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksResponseDto;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +18,22 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class BooListCollectionService implements WatchaCollectorService {
 
     private final BookListFetcher fetcher;
     private final BookListPersister persister;
+    private final RedisStringListService bookRedisService;
 
+
+    public BooListCollectionService(
+            BookListFetcher fetcher,
+            BookListPersister persister,
+            @Qualifier("pendingBookCode") RedisStringListService bookRedisService
+    ) {
+        this.fetcher = fetcher;
+        this.persister = persister;
+        this.bookRedisService = bookRedisService;
+    }
 
     @Override
     @Transactional
@@ -34,6 +46,7 @@ public class BooListCollectionService implements WatchaCollectorService {
                 return 0;
             }
             try {
+                bookRedisService.add(response.getResult().getBookCodes());
                 return persister.persist(response, deckCode);
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
                 log.warn("deckCode={} bookList DB 연결 실패: {}", deckCode, e.getMessage());

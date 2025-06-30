@@ -32,7 +32,7 @@ public class UserInfoCollectionService implements WatchaCollectorService {
 
             try {
                 return persister.persist(response, userCode);
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 log.warn("userCode={} userInfo DB 연결 실패: {}", userCode, e.getMessage());
                 throw new RetriableCollectionEx("DB 연결 실패", e);
             }
