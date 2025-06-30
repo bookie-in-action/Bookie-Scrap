@@ -1,5 +1,6 @@
 package com.bookie.scrap.watcha.request.book.booktodecks;
 
+import com.bookie.scrap.common.domain.BaseDocument;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -13,20 +14,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document(collection = "watcha_book_deck")
-public class BookToDecksDocument {
-
-    @Id
-    private String id;
+public class BookToDecksDocument extends BaseDocument {
 
     private String bookCode;
 
     private Map<String, Object> rawJson;
 
-    private ZonedDateTime createdAt;
-
     public BookToDecksDocument() {
-        this.id = UUID.randomUUID().toString();
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
+        super();
     }
 }
 

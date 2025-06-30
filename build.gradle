@@ -84,10 +84,10 @@ dependencies {
 test {
     useJUnitPlatform()
     exclude '**/legacy/**'
-
-    useJUnitPlatform {
-        excludeTags 'manual'
-    }
+//
+//    useJUnitPlatform {
+//        excludeTags 'manual'
+//    }
 }
 
 
