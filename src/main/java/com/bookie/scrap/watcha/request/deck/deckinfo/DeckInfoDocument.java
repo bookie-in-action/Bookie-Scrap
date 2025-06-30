@@ -5,8 +5,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,11 +22,11 @@ public class DeckInfoDocument {
 
     private Map<String, Object> rawJson;
 
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     public DeckInfoDocument() {
         this.id = UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")); // 명확한 timezone
     }
 }
 

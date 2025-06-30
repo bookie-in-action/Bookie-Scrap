@@ -3,7 +3,7 @@ package com.bookie.scrap.common.redis;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.time.Instant;
+import java.time.*;
 
 
 public class RedisConnectionService {
@@ -22,10 +22,10 @@ public class RedisConnectionService {
 
     public void add() {
         if (!redisTemplate.hasKey(namespace.getPrefix())) {
-            hashOps().put(namespace.getPrefix(), "startTime", Instant.now().toString());
+            hashOps().put(namespace.getPrefix(), "startTime", ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString());
         }
 
-        hashOps().put(namespace.getPrefix(), "endTime", Instant.now().toString());
+        hashOps().put(namespace.getPrefix(), "endTime", ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString());
 
         redisTemplate.opsForHash().increment(namespace.getPrefix(), "count", 1);
     }
