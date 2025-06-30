@@ -48,7 +48,13 @@ public class BooListCollectionService implements WatchaCollectorService {
             try {
                 bookRedisService.add(response.getResult().getBookCodes());
                 int savedCnt = persister.persist(response, deckCode);
-                log.info("deckCode={} bookList service saved={}/{} success", deckCode, param.getSize(), savedCnt);
+                log.info(
+                        "deckCode={} bookList service page={} saved={}/{} success",
+                        deckCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
 
                 return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {

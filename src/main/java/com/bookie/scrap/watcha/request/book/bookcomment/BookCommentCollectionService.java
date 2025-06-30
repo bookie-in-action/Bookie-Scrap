@@ -47,7 +47,13 @@ public class BookCommentCollectionService implements WatchaCollectorService {
             try {
                 userRedisService.add(response.getResult().getUserCodes());
                 int savedCnt = persister.persist(response, bookCode);
-                log.info("bookCode={} bookComment service saved={}/{} success", bookCode, param.getSize(), savedCnt);
+                log.info(
+                        "bookCode={} bookComment service page={} saved={}/{} success",
+                        bookCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
 
                 return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {

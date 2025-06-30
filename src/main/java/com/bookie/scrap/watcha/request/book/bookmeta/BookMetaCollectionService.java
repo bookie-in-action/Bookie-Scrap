@@ -42,7 +42,13 @@ public class BookMetaCollectionService implements WatchaCollectorService {
                 }
                 savedCnt = sqlSavedCnt;
 
-                log.info("bookCode={} bookMeta service saved={}/{} success", bookCode, param.getSize(), savedCnt);
+                log.info(
+                        "bookCode={} bookMeta service page={} saved={}/{} success",
+                        bookCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
                 return savedCnt;
 
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {

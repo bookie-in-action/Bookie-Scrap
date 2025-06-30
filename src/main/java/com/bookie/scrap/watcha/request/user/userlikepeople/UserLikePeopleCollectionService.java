@@ -32,7 +32,13 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
 
             try {
                 int savedCnt = persister.persist(response, userCode);
-                log.info("userCode={} userLikePeople service saved={}/{} success", userCode, param.getSize(), savedCnt);
+                log.info(
+                        "userCode={} userLikePeople service page={} saved={}/{} success",
+                        userCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
                 return savedCnt;
             } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("userCode=" + userCode + " userLikePeople DB 연결 실패", e);

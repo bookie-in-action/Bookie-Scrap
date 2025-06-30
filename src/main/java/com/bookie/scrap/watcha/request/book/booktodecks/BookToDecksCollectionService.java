@@ -48,7 +48,13 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
             try {
                 deckRedisService.add(response.getResult().getDeckCodes());
                 int savedCnt = persister.persist(response, bookCode);
-                log.info("bookCode={} toDecks service saved={}/{} success", bookCode, param.getSize(), savedCnt);
+                log.info(
+                        "bookCode={} toDecks service page={} saved={}/{} success",
+                        bookCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
 
                 return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
