@@ -1,6 +1,7 @@
 .gradle
 build/
 
+
 *.properties
 *.json
 *.yml
@@ -8,6 +9,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+!/docker-compose.yml
+
 !/server/
 !/server/config/
 !/server/config/application-docker.yml
