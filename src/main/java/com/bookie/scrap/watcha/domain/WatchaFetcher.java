@@ -6,7 +6,7 @@ import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import org.springframework.http.HttpMethod;
 
-public interface WatchaFetcherFactory<T> {
+public interface WatchaFetcher<T> {
 
     HttpMethod getHTTP_METHOD();
 

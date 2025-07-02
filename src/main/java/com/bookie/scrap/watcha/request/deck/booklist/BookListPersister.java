@@ -2,12 +2,11 @@ package com.bookie.scrap.watcha.request.deck.booklist;
 
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
-import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
+import com.bookie.scrap.watcha.domain.WatchaPersistor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class BookListPersister implements WatchaPersistFactory<BookListResponseDto> {
+public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
 
     private final RedisStringListService bookRedisService;
 

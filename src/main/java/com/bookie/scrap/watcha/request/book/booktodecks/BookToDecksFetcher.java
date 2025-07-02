@@ -4,8 +4,7 @@ import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.http.SpringRequest;
 import com.bookie.scrap.common.http.SpringResponse;
 import com.bookie.scrap.common.http.WebClientExecutor;
-import com.bookie.scrap.watcha.domain.WatchaFetcherFactory;
-import com.bookie.scrap.watcha.request.book.bookmeta.BookMetaResponseDto;
+import com.bookie.scrap.watcha.domain.WatchaFetcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BookToDecksFetcher implements WatchaFetcherFactory<BookToDecksResponseDto> {
+public class BookToDecksFetcher implements WatchaFetcher<BookToDecksResponseDto> {
 
     private final WebClientExecutor executor;
     private final ObjectMapper mapper;
