@@ -5,6 +5,7 @@ build/
 *.properties
 *.json
 *.yml
+*.jar
 
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
