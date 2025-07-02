@@ -2,7 +2,7 @@ FROM openjdk:17-jdk-alpine
 
 WORKDIR /server
 
-COPY server/ /server/
+COPY server/ /
 
 RUN chmod +x /server/bin/boot.sh
 
