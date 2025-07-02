@@ -18,7 +18,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://bookie-mongodb:27017
+      uri: mongodb://bookie-mongodb:27017/test
     redis:
       host: bookie-redis
       port: 6379
