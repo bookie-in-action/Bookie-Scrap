@@ -4,6 +4,7 @@ import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -12,17 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DeckInfoPersister implements WatchaPersistor<DeckInfoResponseDto> {
 
-    private final RedisStringListService userRedisService;
-
     private final DeckInfoMongoRepository repository;
-
-    public DeckInfoPersister(
-            @Qualifier("pendingUserCode") RedisStringListService userRedisService,
-            DeckInfoMongoRepository repository
-    ) {
-        this.userRedisService = userRedisService;
-        this.repository = repository;
-    }
 
     @Override
     public int persist(DeckInfoResponseDto dto, String deckCode) {
@@ -40,8 +31,6 @@ public class DeckInfoPersister implements WatchaPersistor<DeckInfoResponseDto> {
             log.warn("json 파싱 실패");
              return 0;
         }
-
-        userRedisService.add(dto.getResult().getUserCode());
 
         return 1;
     }

@@ -5,6 +5,7 @@ import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -16,16 +17,7 @@ import java.util.List;
 @Repository
 public class BookCommentPersister implements WatchaPersistor<BookCommentResponseDto> {
 
-    private final RedisStringListService userRedisService;
     private final BookCommentMongoRepository repository;
-
-    public BookCommentPersister(
-            @Qualifier("pendingUserCode") RedisStringListService userRedisService,
-            BookCommentMongoRepository repository
-    ) {
-        this.userRedisService = userRedisService;
-        this.repository = repository;
-    }
 
     @Override
     public int persist(BookCommentResponseDto dto, String bookCode) {
@@ -36,7 +28,6 @@ public class BookCommentPersister implements WatchaPersistor<BookCommentResponse
             return 0;
         }
 
-        log.debug("size: {}",comments.size());
 
         List<BookCommentDocument> documents = new ArrayList<>();
 
@@ -61,9 +52,8 @@ public class BookCommentPersister implements WatchaPersistor<BookCommentResponse
                 log.warn("json 파싱 실패");
             }
         }
-
         repository.saveAll(documents);
-        userRedisService.add(dto.getResult().getUserCodes());
+
         return count;
 
     }

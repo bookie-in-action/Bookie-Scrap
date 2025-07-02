@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @SuperBuilder
@@ -19,10 +19,10 @@ public abstract class BaseEntity {
     @Getter private String snowflakeId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     private void prePersist() {
@@ -30,7 +30,7 @@ public abstract class BaseEntity {
             this.snowflakeId = UUID.randomUUID().toString();
         }
         if (this.createdAt == null) {
-            LocalDateTime now = LocalDateTime.now();
+            Instant now = Instant.now();
             this.createdAt = now;
             this.updatedAt = now;
         }
@@ -39,7 +39,7 @@ public abstract class BaseEntity {
 
     @PreUpdate
     private void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
 }

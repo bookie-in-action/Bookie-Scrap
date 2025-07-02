@@ -39,7 +39,6 @@ public class UserBookRatingFetcher implements WatchaFetcher<UserBookRatingRespon
             log.warn("json 파싱 실패");
             return null;
         }
-//        log.debug(rawJson);
 
         try {
             return mapper.readValue(rawJson, UserBookRatingResponseDto.class);

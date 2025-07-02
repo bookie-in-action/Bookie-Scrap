@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Deprecated
 @RequiredArgsConstructor
 public class UserLikeDeckCollectionService implements WatchaCollectorService {
 

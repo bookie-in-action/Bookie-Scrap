@@ -31,10 +31,17 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
             }
 
             try {
-                return persister.persist(response, userCode);
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("userCode={} userLikePeople DB 연결 실패: {}", userCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                int savedCnt = persister.persist(response, userCode);
+                log.info(
+                        "userCode={} userLikePeople service page={} saved={}/{} success",
+                        userCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
+                return savedCnt;
+            } catch (MongoTimeoutException e) {
+                throw new RetriableCollectionEx("userCode=" + userCode + " userLikePeople DB 연결 실패", e);
             }
         } catch (Exception e) {
             throw new CollectionEx("userCode:" + userCode + ":UserLikePeopleCollectionService", e);

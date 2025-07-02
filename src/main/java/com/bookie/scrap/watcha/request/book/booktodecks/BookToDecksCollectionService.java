@@ -3,11 +3,13 @@ package com.bookie.scrap.watcha.request.book.booktodecks;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
+import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +18,21 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class BookToDecksCollectionService  implements WatchaCollectorService{
 
     private final BookToDecksFetcher fetcher;
     private final BookToDecksPersister persister;
+    private final RedisStringListService deckRedisService;
+
+    public BookToDecksCollectionService(
+            BookToDecksFetcher fetcher,
+            BookToDecksPersister persister,
+            @Qualifier("pendingDeckCode") RedisStringListService deckRedisService
+    ) {
+        this.fetcher = fetcher;
+        this.persister = persister;
+        this.deckRedisService = deckRedisService;
+    }
 
     @Override
     @Transactional
@@ -34,10 +46,19 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
             }
 
             try {
-                return persister.persist(response, bookCode);
+                deckRedisService.add(response.getResult().getDeckCodes());
+                int savedCnt = persister.persist(response, bookCode);
+                log.info(
+                        "bookCode={} toDecks service page={} saved={}/{} success",
+                        bookCode,
+                        param.getPage(),
+                        param.getSize(),
+                        savedCnt
+                );
+
+                return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
-                log.warn("bookCode={} toDecks DB 연결 실패: {}", bookCode, e.getMessage());
-                throw new RetriableCollectionEx("DB 연결 실패", e);
+                throw new RetriableCollectionEx("bookCode=" + bookCode + " toDeck DB 연결 실패", e);
             }
 
         } catch (Exception e) {

@@ -94,6 +94,13 @@ public class ScraperJob implements Job {
         this.failedUserCodeRedisService = failedUserCodeRedisService;
     }
 
+    public void execute() {
+
+        if (pendingBookRedisService.size() == 0) {
+            pendingBookRedisService.add("byLKj8M");
+        }
+        scrapRoutine();
+    }
 
     @Override
     public void execute(JobExecutionContext context) {
@@ -149,11 +156,10 @@ public class ScraperJob implements Job {
             log.info("bookJob: {}, success", bookCode);
         } catch (RetriableCollectionEx e) {
             pendingBookRedisService.add(bookCode);
-            log.warn("bookJob: {}, 재시도 대상 예외 발생: {}", bookCode, e.getMessage());
-//            retryBookCodeRedisService.add(new RedisProcessResult(bookCode));
+            log.warn("bookJob: {}, 재시도 대상 예외 발생: {}", bookCode, e.fillInStackTrace());
         } catch (CollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
-            log.error("bookJob: {}, error: {}", bookCode, e.getMessage());
+            log.error("bookJob: {}, error: {}", bookCode, e.fillInStackTrace());
         }
     }
 
@@ -177,10 +183,10 @@ public class ScraperJob implements Job {
             log.info("deckJob: {}, success", deckCode);
         } catch (RetriableCollectionEx e) {
             pendingDeckRedisService.add(deckCode);
-            log.warn("deckJob: {}, 재시도 대상 예외 발생: {}", deckCode, e.getMessage());
+            log.warn("deckJob: {}, 재시도 대상 예외 발생: {}", deckCode, e.fillInStackTrace());
         } catch (CollectionEx e) {
             failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
-            log.error("deckJob: {}, error: {}",deckCode, e.getMessage());
+            log.error("deckJob: {}, error: {}",deckCode, e.fillInStackTrace());
         }
     }
 
@@ -224,7 +230,7 @@ public class ScraperJob implements Job {
             log.warn("userJob: {}, 재시도 대상 예외 발생: {}", userCode, e.getMessage());
         } catch (CollectionEx e) {
             failedUserCodeRedisService.add(new RedisProcessResult(userCode));
-            log.error("userJob: {}, error: {}",userCode, e.getMessage());
+            log.error("userJob: {}, error: {}",userCode, e.fillInStackTrace());
         }
     }
 }
