@@ -1,11 +1,17 @@
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+
 *.properties
 *.json
 *.yml
+
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!/server/
+!/server/config/
+!/server/config/application-docker.yml
+
 
 # .sh 파일 제외
 src/**/*.sh
