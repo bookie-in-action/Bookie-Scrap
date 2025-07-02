@@ -2,18 +2,16 @@ package com.bookie.scrap.watcha.request.deck.deckinfo;
 
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
-import com.bookie.scrap.watcha.domain.WatchaPersistFactory;
+import com.bookie.scrap.watcha.domain.WatchaPersistor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class DeckInfoPersister implements WatchaPersistFactory<DeckInfoResponseDto> {
+public class DeckInfoPersister implements WatchaPersistor<DeckInfoResponseDto> {
 
     private final DeckInfoMongoRepository repository;
 

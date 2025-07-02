@@ -1,6 +1,11 @@
 # Bookie-Scrap
 
-웹 스크래핑을 통해 도서 관련 데이터를 수집하는 Spring Boot 애플리케이션입니다.
+이 프로젝트는 Docker Compose 를 사용하여 테스트 해볼 수 있습니다.
+> 저작권 등의 이유로 .jar 파일은 레포에 포함되어 있지 않습니다. <br>
+> 요청시 .jar은 별도로 제공되며, 필요 시 server/lib 디렉토리에 수동으로 위치시키면 됩니다.<br>
+```bash 
+docker-compose -f docker-compose.yml up --build
+```
 
 ## 📋 프로젝트 개요
 

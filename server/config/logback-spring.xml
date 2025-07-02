@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATH" value="/DATA/logs/scrap"/>
+    <property name="APP_NAME" value="bk-scrap"/>
+
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+ 	<encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%20.20thread] %-5level %35class{0}:%-4.4line %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+	<encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%20.20thread] %-5level %35class{0}:%-4.4line %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROLLING_FILE"/> 
+    </root>
+
+    <logger name="com.bookie" level="DEBUG" />
+    <logger name="com.zaxxer.hikari" level="WARN" />
+    <logger name="org.springframework.data.mongodb.core.MongoTemplate" level="WARN" />
+    <logger name="io.lettuce.core.protocol.DefaultEndpoint" level="WARN" />
+    <logger name="org.springframework.data.redis.core" level="WARN" />
+
+</configuration>

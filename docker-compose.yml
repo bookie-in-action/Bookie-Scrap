@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.6
+    container_name: bookie-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: bookie
+      MARIADB_USER: bookie_user
+      MARIADB_PASSWORD: bookie_pass
+    ports:
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7-alpine
+    container_name: bookie-redis
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo:6
+    container_name: bookie-mongodb
+    ports:
+      - "27017:27017"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+      - redis
+      - mongodb
+    ports:
+      - "8080:8080"

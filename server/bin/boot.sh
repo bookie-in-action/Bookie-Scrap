@@ -1,20 +1,23 @@
 #!/bin/bash
 
-CUSTOM_JAVA_HOME=/home/scrap/java/jdk-17.0.0.1
+JAVA_HOME=${JAVA_HOME:-/opt/java-current}
 
-APP_PATH="../lib/BookieScrap-0.0.1-SNAPSHOT.jar"
-PID_FILE="boot.pid"
+SERVER_ROOT="/server"
 
-JAVA_OPTS=
+APP_PATH="${SERVER_ROOT}/lib/BookieScrap-0.0.1-SNAPSHOT.jar"
+PID_FILE="${SERVER_ROOT}/bin/boot.pid"
 
-LOG_BACK_OPT=-Dlogging.config=../config/logback.xml
-APPLICATION_CONFIG_OPT=--spring.config.location=file:../config/application.yml
+JAVA_OPTS=""
+LOG_BACK_OPT="-Dlogging.config=${SERVER_ROOT}/config/logback-spring.xml"
+APPLICATION_CONFIG_OPT="--spring.config.location=file:${SERVER_ROOT}/config/application-docker.yml"
 
-APP_TAG=BOOKIE-SCRAP
 
 
-if [[ -n "$CUSTOM_JAVA_HOME" && -x "$CUSTOM_JAVA_HOME/bin/java" ]]; then
-    JAVA_CMD="$CUSTOM_JAVA_HOME/bin/java"
+APP_TAG="BOOKIE-SCRAP"
+
+
+if [[ -n "$JAVA_HOME" && -x "$JAVA_HOME/bin/java" ]]; then
+    JAVA_CMD="$JAVA_HOME/bin/java"
 else
     JAVA_CMD="java"
 fi
@@ -25,11 +28,12 @@ EXECUTE_CMD="$JAVA_CMD -Dtag=$APP_TAG $JAVA_OPTS $LOG_BACK_OPT -jar $APP_PATH $A
 start() {
     echo "Starting $APP_TAG..."
 
-    if pgrep -f "$APP_TAG" > /dev/null; then
+    
+    if [[ -f "$PID_FILE" ]] && ps -p "$(cat $PID_FILE)" > /dev/null; then
         echo "$APP_TAG is already running. Exiting..."
         exit 1
     else
-        nohup $EXECUTE_CMD > /dev/null 2> apim.err & echo $! > $PID_FILE
+        nohup $EXECUTE_CMD > /dev/null 2> /dev/null & echo $! > $PID_FILE
         echo "$APP_NAME started with PID $(cat $PID_FILE)"
     fi
 }

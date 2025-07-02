@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: bookie-scrap
+
+  datasource:
+    url: jdbc:mariadb://bookie-mariadb:3306/bookie
+    username: bookie_user
+    password: bookie_pass
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    mongodb:
+      uri: mongodb://bookie-mongodb:27017/test
+    redis:
+      host: bookie-redis
+      port: 6379
+      password: ""
+
+---
+
+# Quartz 설정 (JobStore는 RAM 기반 or JDBC 기반 선택 가능)
+quartz:
+  scheduler:
+    instance-name: bookie-scraper-scheduler
+  threadPool:
+    threadCount: 10
+  job-store-type: memory
+  wait-for-jobs-to-complete-on-shutdown: true
+  overwrite-existing-jobs: true
+
+---
+
+# 커스텀 애플리케이션 설정
+bookie:
+  server-id: 1
+  http:
+    retry-limit: 3
+    thread-sleep: 500 #ms
+  scheduler-settings:
+    - job-name: "scraper-job-1"
+      job-class: "com.bookie.scrap.watcha.ScraperJob"
+      expression: "0 0 0 1 1 ? *" #sec
+      mode: "cron"
+      enabled: true
+      run-on-start: true
+  config-check: true
