@@ -3,22 +3,38 @@ package com.bookie.scrap.watcha.request.user.userwishbook;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
+import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
+import com.bookie.scrap.watcha.request.deck.booklist.BookListFetcher;
+import com.bookie.scrap.watcha.request.deck.booklist.BookListPersister;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserWishBookCollectionService implements WatchaCollectorService {
 
     private final UserWishBookFetcher fetcher;
     private final UserWishBookPersister persister;
+    private final RedisStringListService bookRedisService;
+
+
+    public UserWishBookCollectionService(
+            UserWishBookFetcher fetcher,
+            UserWishBookPersister persister,
+            @Qualifier("pendingBookCode") RedisStringListService bookRedisService
+    ) {
+        this.fetcher = fetcher;
+        this.persister = persister;
+        this.bookRedisService = bookRedisService;
+    }
 
     @Override
     @Transactional
@@ -40,6 +56,7 @@ public class UserWishBookCollectionService implements WatchaCollectorService {
                         param.getSize(),
                         savedCnt
                 );
+                bookRedisService.add(response.getResult().getUserWishBookCodes());
                 return savedCnt;
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
                 throw new RetriableCollectionEx("userCode=" + userCode + " userWishBook DB 연결 실패", e);
