@@ -22,6 +22,7 @@ import com.bookie.scrap.watcha.request.user.userlikepeople.UserLikePeopleCollect
 import com.bookie.scrap.watcha.request.user.userlikepeople.WatchaUserLikePeopleParam;
 import com.bookie.scrap.watcha.request.user.userwishbook.UserWishBookCollectionService;
 import com.bookie.scrap.watcha.request.user.userwishbook.WatchaUserWishBookParam;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -108,32 +109,33 @@ public class ScraperJob implements Job {
         THREAD_SLEEP_MS = threadSleepMs;
     }
 
-    @PreDestroy
-    public void cleanup() {
-        log.info("closing server...");
+    @PostConstruct
+    public void init() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutdown hook - 스크래핑 작업 완료 대기 시작");
 
-        long waitMs = 0;
-        long exitingSec = 10;
-        while (IS_PROCESSING) {
-            try {
-                if (waitMs % 1000 == 0) {
-                    log.info("completing Watcha Scraper Job... (waiting {}ms)", waitMs);
+            long waitMs = 0;
+            long exitingSec = 30;
+            while (IS_PROCESSING) {
+                try {
+                    if (waitMs % 1000 == 0) {
+                        log.info("Shutdown hook - 스크래핑 작업 완료 대기 중... ({}ms)", waitMs);
+                    }
+                    Thread.sleep(THREAD_SLEEP_MS);
+                    waitMs += THREAD_SLEEP_MS;
+
+                    if (waitMs > TimeUnit.MILLISECONDS.convert(exitingSec, TimeUnit.SECONDS)) {
+                        log.warn("Shutdown hook - 대기 시간 초과, 강제 종료");
+                        break;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
-
-                Thread.sleep(THREAD_SLEEP_MS);
-                waitMs += THREAD_SLEEP_MS;
-
-                if (waitMs > TimeUnit.MILLISECONDS.convert(exitingSec, TimeUnit.SECONDS)) {
-                    log.warn("Watcha Scraper Job 완료 대기 시간 초과. 강제 종료합니다.");
-                    return;
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
             }
-        }
 
-        log.info("complete Watcha Scraper Job");
+            log.info("Shutdown hook - 스크래핑 작업 완료 대기 종료");
+        }));
     }
 
     public void execute() {
