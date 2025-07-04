@@ -4,10 +4,12 @@ public class CollectionEx extends RuntimeException {
 
     public CollectionEx(String message, Throwable cause) {
         super(message, cause);
+        this.setStackTrace(cause.getStackTrace());
     }
 
-    public CollectionEx(String message) {
-        super(message);
+    public CollectionEx(Throwable cause) {
+        super(cause);
+        this.setStackTrace(cause.getStackTrace());
     }
 
 }

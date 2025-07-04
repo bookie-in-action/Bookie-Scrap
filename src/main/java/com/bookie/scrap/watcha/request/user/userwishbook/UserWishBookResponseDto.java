@@ -1,6 +1,7 @@
 package com.bookie.scrap.watcha.request.user.userwishbook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
@@ -22,8 +23,15 @@ public class UserWishBookResponseDto {
         @JsonProperty("next_uri")
         private String nextUri;
 
-        @JsonProperty("result")
         private List<JsonNode> userWishBooks;
+
+        private List<String> userWishBookCodes;
+
+        @JsonSetter("result")
+        public void getUserWishBookCodes(List<JsonNode> nodes) {
+            this.userWishBooks = nodes.stream().map(node -> node.get("content")).toList();
+            this.userWishBookCodes = this.userWishBooks.stream().map(node -> node.get("code").asText()).toList();
+        }
     }
 
 }

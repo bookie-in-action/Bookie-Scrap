@@ -25,18 +25,20 @@ public class UserInfoPersister implements WatchaPersistor<UserInfoResponseDto> {
         }
 
         try {
+            log.info("UserMeta size: 1");
 
             UserInfoDocument document = new UserInfoDocument();
             document.setUserCode(userCode);
             document.setRawJson(JsonUtil.toMap(userInfo));
             repository.save(document);
 
+            log.info("userCode: {} userInfo saved", userCode);
             log.debug(JsonUtil.toPrettyJson(userInfo));
             log.debug("===========================");
 
             return 1;
         } catch (JsonProcessingException e) {
-            log.warn("json 파싱 실패");
+            log.error("json 파싱 실패");
             return 0;
         }
     }

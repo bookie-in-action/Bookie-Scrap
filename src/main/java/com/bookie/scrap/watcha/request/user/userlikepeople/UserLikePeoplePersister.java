@@ -27,7 +27,7 @@ public class UserLikePeoplePersister implements WatchaPersistor<UserLikePeopleRe
             return 0;
         }
 
-        log.debug("size: {}",userLikePeople.size());
+        log.info("UserLikePeople size: {}",userLikePeople.size());
 
         List<UserLikePeopleDocument> documents = new ArrayList<>();
 
@@ -40,6 +40,7 @@ public class UserLikePeoplePersister implements WatchaPersistor<UserLikePeopleRe
                 document.setRawJson(JsonUtil.toMap(userLikePeople.get(idx)));
                 documents.add(document);
 
+                log.info("userCode: {} userLikePeople idx: {} saved", userCode, count);
                 log.debug(
                         "userLikePeoples idx: {}, value: {}",
                         idx,
@@ -49,7 +50,7 @@ public class UserLikePeoplePersister implements WatchaPersistor<UserLikePeopleRe
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
 

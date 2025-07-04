@@ -27,7 +27,7 @@ public class UserBookRatingPersister implements WatchaPersistor<UserBookRatingRe
             return 0;
         }
 
-        log.debug("size: {}",bookRatings.size());
+        log.info("UserBookRatings size: {}",bookRatings.size());
 
         List<UserBookRatingDocument> documents = new ArrayList<>();
 
@@ -40,6 +40,8 @@ public class UserBookRatingPersister implements WatchaPersistor<UserBookRatingRe
                 document.setRawJson(JsonUtil.toMap(bookRatings.get(idx)));
                 documents.add(document);
 
+                log.info("userCode: {} bookRating idx: {} saved", userCode, count);
+
                 log.debug(
                         "userBookRating idx: {}, value: {}",
                         idx,
@@ -49,7 +51,7 @@ public class UserBookRatingPersister implements WatchaPersistor<UserBookRatingRe
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
 

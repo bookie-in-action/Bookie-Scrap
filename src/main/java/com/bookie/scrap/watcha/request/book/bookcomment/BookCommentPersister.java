@@ -15,6 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class BookCommentPersister implements WatchaPersistor<BookCommentResponseDto> {
 
     private final BookCommentMongoRepository repository;
@@ -28,6 +29,7 @@ public class BookCommentPersister implements WatchaPersistor<BookCommentResponse
             return 0;
         }
 
+        log.info("BookComments size: {}",comments.size());
 
         List<BookCommentDocument> documents = new ArrayList<>();
 
@@ -40,6 +42,7 @@ public class BookCommentPersister implements WatchaPersistor<BookCommentResponse
                 document.setRawJson(JsonUtil.toMap(comments.get(idx)));
                 documents.add(document);
 
+                log.info("bookCode: {} comment idx: {} saved", bookCode, count);
                 log.debug(
                         "comment idx: {}, value: {}",
                         idx,
@@ -49,7 +52,7 @@ public class BookCommentPersister implements WatchaPersistor<BookCommentResponse
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
         repository.saveAll(documents);

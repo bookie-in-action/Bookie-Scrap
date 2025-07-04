@@ -41,13 +41,16 @@ public class BooListCollectionService implements WatchaCollectorService {
         try {
             BookListResponseDto response = fetcher.fetch(deckCode, param);
 
-            if (response == null) {
-                log.warn("deckCode={} 의 bookList 수집 실패: fetch 결과가 null", deckCode);
+            if (response == null || response.getResult() == null) {
+                log.warn("deckCode={} 의 bookList 수집 실패: fetch 결과가 null이거나 정보 없음", deckCode);
                 return 0;
             }
             try {
-                bookRedisService.add(response.getResult().getBookCodes());
                 int savedCnt = persister.persist(response, deckCode);
+                if (savedCnt != 0) {
+                    bookRedisService.add(response.getResult().getBookCodes());
+                }
+
                 log.info(
                         "deckCode={} bookList service page={} saved={}/{} success",
                         deckCode,

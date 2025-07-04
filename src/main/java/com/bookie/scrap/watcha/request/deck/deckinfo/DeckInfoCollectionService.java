@@ -38,14 +38,17 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
         try {
             DeckInfoResponseDto response = fetcher.fetch(deckCode, param);
 
-            if (response == null) {
-                log.warn("deckCode={} 의 deckInfo 수집 실패: fetch 결과가 null", deckCode);
+            if (response == null || response.getResult() == null) {
+                log.warn("deckCode={} 의 deckInfo 수집 실패: fetch 결과가 null이거나 정보없음", deckCode);
                 return 0;
             }
 
             try {
-                userRedisService.add(response.getResult().getUserCode());
                 int savedCnt = persister.persist(response, deckCode);
+                if (savedCnt != 0) {
+                    userRedisService.add(response.getResult().getUserCode());
+                }
+
                 log.info(
                         "deckCode={} deckInfo service page={} saved={}/{} success",
                         deckCode,

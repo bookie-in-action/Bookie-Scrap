@@ -40,14 +40,17 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
 
         try {
             BookToDecksResponseDto response = fetcher.fetch(bookCode, param);
-            if (response == null) {
-                log.warn("bookCode={} 의 toDecks 수집 실패: fetch 결과가 null", bookCode);
+            if (response == null || response.getResult() == null) {
+                log.warn("bookCode={} 의 toDecks 수집 실패: fetch 결과가 null이거나 정보없음", bookCode);
                 return 0;
             }
 
             try {
-                deckRedisService.add(response.getResult().getDeckCodes());
                 int savedCnt = persister.persist(response, bookCode);
+                if (savedCnt != 0) {
+                    deckRedisService.add(response.getResult().getDeckCodes());
+                }
+
                 log.info(
                         "bookCode={} toDecks service page={} saved={}/{} success",
                         bookCode,

@@ -15,6 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class BookToDecksPersister implements WatchaPersistor<BookToDecksResponseDto> {
 
     private final BookToDecksMongoRepository repository;
@@ -28,7 +29,7 @@ public class BookToDecksPersister implements WatchaPersistor<BookToDecksResponse
             return 0;
         }
 
-        log.debug("size: {}",decks.size());
+        log.info("BookToDecks size: {}",decks.size());
 
         List<BookToDecksDocument> documents = new ArrayList<>();
 
@@ -40,6 +41,7 @@ public class BookToDecksPersister implements WatchaPersistor<BookToDecksResponse
                 document.setRawJson(JsonUtil.toMap(decks.get(idx)));
                 documents.add(document);
 
+                log.info("bookCode: {} decks idx: {} saved", bookCode, count);
                 log.debug(
                         "decks idx: {}, value: {}",
                         idx,
@@ -49,7 +51,7 @@ public class BookToDecksPersister implements WatchaPersistor<BookToDecksResponse
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
 
