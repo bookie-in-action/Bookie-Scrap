@@ -201,7 +201,7 @@ public class ScraperJob implements Job {
             pendingBookRedisService.add(bookCode);
             log.warn("bookJob: {}, 재시도 대상 예외 발생", bookCode, e);
         } catch (CollectionEx e) {
-            failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
+            failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
             log.error("bookJob: {}", bookCode, e);
         } catch (WatchaCustomCollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
@@ -239,7 +239,7 @@ public class ScraperJob implements Job {
             pendingDeckRedisService.add(deckCode);
             log.warn("deckJob: {}, 재시도 대상 예외 발생", deckCode, e);
         } catch (CollectionEx e) {
-            failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
+            failedDeckCodeRedisService.add(new RedisProcessResult(deckCode, e));
             log.error("deckJob: {}",deckCode, e);
         } finally {
             IS_PROCESSING = false;
@@ -293,7 +293,7 @@ public class ScraperJob implements Job {
             pendingUserRedisService.add(userCode);
             log.warn("userJob: {}, 재시도 대상 예외 발생", userCode, e);
         } catch (CollectionEx e) {
-            failedUserCodeRedisService.add(new RedisProcessResult(userCode));
+            failedUserCodeRedisService.add(new RedisProcessResult(userCode, e));
             log.error("userJob: {}",userCode, e);
         } finally {
             IS_PROCESSING = false;

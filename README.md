@@ -16,12 +16,19 @@ Bookie-Scrap은 Watcha와 같은 플랫폼에서 도서 관련 데이터를 수�
 ### 주요 컴포넌트
 
 - **ScrapApp**: 메인 애플리케이션 클래스 (CommandLineRunner 구현)
+- **ScraperJob**: Quartz 스케줄러를 통한 작업 실행 및 관리
 - **WatchaCollectorService**: Watcha 플랫폼 데이터 수집 서비스
 - **이중 저장소 아키텍처**:
   - **MongoDB**: 원시 데이터 저장을 위한 NoSQL 데이터베이스
   - **JPA/RDB**: 구조화된 데이터 저장을 위한 관계형 데이터베이스
-- **Redis**: 캐싱 및 임시 데이터 저장
-- **예외 처리 메커니즘**: 커스텀 예외 클래스와 재시도 로직 구현
+- **Redis 서비스**:
+  - **RedisHashService**: 작업 상태(성공/실패) 관리
+  - **RedisStringListService**: 대기 작업 관리
+  - **RedisProcessResult**: 처리 결과 및 오류 정보 저장
+- **예외 처리 메커니즘**: 
+  - **CollectionEx**: 기본 수집 예외 처리
+  - **RetriableCollectionEx**: 재시도 가능한 예외 자동 관리
+  - **WatchaCustomCollectionEx**: Watcha 플랫폼 전용 예외 처리
 
 ### 데이터 수집 도메인
 
@@ -57,6 +64,14 @@ src/main/java/com/bookie/scrap/
 ├── ScrapApp.java # 메인 애플리케이션
 ├── common/ # 공통 컴포넌트
 │ ├── domain/ # 공통 도메인
+│ ├── exception/ # 예외 처리 클래스
+│ │ ├── CollectionEx.java # 기본 수집 예외
+│ │ ├── RetriableCollectionEx.java # 재시도 가능한 예외
+│ │ └── WatchaCustomCollectionEx.java # Watcha 전용 예외
+│ ├── redis/ # Redis 관련 클래스
+│ │ ├── RedisHashService.java # Redis Hash 작업 서비스
+│ │ ├── RedisProcessResult.java # 처리 결과 저장 객체
+│ │ └── RedisStringListService.java # Redis 문자열 리스트 서비스
 │ └── util/ # 유틸리티 클래스
 └── watcha/ # Watcha 플랫폼 스크래핑
     ├── domain/ # 도메인 서비스
@@ -100,12 +115,16 @@ src/main/java/com/bookie/scrap/
 
 ### 기술적 특징
 - **예외 처리 전략**: 
-  - 커스텀 예외 클래스(CollectionEx, RetriableCollectionEx)를 통한 체계적 오류 관리
+  - 커스텀 예외 클래스(CollectionEx, RetriableCollectionEx, WatchaCustomCollectionEx)를 통한 체계적 오류 관리
   - 데이터베이스 연결 실패 시 자동 재시도 메커니즘
+  - 예외 유형별 차별화된 처리 로직 구현
 - **이중 저장소 전략**: 
   - MongoDB: 유연한 스키마로 원시 데이터 저장
   - RDB: 구조화된 데이터 분석 및 조회 최적화
-- **Redis 활용**: 빈번한 요청 데이터 캐싱으로 성능 최적화
+- **Redis 활용**: 
+  - 빈번한 요청 데이터 캐싱으로 성능 최적화
+  - 작업 상태 관리(성공, 실패, 대기)를 위한 RedisHashService 구현
+  - 처리 결과 및 오류 정보 저장을 위한 RedisProcessResult 활용
 
 각 도메인별로 위 프로세스가 구현되어 있어 체계적이고 안정적인 데이터 수집이 가능합니다.
 
