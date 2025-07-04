@@ -204,7 +204,7 @@ public class ScraperJob implements Job {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
             log.error("bookJob: {}, error: {}", bookCode, e.fillInStackTrace());
         } catch (WatchaCustomCollectionEx e) {
-            failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
+            failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
         } finally {
             IS_PROCESSING = false;
             try {

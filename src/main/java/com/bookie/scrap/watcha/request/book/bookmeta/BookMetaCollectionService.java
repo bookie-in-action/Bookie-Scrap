@@ -60,6 +60,8 @@ public class BookMetaCollectionService implements WatchaCollectorService {
             } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
                 throw new RetriableCollectionEx("bookCode=" + bookCode + " bookMeta DB 연결 실패", e);
             }
+        } catch (WatchaCustomCollectionEx e) {
+            throw e;
         } catch (Exception e) {
             throw new CollectionEx("bookCode:" + bookCode + ":BookMetaCollectionService", e);
         }

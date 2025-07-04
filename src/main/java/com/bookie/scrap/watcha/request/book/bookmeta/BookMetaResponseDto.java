@@ -19,7 +19,7 @@ public class BookMetaResponseDto {
     @JsonProperty("result")
     private void setBookMeta(JsonNode result) {
         this.bookMeta = result;
-        this.contentType = result.get("content_type").toString();
+        this.contentType = result.get("content_type").asText();
     }
 
     @JsonIgnore

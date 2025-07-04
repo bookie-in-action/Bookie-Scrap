@@ -3,6 +3,7 @@ package com.bookie.scrap.common.redis;
 import com.bookie.scrap.common.scheduler.SchedulerStubConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,6 +35,15 @@ class RedisHashServiceTest {
 
     static Stream<String> provideTestCodes() {
         return Stream.of(TEST_CODES);
+    }
+
+    @AfterAll
+    void tearDown() {
+        for (String code : TEST_CODES) {
+            if (service.exist(code)) {
+                service.delete(code);
+            }
+        }
     }
 
     @MethodSource("provideTestCodes")
@@ -99,12 +109,4 @@ class RedisHashServiceTest {
         assertFalse(service.exist(bookCode), "삭제 후 redis에 code가 존재하지 않아야 함");
     }
 
-    @AfterAll
-    void tearDown() {
-        for (String code : TEST_CODES) {
-            if (service.exist(code)) {
-                service.delete(code);
-            }
-        }
-    }
 }
