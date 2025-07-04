@@ -21,15 +21,21 @@ import com.bookie.scrap.watcha.request.user.userlikepeople.UserLikePeopleCollect
 import com.bookie.scrap.watcha.request.user.userlikepeople.WatchaUserLikePeopleParam;
 import com.bookie.scrap.watcha.request.user.userwishbook.UserWishBookCollectionService;
 import com.bookie.scrap.watcha.request.user.userwishbook.WatchaUserWishBookParam;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
 public class ScraperJob implements Job {
+
+    private static volatile boolean IS_PROCESSING = false;
 
     private final UserBookRatingCollectionService userBookRatingCollectionService;
     private final UserInfoCollectionService userInfoCollectionService;
@@ -94,6 +100,41 @@ public class ScraperJob implements Job {
         this.failedUserCodeRedisService = failedUserCodeRedisService;
     }
 
+    private static int THREAD_SLEEP_MS = 500;
+
+    @Value("${bookie.http.thread-sleep:500}")
+    public void setThreadSleepMs(int threadSleepMs) {
+        THREAD_SLEEP_MS = threadSleepMs;
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        log.info("closing server...");
+
+        long waitMs = 0;
+        long exitingSec = 10;
+        while (IS_PROCESSING) {
+            try {
+                if (waitMs % 1000 == 0) {
+                    log.info("completing Watcha Scraper Job... (waiting {}ms)", waitMs);
+                }
+
+                Thread.sleep(THREAD_SLEEP_MS);
+                waitMs += THREAD_SLEEP_MS;
+
+                if (waitMs > TimeUnit.MILLISECONDS.convert(exitingSec, TimeUnit.SECONDS)) {
+                    log.warn("Watcha Scraper Job 완료 대기 시간 초과. 강제 종료합니다.");
+                    return;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+
+        log.info("complete Watcha Scraper Job");
+    }
+
     public void execute() {
 
         if (pendingBookRedisService.size() == 0) {
@@ -127,6 +168,7 @@ public class ScraperJob implements Job {
     }
 
     private void bookJob(String bookCode) {
+        IS_PROCESSING = true;
         try {
             if (successBookCodeRedisService.exist(bookCode)) {
                 log.info("bookJob: {} already exist", bookCode);
@@ -160,10 +202,19 @@ public class ScraperJob implements Job {
         } catch (CollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
             log.error("bookJob: {}, error: {}", bookCode, e.fillInStackTrace());
+        } finally {
+            IS_PROCESSING = false;
+            try {
+                Thread.sleep(THREAD_SLEEP_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("bookJob:Interrupt");
+            }
         }
     }
 
     private void deckJob(String deckCode) {
+        IS_PROCESSING = true;
         try {
             if (successDeckCodeRedisService.exist(deckCode)) {
                 log.info("deckJob: {} already exist",deckCode);
@@ -187,10 +238,20 @@ public class ScraperJob implements Job {
         } catch (CollectionEx e) {
             failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
             log.error("deckJob: {}, error: {}",deckCode, e.fillInStackTrace());
+        } finally {
+            IS_PROCESSING = false;
+            try {
+                Thread.sleep(THREAD_SLEEP_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("deckJob:Interrupt");
+            }
+
         }
     }
 
     private void userJob(String userCode) {
+        IS_PROCESSING = true;
         try {
             if (successUserCodeRedisService.exist(userCode)) {
                 log.info("userJob: {} already exist",userCode);
@@ -231,7 +292,18 @@ public class ScraperJob implements Job {
         } catch (CollectionEx e) {
             failedUserCodeRedisService.add(new RedisProcessResult(userCode));
             log.error("userJob: {}, error: {}",userCode, e.fillInStackTrace());
+        } finally {
+            IS_PROCESSING = false;
+            try {
+                Thread.sleep(THREAD_SLEEP_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("userJob:Interrupt");
+            }
+
         }
     }
+
+
 }
 
