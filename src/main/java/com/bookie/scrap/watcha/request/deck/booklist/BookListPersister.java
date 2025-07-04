@@ -15,6 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
 
     private final BookListMongoRepository repository;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class DeckInfoPersister implements WatchaPersistor<DeckInfoResponseDto> {
 
     private final DeckInfoMongoRepository repository;
