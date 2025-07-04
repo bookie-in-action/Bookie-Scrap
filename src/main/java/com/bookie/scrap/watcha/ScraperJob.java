@@ -2,6 +2,7 @@ package com.bookie.scrap.watcha;
 
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
+import com.bookie.scrap.common.exception.WatchaCustomCollectionEx;
 import com.bookie.scrap.common.redis.RedisHashService;
 import com.bookie.scrap.common.redis.RedisProcessResult;
 import com.bookie.scrap.common.redis.RedisStringListService;
@@ -202,6 +203,8 @@ public class ScraperJob implements Job {
         } catch (CollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
             log.error("bookJob: {}, error: {}", bookCode, e.fillInStackTrace());
+        } catch (WatchaCustomCollectionEx e) {
+            failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
         } finally {
             IS_PROCESSING = false;
             try {

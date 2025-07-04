@@ -3,6 +3,7 @@ package com.bookie.scrap.watcha.request.book.bookmeta;
 import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
+import com.bookie.scrap.common.exception.WatchaCustomCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.bookie.scrap.watcha.request.book.bookmeta.rdb.BookMetaRdbPersister;
 import com.mongodb.MongoTimeoutException;
@@ -24,13 +25,18 @@ public class BookMetaCollectionService implements WatchaCollectorService {
 
     @Override
     @Transactional
-    public int collect(String bookCode, PageInfo param) {
+    public int collect(String bookCode, PageInfo param) throws WatchaCustomCollectionEx {
         try {
             BookMetaResponseDto response = fetcher.fetch(bookCode, param);
 
             if (response == null || response.getBookMeta() == null || response.getBookMeta().isEmpty()) {
                 log.warn("bookCode={} 의 bookMeta 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
                 return 0;
+            }
+
+            if (!response.isBook()) {
+                log.info("code:{}는 content_type: {}", bookCode, response.getContentType());
+                throw new WatchaCustomCollectionEx("code: " + bookCode + "는 content_type: " + response.getContentType());
             }
 
             try {
