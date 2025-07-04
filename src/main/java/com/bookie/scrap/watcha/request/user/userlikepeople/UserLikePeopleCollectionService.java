@@ -25,8 +25,8 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
         try {
             UserLikePeopleResponseDto response = fetcher.fetch(userCode, param);
 
-            if (response == null) {
-                log.warn("userCode={} 의 userLikePeople 수집 실패: fetch 결과가 null", userCode);
+            if (response == null || response.getResult() == null) {
+                log.warn("userCode={} 의 userLikePeople 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
                 return 0;
             }
 
