@@ -45,8 +45,11 @@ public class BookCommentCollectionService implements WatchaCollectorService {
             }
 
             try {
-                userRedisService.add(response.getResult().getUserCodes());
                 int savedCnt = persister.persist(response, bookCode);
+                if (savedCnt != 0) {
+                    userRedisService.add(response.getResult().getUserCodes());
+                }
+
                 log.info(
                         "bookCode={} bookComment service page={} saved={}/{} success",
                         bookCode,

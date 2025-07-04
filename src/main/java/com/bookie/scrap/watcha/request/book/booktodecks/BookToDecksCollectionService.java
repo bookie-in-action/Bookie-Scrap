@@ -46,8 +46,11 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
             }
 
             try {
-                deckRedisService.add(response.getResult().getDeckCodes());
                 int savedCnt = persister.persist(response, bookCode);
+                if (savedCnt != 0) {
+                    deckRedisService.add(response.getResult().getDeckCodes());
+                }
+
                 log.info(
                         "bookCode={} toDecks service page={} saved={}/{} success",
                         bookCode,

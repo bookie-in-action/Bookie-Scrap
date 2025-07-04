@@ -46,8 +46,11 @@ public class BooListCollectionService implements WatchaCollectorService {
                 return 0;
             }
             try {
-                bookRedisService.add(response.getResult().getBookCodes());
                 int savedCnt = persister.persist(response, deckCode);
+                if (savedCnt != 0) {
+                    bookRedisService.add(response.getResult().getBookCodes());
+                }
+
                 log.info(
                         "deckCode={} bookList service page={} saved={}/{} success",
                         deckCode,

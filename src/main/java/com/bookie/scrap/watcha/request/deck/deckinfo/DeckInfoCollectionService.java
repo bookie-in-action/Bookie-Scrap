@@ -44,8 +44,11 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
             }
 
             try {
-                userRedisService.add(response.getResult().getUserCode());
                 int savedCnt = persister.persist(response, deckCode);
+                if (savedCnt != 0) {
+                    userRedisService.add(response.getResult().getUserCode());
+                }
+
                 log.info(
                         "deckCode={} deckInfo service page={} saved={}/{} success",
                         deckCode,
