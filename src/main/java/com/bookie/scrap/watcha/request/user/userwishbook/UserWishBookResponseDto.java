@@ -30,7 +30,7 @@ public class UserWishBookResponseDto {
         @JsonSetter("result")
         public void getUserWishBookCodes(List<JsonNode> nodes) {
             this.userWishBooks = nodes.stream().map(node -> node.get("content")).toList();
-            this.userWishBookCodes = this.userWishBooks.stream().map(node -> node.get("code").toString()).toList();
+            this.userWishBookCodes = this.userWishBooks.stream().map(node -> node.get("code").asText()).toList();
         }
     }
 
