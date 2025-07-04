@@ -6,7 +6,8 @@ public class RetriableCollectionEx extends CollectionEx {
         super(message, cause);
     }
 
-    public RetriableCollectionEx(String message) {
-        super(message);
+    public RetriableCollectionEx(Throwable cause) {
+        super(cause);
     }
+
 }

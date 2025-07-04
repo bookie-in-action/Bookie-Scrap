@@ -199,10 +199,10 @@ public class ScraperJob implements Job {
             log.info("bookJob: {}, success", bookCode);
         } catch (RetriableCollectionEx e) {
             pendingBookRedisService.add(bookCode);
-            log.warn("bookJob: {}, 재시도 대상 예외 발생: {}", bookCode, e.fillInStackTrace());
+            log.warn("bookJob: {}, 재시도 대상 예외 발생", bookCode, e);
         } catch (CollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode));
-            log.error("bookJob: {}, error: {}", bookCode, e.fillInStackTrace());
+            log.error("bookJob: {}", bookCode, e);
         } catch (WatchaCustomCollectionEx e) {
             failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
         } finally {
@@ -237,10 +237,10 @@ public class ScraperJob implements Job {
             log.info("deckJob: {}, success", deckCode);
         } catch (RetriableCollectionEx e) {
             pendingDeckRedisService.add(deckCode);
-            log.warn("deckJob: {}, 재시도 대상 예외 발생: {}", deckCode, e.fillInStackTrace());
+            log.warn("deckJob: {}, 재시도 대상 예외 발생", deckCode, e);
         } catch (CollectionEx e) {
             failedDeckCodeRedisService.add(new RedisProcessResult(deckCode));
-            log.error("deckJob: {}, error: {}",deckCode, e.fillInStackTrace());
+            log.error("deckJob: {}",deckCode, e);
         } finally {
             IS_PROCESSING = false;
             try {
@@ -291,10 +291,10 @@ public class ScraperJob implements Job {
             log.info("userJob: {}, success", userCode);
         } catch (RetriableCollectionEx e) {
             pendingUserRedisService.add(userCode);
-            log.warn("userJob: {}, 재시도 대상 예외 발생: {}", userCode, e.getMessage());
+            log.warn("userJob: {}, 재시도 대상 예외 발생", userCode, e);
         } catch (CollectionEx e) {
             failedUserCodeRedisService.add(new RedisProcessResult(userCode));
-            log.error("userJob: {}, error: {}",userCode, e.fillInStackTrace());
+            log.error("userJob: {}",userCode, e);
         } finally {
             IS_PROCESSING = false;
             try {
