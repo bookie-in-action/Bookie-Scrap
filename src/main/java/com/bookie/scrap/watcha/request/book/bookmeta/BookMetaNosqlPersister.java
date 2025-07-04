@@ -23,6 +23,7 @@ public class BookMetaNosqlPersister implements WatchaPersistor<BookMetaResponseD
         if (bookMeta == null) {
             return 0;
         }
+        log.info("BookMeta NoSql size: 1");
 
         BookMetaDocument document = new BookMetaDocument();
 
@@ -31,6 +32,7 @@ public class BookMetaNosqlPersister implements WatchaPersistor<BookMetaResponseD
             document.setRawJson(JsonUtil.toMap(bookMeta));
             repository.save(document);
 
+            log.info("bookCode: {} meta saved", bookCode);
             log.debug(
                     "bookCode: {}, value: {}",
                     bookCode,
@@ -40,7 +42,7 @@ public class BookMetaNosqlPersister implements WatchaPersistor<BookMetaResponseD
 
             return 1;
         } catch (JsonProcessingException e) {
-            log.warn("json 파싱 실패");
+            log.error("json 파싱 실패");
             return 0;
         }
 

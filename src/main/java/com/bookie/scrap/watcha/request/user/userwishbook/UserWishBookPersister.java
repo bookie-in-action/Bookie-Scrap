@@ -27,7 +27,7 @@ public class UserWishBookPersister implements WatchaPersistor<UserWishBookRespon
             return 0;
         }
 
-        log.debug("size: {}",userWishBooks.size());
+        log.info("UserWishBook size: {}",userWishBooks.size());
 
         List<UserWishBookDocument> documents = new ArrayList<>();
 
@@ -40,16 +40,17 @@ public class UserWishBookPersister implements WatchaPersistor<UserWishBookRespon
                 document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
                 documents.add(document);
 
+                log.info("userCode: {} userWishBook idx: {} saved", userCode, count);
                 log.debug(
                         "userWishBook idx: {}, value: {}",
-                        idx,
+                        count,
                         JsonUtil.toPrettyJson(userWishBooks.get(idx))
                 );
                 log.debug("===========================");
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
 

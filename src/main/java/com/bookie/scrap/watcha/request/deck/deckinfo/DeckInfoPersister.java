@@ -20,16 +20,19 @@ public class DeckInfoPersister implements WatchaPersistor<DeckInfoResponseDto> {
     public int persist(DeckInfoResponseDto dto, String deckCode) {
 
         try {
+            log.info("DeckMeta size: 1");
+
             DeckInfoDocument document = new DeckInfoDocument();
             document.setDeckCode(deckCode);
             document.setRawJson(JsonUtil.toMap(dto.getResult()));
             repository.save(document);
 
+
+            log.info("deckCode: {} meta saved", deckCode);
             log.debug(dto.getResult().toString());
-            log.debug("===========================");
 
         } catch (JsonProcessingException e) {
-            log.warn("json 파싱 실패");
+            log.error("json 파싱 실패");
              return 0;
         }
 

@@ -89,7 +89,7 @@ public class WebClientExecutor {
                         } else {
                             if (response.statusCode().isError() || response.statusCode().is4xxClientError()) {
                                 return response.bodyToMono(String.class).flatMap(body -> {
-                                    log.warn("HTTP {} 오류 발생: {}", response.statusCode(), body);
+                                    log.error("HTTP {} 오류 발생: {}", response.statusCode(), body);
                                     return Mono.error(new IllegalStateException("HTTP 오류: " + response.statusCode()));
                                 });
                             }
@@ -102,16 +102,16 @@ public class WebClientExecutor {
                     )
                     .doOnError(e -> log.error("WebClient 처리 실패", e));
 
-            log.debug("===========================");
+            log.info("===========================");
 
             T webClientResponse = responseMono.block();
 
             try {
-                log.debug("webClient Response: {}", JsonUtil.toPrettyJson(Objects.requireNonNull(webClientResponse).toString()));
+                log.info("webClient Response: {}", JsonUtil.toPrettyJson(Objects.requireNonNull(webClientResponse).toString()));
             } catch (JsonProcessingException e) {
-                log.debug("webClient Response: {}", Objects.requireNonNull(webClientResponse));
+                log.info("webClient Response: {}", Objects.requireNonNull(webClientResponse));
             }
-            log.debug("===========================");
+            log.info("===========================");
 
             return webClientResponse;
         } catch (WebClientException e) {

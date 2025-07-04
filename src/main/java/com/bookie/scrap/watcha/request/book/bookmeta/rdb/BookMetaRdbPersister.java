@@ -21,12 +21,15 @@ public class BookMetaRdbPersister implements WatchaPersistor<BookMetaResponseDto
         try {
             BookMetaRdbDto bookMetaRdbDto = mapper.treeToValue(dto.getBookMeta(), BookMetaRdbDto.class);
 
+            log.info("BookMeta RDB size: 1");
+
             BookMetaRdbEntity entity = bookMetaRdbDto.toEntity();
             repository.save(entity);
+            log.info("bookCode: {} rdb meta saved", bookCode);
 
             return 1;
         } catch (JsonProcessingException e) {
-            log.warn("json 파싱 실패");
+            log.error("json 파싱 실패");
             return 0;
         }
     }

@@ -29,7 +29,7 @@ public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
             return 0;
         }
 
-        log.debug("size: {}",books.size());
+        log.info("BookList size: {}",books.size());
 
         List<BookListDocument> documents = new ArrayList<>();
 
@@ -41,6 +41,7 @@ public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
                 document.setRawJson(JsonUtil.toMap(books.get(idx)));
                 documents.add(document);
 
+                log.info("deckCode: {} book idx: {} saved", deckCode, count);
                 log.debug(
                         "deckCode: {}, book idx: {}, value: {}",
                         deckCode,
@@ -51,7 +52,7 @@ public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
 
                 count++;
             } catch (JsonProcessingException e) {
-                log.warn("json 파싱 실패");
+                log.error("json 파싱 실패");
             }
         }
 
