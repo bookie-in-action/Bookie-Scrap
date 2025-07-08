@@ -41,4 +41,8 @@ public class BookListResponseDto {
                     .collect(Collectors.toList());
         }
     }
+
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getBooks() == null || this.getResult().getBooks().isEmpty();
+    }
 }

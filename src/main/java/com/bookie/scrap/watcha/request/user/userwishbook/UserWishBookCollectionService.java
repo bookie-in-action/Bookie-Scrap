@@ -38,7 +38,7 @@ public class UserWishBookCollectionService implements WatchaCollectorService {
         try {
             UserWishBookResponseDto response = fetcher.fetch(userCode, param);
 
-            if (response == null || response.getResult() == null) {
+            if (response == null || response.hasNoData()) {
                 log.warn("userCode={} 의 userWishBook 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
                 return 0;
             }

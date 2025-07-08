@@ -39,4 +39,8 @@ public class BookCommentResponseDto {
                     .toList();
         }
     }
+
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getComments() == null || this.getResult().getComments().isEmpty();
+    }
 }

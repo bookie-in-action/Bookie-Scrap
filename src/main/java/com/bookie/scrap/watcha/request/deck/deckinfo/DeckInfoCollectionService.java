@@ -37,7 +37,7 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
         try {
             DeckInfoResponseDto response = fetcher.fetch(deckCode, param);
 
-            if (response == null || response.getResult() == null) {
+            if (response == null || response.hasNoData()) {
                 log.warn("deckCode={} 의 deckInfo 수집 실패: fetch 결과가 null이거나 정보없음", deckCode);
                 return 0;
             }

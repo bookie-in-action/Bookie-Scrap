@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class UserInfoResponseDto {
 
@@ -15,4 +13,7 @@ public class UserInfoResponseDto {
     @JsonProperty("result")
     private JsonNode userInfo;
 
+    public boolean hasNoDate() {
+        return this.getUserInfo() == null || this.getUserInfo().isEmpty();
+    }
 }

@@ -38,7 +38,7 @@ public class BookCommentCollectionService implements WatchaCollectorService {
         try {
             BookCommentResponseDto response = fetcher.fetch(bookCode, param);
 
-            if (response == null || response.getResult() == null) {
+            if (response == null || response.hasNoData()) {
                 log.warn("bookCode={} 의 bookComment 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
                 return 0;
             }

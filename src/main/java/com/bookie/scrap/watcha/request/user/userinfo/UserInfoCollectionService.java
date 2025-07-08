@@ -24,8 +24,8 @@ public class UserInfoCollectionService implements WatchaCollectorService {
         try {
             UserInfoResponseDto response = fetcher.fetch(userCode, param);
 
-            if (response == null || response.getUserInfo() == null || response.getUserInfo().isEmpty()) {
-                log.warn("userCode={} 의 userInfo 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
+            if (response == null || response.hasNoDate()) {
+                log.error("userCode={} 의 userInfo 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
                 return 0;
             }
 

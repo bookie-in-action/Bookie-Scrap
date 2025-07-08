@@ -26,4 +26,8 @@ public class UserLikePeopleResponseDto {
         private List<JsonNode> userLikePeople;
     }
 
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getUserLikePeople() == null || this.getResult().getUserLikePeople().isEmpty();
+    }
+
 }

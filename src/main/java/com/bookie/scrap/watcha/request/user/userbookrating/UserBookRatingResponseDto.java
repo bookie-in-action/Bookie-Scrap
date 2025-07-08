@@ -26,4 +26,8 @@ public class UserBookRatingResponseDto {
         private List<JsonNode> bookRatings;
     }
 
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getBookRatings() == null || this.getResult().getBookRatings().isEmpty();
+    }
+
 }

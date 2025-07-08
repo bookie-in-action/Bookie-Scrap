@@ -34,4 +34,8 @@ public class UserWishBookResponseDto {
         }
     }
 
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getUserWishBooks() == null || this.getResult().getUserWishBooks().isEmpty();
+    }
+
 }
