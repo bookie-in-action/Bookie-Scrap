@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class BookMetaResponseDto {
 
@@ -30,6 +28,10 @@ public class BookMetaResponseDto {
             return true;
         }
         return false;
+    }
+
+    public boolean hasNoData() {
+        return this.getBookMeta() == null || this.getBookMeta().isEmpty();
     }
 
 }

@@ -29,8 +29,8 @@ public class BookMetaCollectionService implements WatchaCollectorService {
         try {
             BookMetaResponseDto response = fetcher.fetch(bookCode, param);
 
-            if (response == null || response.getBookMeta() == null || response.getBookMeta().isEmpty()) {
-                log.warn("bookCode={} 의 bookMeta 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
+            if (response == null || response.hasNoData()) {
+                log.error("bookCode={} 의 bookMeta 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
                 return 0;
             }
 

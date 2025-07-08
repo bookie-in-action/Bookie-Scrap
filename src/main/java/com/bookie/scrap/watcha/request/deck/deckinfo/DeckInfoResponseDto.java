@@ -6,10 +6,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Getter
 public class DeckInfoResponseDto {
 
@@ -59,5 +55,9 @@ public class DeckInfoResponseDto {
                     ", deckCode='" + deckCode + '\'' +
                     '}';
         }
+    }
+
+    public boolean hasNoData() {
+        return this.getResult() == null;
     }
 }

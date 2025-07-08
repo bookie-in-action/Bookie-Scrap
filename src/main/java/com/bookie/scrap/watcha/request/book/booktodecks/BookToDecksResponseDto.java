@@ -41,4 +41,8 @@ public class BookToDecksResponseDto {
                     .collect(Collectors.toList());
         }
     }
+
+    public boolean hasNoData() {
+        return this.getResult() == null || this.getResult().getDecks() == null || this.getResult().getDecks().isEmpty();
+    }
 }
