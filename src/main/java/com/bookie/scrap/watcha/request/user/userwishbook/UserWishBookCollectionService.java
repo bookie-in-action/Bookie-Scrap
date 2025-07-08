@@ -5,12 +5,8 @@ import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
-import com.bookie.scrap.watcha.request.deck.booklist.BookListFetcher;
-import com.bookie.scrap.watcha.request.deck.booklist.BookListPersister;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -57,7 +53,7 @@ public class UserWishBookCollectionService implements WatchaCollectorService {
                         "userCode={} userWishBook service page={} saved={}/{} success",
                         userCode,
                         param.getPage(),
-                        param.getSize(),
+                        response.getResult().getUserWishBooks().size(),
                         savedCnt
                 );
                 return savedCnt;

@@ -40,7 +40,7 @@ public class UserWishBookPersister implements WatchaPersistor<UserWishBookRespon
                 document.setRawJson(JsonUtil.toMap(userWishBooks.get(idx)));
                 documents.add(document);
 
-                log.info("userCode: {} userWishBook idx: {} saved", userCode, count);
+                log.info("userCode: {} userWishBook count: {} saved", userCode, count);
                 log.debug(
                         "userWishBook idx: {}, value: {}",
                         count,

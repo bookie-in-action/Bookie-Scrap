@@ -35,7 +35,7 @@ public class BookMetaCollectionService implements WatchaCollectorService {
             }
 
             if (!response.isBook()) {
-                log.info("code:{}는 content_type: {}", bookCode, response.getContentType());
+                log.warn("code:{}는 content_type: {}", bookCode, response.getContentType());
                 throw new WatchaCustomCollectionEx("code: " + bookCode + "는 content_type: " + response.getContentType());
             }
 
@@ -52,7 +52,7 @@ public class BookMetaCollectionService implements WatchaCollectorService {
                         "bookCode={} bookMeta service page={} saved={}/{} success",
                         bookCode,
                         param.getPage(),
-                        param.getSize(),
+                        1,
                         savedCnt
                 );
                 return savedCnt;

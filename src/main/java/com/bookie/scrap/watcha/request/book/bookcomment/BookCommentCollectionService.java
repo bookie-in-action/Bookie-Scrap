@@ -7,7 +7,6 @@ import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,7 @@ public class BookCommentCollectionService implements WatchaCollectorService {
                         "bookCode={} bookComment service page={} saved={}/{} success",
                         bookCode,
                         param.getPage(),
-                        param.getSize(),
+                        response.getResult().getComments().size(),
                         savedCnt
                 );
 

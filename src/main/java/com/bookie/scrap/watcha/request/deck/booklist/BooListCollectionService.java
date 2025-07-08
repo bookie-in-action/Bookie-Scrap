@@ -5,10 +5,8 @@ import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
-import com.bookie.scrap.watcha.request.book.booktodecks.BookToDecksResponseDto;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,7 +53,7 @@ public class BooListCollectionService implements WatchaCollectorService {
                         "deckCode={} bookList service page={} saved={}/{} success",
                         deckCode,
                         param.getPage(),
-                        param.getSize(),
+                        response.getResult().getBooks().size(),
                         savedCnt
                 );
 
