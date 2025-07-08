@@ -5,7 +5,6 @@ import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.mongodb.MongoTimeoutException;
-import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
                         "userCode={} userLikePeople service page={} saved={}/{} success",
                         userCode,
                         param.getPage(),
-                        param.getSize(),
+                        response.getResult().getUserLikePeople().size(),
                         savedCnt
                 );
                 return savedCnt;

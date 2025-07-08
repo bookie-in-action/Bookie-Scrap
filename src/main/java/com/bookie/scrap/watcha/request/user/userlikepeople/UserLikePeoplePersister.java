@@ -40,7 +40,7 @@ public class UserLikePeoplePersister implements WatchaPersistor<UserLikePeopleRe
                 document.setRawJson(JsonUtil.toMap(userLikePeople.get(idx)));
                 documents.add(document);
 
-                log.info("userCode: {} userLikePeople idx: {} saved", userCode, count);
+                log.info("userCode: {} userLikePeople count: {} saved", userCode, count);
                 log.debug(
                         "userLikePeoples idx: {}, value: {}",
                         idx,

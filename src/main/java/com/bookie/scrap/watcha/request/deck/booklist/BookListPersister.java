@@ -1,13 +1,11 @@
 package com.bookie.scrap.watcha.request.deck.booklist;
 
-import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.common.util.JsonUtil;
 import com.bookie.scrap.watcha.domain.WatchaPersistor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class BookListPersister implements WatchaPersistor<BookListResponseDto> {
                 document.setRawJson(JsonUtil.toMap(books.get(idx)));
                 documents.add(document);
 
-                log.info("deckCode: {} book idx: {} saved", deckCode, count);
+                log.info("deckCode: {} book count: {} saved", deckCode, count);
                 log.debug(
                         "deckCode: {}, book idx: {}, value: {}",
                         deckCode,
