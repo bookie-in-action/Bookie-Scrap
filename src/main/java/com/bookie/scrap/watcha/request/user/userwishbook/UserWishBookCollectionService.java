@@ -61,7 +61,7 @@ public class UserWishBookCollectionService implements WatchaCollectorService {
                         savedCnt
                 );
                 return savedCnt;
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("userCode=" + userCode + " userWishBook DB 연결 실패", e);
             }
         } catch (Exception e) {

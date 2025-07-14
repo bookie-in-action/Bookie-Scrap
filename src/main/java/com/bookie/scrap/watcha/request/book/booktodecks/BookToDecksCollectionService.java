@@ -60,7 +60,7 @@ public class BookToDecksCollectionService  implements WatchaCollectorService{
                 );
 
                 return savedCnt;
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("bookCode=" + bookCode + " toDeck DB 연결 실패", e);
             }
 
