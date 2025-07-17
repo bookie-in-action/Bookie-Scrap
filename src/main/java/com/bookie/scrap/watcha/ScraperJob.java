@@ -22,8 +22,11 @@ import com.bookie.scrap.watcha.request.user.userlikepeople.UserLikePeopleCollect
 import com.bookie.scrap.watcha.request.user.userlikepeople.WatchaUserLikePeopleParam;
 import com.bookie.scrap.watcha.request.user.userwishbook.UserWishBookCollectionService;
 import com.bookie.scrap.watcha.request.user.userwishbook.WatchaUserWishBookParam;
+import io.lettuce.core.RedisConnectionException;
+import io.lettuce.core.RedisException;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -37,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ScraperJob implements Job {
 
+    @Getter
     private static volatile boolean IS_PROCESSING = false;
 
     private final UserBookRatingCollectionService userBookRatingCollectionService;
@@ -61,6 +65,41 @@ public class ScraperJob implements Job {
     private final RedisHashService failedBookCodeRedisService;
     private final RedisHashService failedDeckCodeRedisService;
     private final RedisHashService failedUserCodeRedisService;
+
+    private static int THREAD_SLEEP_MS = 500;
+
+    @Value("${bookie.http.thread-sleep:500}")
+    public void setThreadSleepMs(int threadSleepMs) {
+        THREAD_SLEEP_MS = threadSleepMs;
+    }
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutdown hook - 스크래핑 작업 완료 대기 시작");
+
+            long waitMs = 0;
+            long exitingSec = 30;
+            while (IS_PROCESSING) {
+                try {
+                    if (waitMs % 1000 == 0) {
+                        log.info("Shutdown hook - 스크래핑 작업 완료 대기 중... ({}ms)", waitMs);
+                    }
+                    Thread.sleep(THREAD_SLEEP_MS);
+                    waitMs += THREAD_SLEEP_MS;
+
+                    if (waitMs > TimeUnit.MILLISECONDS.convert(exitingSec, TimeUnit.SECONDS)) {
+                        log.warn("Shutdown hook - 대기 시간 초과, 강제 종료");
+                        break;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+
+            log.info("Shutdown hook - 스크래핑 작업 완료 대기 종료");
+        }));
+    }
 
     public ScraperJob(
             UserBookRatingCollectionService userBookRatingCollectionService,
@@ -102,42 +141,6 @@ public class ScraperJob implements Job {
         this.failedUserCodeRedisService = failedUserCodeRedisService;
     }
 
-    private static int THREAD_SLEEP_MS = 500;
-
-    @Value("${bookie.http.thread-sleep:500}")
-    public void setThreadSleepMs(int threadSleepMs) {
-        THREAD_SLEEP_MS = threadSleepMs;
-    }
-
-    @PostConstruct
-    public void init() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("Shutdown hook - 스크래핑 작업 완료 대기 시작");
-
-            long waitMs = 0;
-            long exitingSec = 30;
-            while (IS_PROCESSING) {
-                try {
-                    if (waitMs % 1000 == 0) {
-                        log.info("Shutdown hook - 스크래핑 작업 완료 대기 중... ({}ms)", waitMs);
-                    }
-                    Thread.sleep(THREAD_SLEEP_MS);
-                    waitMs += THREAD_SLEEP_MS;
-
-                    if (waitMs > TimeUnit.MILLISECONDS.convert(exitingSec, TimeUnit.SECONDS)) {
-                        log.warn("Shutdown hook - 대기 시간 초과, 강제 종료");
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-
-            log.info("Shutdown hook - 스크래핑 작업 완료 대기 종료");
-        }));
-    }
-
     public void execute() {
 
         if (pendingBookRedisService.size() == 0) {
@@ -173,48 +176,52 @@ public class ScraperJob implements Job {
     private void bookJob(String bookCode) {
         IS_PROCESSING = true;
         try {
-            if (successBookCodeRedisService.exist(bookCode)) {
-                log.info("bookJob: {} already exist", bookCode);
-                return;
-            }
-
-            log.info("bookJob: {} start", bookCode);
-            WatchaPageInfo param = new WatchaPageInfo(null);
-            bookMetaCollectionService.collect(bookCode, param);
-
-            WatchaBookCommentParam commentParam = new WatchaBookCommentParam(1, 10);
-            commentParam.setPopularOrder();
-            int commentCnt = -1;
-            while (commentCnt != 0) {
-                commentCnt = bookCommentCollectionService.collect(bookCode, commentParam);
-                commentParam.nextPage();
-            }
-
-            BookToDecksParam bookToDecksParam = new BookToDecksParam(1, 10);
-            int bookToDecksCnt = -1;
-            while (bookToDecksCnt != 0) {
-                bookToDecksCnt = bookToDecksCollectionService.collect(bookCode, bookToDecksParam);
-                bookToDecksParam.nextPage();
-            }
-
-            successBookCodeRedisService.add(new RedisProcessResult(bookCode));
-            log.info("bookJob: {}, success", bookCode);
-        } catch (RetriableCollectionEx e) {
-            pendingBookRedisService.add(bookCode);
-            log.warn("bookJob: {}, 재시도 대상 예외 발생", bookCode, e);
-        } catch (CollectionEx e) {
-            failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
-            log.error("bookJob: {}", bookCode, e);
-        } catch (WatchaCustomCollectionEx e) {
-            failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
-        } finally {
-            IS_PROCESSING = false;
             try {
-                Thread.sleep(THREAD_SLEEP_MS);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                log.warn("bookJob:Interrupt");
+                if (successBookCodeRedisService.exist(bookCode)) {
+                    log.info("bookJob: {} already exist", bookCode);
+                    return;
+                }
+
+                log.info("bookJob: {} start", bookCode);
+                WatchaPageInfo param = new WatchaPageInfo(null);
+                bookMetaCollectionService.collect(bookCode, param);
+
+                WatchaBookCommentParam commentParam = new WatchaBookCommentParam(1, 10);
+                commentParam.setPopularOrder();
+                int commentCnt = -1;
+                while (commentCnt != 0) {
+                    commentCnt = bookCommentCollectionService.collect(bookCode, commentParam);
+                    commentParam.nextPage();
+                }
+
+                BookToDecksParam bookToDecksParam = new BookToDecksParam(1, 10);
+                int bookToDecksCnt = -1;
+                while (bookToDecksCnt != 0) {
+                    bookToDecksCnt = bookToDecksCollectionService.collect(bookCode, bookToDecksParam);
+                    bookToDecksParam.nextPage();
+                }
+
+                successBookCodeRedisService.add(new RedisProcessResult(bookCode));
+                log.info("bookJob: {}, success", bookCode);
+            } catch (RetriableCollectionEx e) {
+                pendingBookRedisService.add(bookCode);
+                log.warn("bookJob: {}, 재시도 대상 예외 발생", bookCode, e);
+            } catch (CollectionEx e) {
+                failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
+                log.error("bookJob: {}", bookCode, e);
+            } catch (WatchaCustomCollectionEx e) {
+                failedBookCodeRedisService.add(new RedisProcessResult(bookCode, e));
+            } finally {
+                IS_PROCESSING = false;
+                try {
+                    Thread.sleep(THREAD_SLEEP_MS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.warn("bookJob:Interrupt");
+                }
             }
+        } catch (RedisException e) {
+
         }
     }
 
