@@ -4,6 +4,7 @@ import com.bookie.scrap.common.domain.PageInfo;
 import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
+import com.mongodb.MongoException;
 import com.mongodb.MongoTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
             UserLikePeopleResponseDto response = fetcher.fetch(userCode, param);
 
             if (response == null || response.hasNoData()) {
-                log.warn("userCode={} 의 userLikePeople 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
+                log.info("userCode={} 의 userLikePeople 수집 실패: fetch 결과가 null이거나 정보없음", userCode);
                 return 0;
             }
 
@@ -39,7 +40,7 @@ public class UserLikePeopleCollectionService implements WatchaCollectorService {
                         savedCnt
                 );
                 return savedCnt;
-            } catch (MongoTimeoutException e) {
+            } catch (MongoException e) {
                 throw new RetriableCollectionEx("userCode=" + userCode + " userLikePeople DB 연결 실패", e);
             }
         } catch (Exception e) {

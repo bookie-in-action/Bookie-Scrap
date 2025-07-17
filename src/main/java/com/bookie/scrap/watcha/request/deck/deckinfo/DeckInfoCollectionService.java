@@ -5,6 +5,7 @@ import com.bookie.scrap.common.exception.CollectionEx;
 import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.common.redis.RedisStringListService;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
+import com.mongodb.MongoException;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
             DeckInfoResponseDto response = fetcher.fetch(deckCode, param);
 
             if (response == null || response.hasNoData()) {
-                log.warn("deckCode={} 의 deckInfo 수집 실패: fetch 결과가 null이거나 정보없음", deckCode);
+                log.info("deckCode={} 의 deckInfo 수집 실패: fetch 결과가 null이거나 정보없음", deckCode);
                 return 0;
             }
 
@@ -57,7 +58,7 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
                 );
 
                 return savedCnt;
-            } catch (MongoTimeoutException e) {
+            } catch (MongoException e) {
                 throw new RetriableCollectionEx("deckCode=" + deckCode + " deckInfo DB 연결 실패", e);
             }
         } catch (Exception e) {

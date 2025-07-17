@@ -6,6 +6,7 @@ import com.bookie.scrap.common.exception.RetriableCollectionEx;
 import com.bookie.scrap.common.exception.WatchaCustomCollectionEx;
 import com.bookie.scrap.watcha.domain.WatchaCollectorService;
 import com.bookie.scrap.watcha.request.book.bookmeta.rdb.BookMetaRdbPersister;
+import com.mongodb.MongoException;
 import com.mongodb.MongoTimeoutException;
 import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,12 @@ public class BookMetaCollectionService implements WatchaCollectorService {
             BookMetaResponseDto response = fetcher.fetch(bookCode, param);
 
             if (response == null || response.hasNoData()) {
-                log.error("bookCode={} 의 bookMeta 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
+                log.info("bookCode={} 의 bookMeta 수집 실패: fetch 결과가 null이거나 정보 없음", bookCode);
                 return 0;
             }
 
             if (!response.isBook()) {
-                log.warn("code:{}는 content_type: {}", bookCode, response.getContentType());
+                log.info("code:{}는 content_type: {}", bookCode, response.getContentType());
                 throw new WatchaCustomCollectionEx("code: " + bookCode + "는 content_type: " + response.getContentType());
             }
 
@@ -57,7 +58,7 @@ public class BookMetaCollectionService implements WatchaCollectorService {
                 );
                 return savedCnt;
 
-            } catch (MongoTimeoutException e) {
+            } catch (MongoException e) {
                 throw new RetriableCollectionEx("bookCode=" + bookCode + " bookMeta DB 연결 실패", e);
             }
         } catch (WatchaCustomCollectionEx e) {
