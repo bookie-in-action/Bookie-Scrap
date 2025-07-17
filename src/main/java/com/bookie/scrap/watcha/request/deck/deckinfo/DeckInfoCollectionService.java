@@ -57,7 +57,7 @@ public class DeckInfoCollectionService implements WatchaCollectorService {
                 );
 
                 return savedCnt;
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("deckCode=" + deckCode + " deckInfo DB 연결 실패", e);
             }
         } catch (Exception e) {

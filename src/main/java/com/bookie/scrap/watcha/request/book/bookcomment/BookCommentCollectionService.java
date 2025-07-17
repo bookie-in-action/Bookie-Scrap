@@ -58,7 +58,7 @@ public class BookCommentCollectionService implements WatchaCollectorService {
                 );
 
                 return savedCnt;
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("bookCode=" + bookCode + " bookComment DB 연결 실패", e);
             }
         }

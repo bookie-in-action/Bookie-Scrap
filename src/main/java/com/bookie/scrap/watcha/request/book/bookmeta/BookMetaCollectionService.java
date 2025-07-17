@@ -57,7 +57,7 @@ public class BookMetaCollectionService implements WatchaCollectorService {
                 );
                 return savedCnt;
 
-            } catch (RedisCommandTimeoutException | MongoTimeoutException e) {
+            } catch (MongoTimeoutException e) {
                 throw new RetriableCollectionEx("bookCode=" + bookCode + " bookMeta DB 연결 실패", e);
             }
         } catch (WatchaCustomCollectionEx e) {
