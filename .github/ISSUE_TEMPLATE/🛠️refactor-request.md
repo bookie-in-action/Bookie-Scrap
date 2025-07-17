@@ -1,7 +1,7 @@
 ---
-name: "\U0001F6E0️Task Request"
+name: "\U0001F6E0️Refactor Request"
 about: 작업(리팩토링) 요청 사항을 입력해 주세요.
-title: ''
+title: "[\U0001F6E0️Refactor Request]"
 labels: enhancement
 assignees: ''
 
